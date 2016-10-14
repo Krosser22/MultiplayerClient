@@ -7,12 +7,34 @@
 //
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
-    sf::CircleShape shape(100.f);
+    sf::CircleShape shape(500.f);
     shape.setFillColor(sf::Color::Yellow);
+    
+    //Load a sprite to display
+    sf::Texture texture;
+    if (!texture.loadFromFile("./Assets/image.png")) {
+        return EXIT_FAILURE;
+    }
+    sf::Sprite sprite(texture);
+    
+    //Create a graphical text to display
+    /*sf::Font font;
+    if (!font.loadFromFile("arial.ttf")) {
+        return EXIT_FAILURE;
+    }*/
+    
+    //Load a music to play
+    /*sf::Music music;
+    if (!music.openFromFile("music.ogg")) {
+        return EXIT_FAILURE;
+    }*/
     
     while (window.isOpen())
     {
@@ -24,9 +46,13 @@ int main()
         }
         
         window.clear();
+        
         window.draw(shape);
+        window.draw(sprite);
+        
         window.display();
     }
     
-    return 0;
+    return EXIT_SUCCESS;
 }
+ 
