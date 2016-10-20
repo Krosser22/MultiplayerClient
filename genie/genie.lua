@@ -45,19 +45,19 @@ solution "multiplayer"
 	}
   
   os.mkdir("../project/build/bin/windows")
-  os.copyfile("../lib/openal32.dll", "../project/build/bin/windows/openal32.dll")
-  os.copyfile("../lib/openal32.lib", "../project/build/bin/windows/openal32.lib")
+  --os.copyfile("../lib/openal32.dll", "../project/build/bin/windows/openal32.dll")
+  --os.copyfile("../lib/openal32.lib", "../project/build/bin/windows/openal32.lib")
 
 --[[--------------------------------------------
------------------ ROTOM ENGINE -----------------
+------------- MULTIPLAYER PROJECT --------------
 --]]--------------------------------------------
 project "multiplayer"
   targetname "multiplayer"
   language "C++"
   location "../project/build"
-	libdirs "../lib"
-  --kind "StaticLib"
+  libdirs "../lib"
   kind "ConsoleApp"
+  --kind "StaticLib"
   
   --[[flags {
     "No64BitChecks",
@@ -65,37 +65,37 @@ project "multiplayer"
   }]]
   
   links {
-    "opengl32",
-    "openal32",
+    --"opengl32",
+    --"openal32",
   }
 
   defines {
-    "_GLFW_WIN32",
-    "_GLFW_WGL",
-    "_GLFW_USE_OPENGL",
+    --"_GLFW_WIN32",
+    --"_GLFW_WGL",
+    --"_GLFW_USE_OPENGL",
   }
   
   includedirs {
-    "../include",
-    "../examples/include",
-    "../deps/glew/include",
-    "../deps/glfw/include",
-    "../deps/glm",
-    "../deps/imgui",
-    "../deps/openal/include",
-    "../deps/soil",
-    "../deps/stb",
-    "../deps/tinyobjloader",
+    --"../include",
+    --"../examples/include",
+    --"../deps/glew/include",
+    --"../deps/glfw/include",
+    --"../deps/glm",
+    --"../deps/imgui",
+    --"../deps/openal/include",
+    --"../deps/soil",
+    --"../deps/stb",
+    --"../deps/tinyobjloader",
   }
   
   files {
-    "../include/**.h",
-    "../src/**.*",
-    "../deps/glfw/src/*.c",
-    "../deps/imgui/*.cpp",
-    "../deps/soil/*.c",
-    "../deps/stb/*.c",
-    "../deps/tinyobjloader/*.cc",
-    "../shaders/**.*",
-    "../examples/**.*",
+    --"../include/**.h",
+    --"../src/**.*",
+    --"../deps/glfw/src/*.c",
+    --"../deps/imgui/*.cpp",
+    --"../deps/soil/*.c",
+    --"../deps/stb/*.c",
+    --"../deps/tinyobjloader/*.cc",
+    --"../shaders/**.*",
+    --"../examples/**.*",
   }
