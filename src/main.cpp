@@ -45,8 +45,10 @@ int main() {
 
   sf::Texture GroundTexture;
   sf::Texture BoxTexture;
-  GroundTexture.loadFromFile("../../../../assets/images/ground.png");
-  BoxTexture.loadFromFile("../../../../assets/images/box.png");
+  //GroundTexture.loadFromFile("../../../../assets/images/ground.png");
+  //BoxTexture.loadFromFile("../../../../assets/images/box.png");
+  GroundTexture.loadFromFile("assets/images/ground.png");
+  BoxTexture.loadFromFile("assets/images/box.png");
 
   createGround(world, 400.f, 500.f);
 
