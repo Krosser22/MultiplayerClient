@@ -15,6 +15,10 @@ public:
   ~Player() {};
   
   void init();
+
+  void update();
+
+  void draw();
 };
 
 #endif //__PLAYER_H__

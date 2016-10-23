@@ -1,6 +1,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
+#include "assets.h"
 
 #define SCALE 30 //pass from pixels to box2D positions
 
@@ -34,10 +35,10 @@ void createBox(b2World& World, float mouseX, float mouseY) {
 
 int main() {
   // Create the main window
-  sf::RenderWindow window(sf::VideoMode(800, 600, 32), "SFML window"); //width, height, bits per pixel
+  sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window"); //width, height, bits per pixel
 
   window.setFramerateLimit(60);
-
+  
   //preparing world
 
   b2Vec2 gravity(0.0f, 9.8f);
@@ -45,10 +46,8 @@ int main() {
 
   sf::Texture GroundTexture;
   sf::Texture BoxTexture;
-  //GroundTexture.loadFromFile("../../../../assets/images/ground.png");
-  //BoxTexture.loadFromFile("../../../../assets/images/box.png");
-  GroundTexture.loadFromFile("assets/images/ground.png");
-  BoxTexture.loadFromFile("assets/images/box.png");
+  GroundTexture.loadFromFile(ASSETS::ImagePath("ground.png").c_str());
+  BoxTexture.loadFromFile(ASSETS::ImagePath("box.png").c_str());
 
   createGround(world, 400.f, 500.f);
 

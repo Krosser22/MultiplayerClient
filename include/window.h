@@ -6,10 +6,17 @@
 *** ////////////////////////////////////////////
 **/
 
-#include "player.h"
+#ifndef __WINDOW_H__
+#define __WINDOW_H__
 
-void Player::init() {}
+class Window {
+public:
+  Window() {};
+  ~Window() {};
 
-void Player::update() {}
+  void createWindow(int width, int height, char *title);
 
-void Player::draw() {}
+  bool isOpen();
+};
+
+#endif //__WINDOW_H__
