@@ -35,7 +35,7 @@ void createBox(b2World& World, float mouseX, float mouseY) {
 
 int main() {
   // Create the main window
-  sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window"); //width, height, bits per pixel
+  sf::RenderWindow window(sf::VideoMode(960, 704), "SFML window"); //width, height, bits per pixel
 
   window.setFramerateLimit(60);
   
@@ -44,14 +44,29 @@ int main() {
   b2Vec2 gravity(0.0f, 9.8f);
   b2World world(gravity);
 
-  sf::Texture GroundTexture;
   sf::Texture BoxTexture;
-  GroundTexture.loadFromFile(ASSETS::ImagePath("ground.png").c_str());
-  BoxTexture.loadFromFile(ASSETS::ImagePath("box.png").c_str());
+  sf::Texture playerTexture;
+  BoxTexture.loadFromFile(ASSETS::ImagePath("box.png"));
+  playerTexture.loadFromFile(ASSETS::ImagePath("player.png"));
 
   createGround(world, 400.f, 500.f);
 
-  while (window.isOpen()) {
+  //Background
+  sf::Texture GroundTexture;
+  sf::Sprite GroundSprite;
+  GroundTexture.loadFromFile(ASSETS::ImagePath("map.png"));
+  GroundSprite.setTexture(GroundTexture);
+  GroundSprite.setOrigin(0.0f, 0.0f);
+  GroundSprite.setPosition(0.0f, 0.0f);
+
+  //Player
+  sf::Sprite PlayerSprite;
+  PlayerSprite.setTexture(playerTexture);
+  PlayerSprite.setOrigin(0.0f, 0.0f);
+  PlayerSprite.setPosition(0.0f, 0.0f);
+  float playerSpeed = 1.8f;
+
+  while (window.isOpen() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
     // Process events
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -63,29 +78,42 @@ int main() {
     // Clear screen
     window.clear(sf::Color::White);
     
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    //Input
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+      PlayerSprite.setPosition(PlayerSprite.getPosition().x, PlayerSprite.getPosition().y - playerSpeed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+      PlayerSprite.setPosition(PlayerSprite.getPosition().x, PlayerSprite.getPosition().y + playerSpeed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+      PlayerSprite.setPosition(PlayerSprite.getPosition().x - playerSpeed, PlayerSprite.getPosition().y);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+      PlayerSprite.setPosition(PlayerSprite.getPosition().x + playerSpeed, PlayerSprite.getPosition().y);
+    }
+    /*if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       int MouseX = sf::Mouse::getPosition(window).x;
       int MouseY = sf::Mouse::getPosition(window).y;
       createBox(world, (float)MouseX, (float)MouseY);
-    }
+    }*/
 
-    for (b2Body* BodyIterator = world.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext()) {
+    //Background
+    window.draw(GroundSprite);
+
+    //Player
+    window.draw(PlayerSprite);
+
+    /*for (b2Body* BodyIterator = world.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext()) {
       if (BodyIterator->GetType() == b2_dynamicBody) {
         sf::Sprite Sprite;
         Sprite.setTexture(BoxTexture);
-        Sprite.setOrigin(16.f, 16.f);
+        Sprite.setOrigin(16.0f, 16.0f);
         Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
         Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
         window.draw(Sprite);
-      } else {
-        sf::Sprite GroundSprite;
-        GroundSprite.setTexture(GroundTexture);
-        GroundSprite.setOrigin(400.f, 8.f);
-        GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
-        GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
-        window.draw(GroundSprite);
       }
-    }
+    }*/
+
     /** Simulate the world */
     world.Step(1 / 60.f, 8, 3);
 
