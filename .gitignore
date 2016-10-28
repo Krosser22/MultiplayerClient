@@ -1,1 +1,3 @@
 project/
+.*
+t01.xcodeproj/
