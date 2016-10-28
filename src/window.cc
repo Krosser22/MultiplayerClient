@@ -10,6 +10,7 @@
 
 sf::RenderWindow window;
 std::vector<sf::Sprite *> listToDraw;
+b2World *world;
 
 void Window::createWindow(int width, int height, const char *title) {
   window.create(sf::VideoMode(width, height), title);

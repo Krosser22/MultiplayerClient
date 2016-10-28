@@ -26,9 +26,6 @@ public:
   void draw();
   
   void addToDraw(sf::Sprite *sprite);
-  
-private:
-  b2World world;
 };
 
 #endif //__WINDOW_H__
