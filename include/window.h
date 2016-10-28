@@ -9,14 +9,26 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
+#include <SFML/Graphics.hpp>
+#include <Box2D/Box2D.h>
+
 class Window {
 public:
   Window() {};
   ~Window() {};
 
-  void createWindow(int width, int height, char *title);
+  void createWindow(int width, int height, const char *title);
 
   bool isOpen();
+  
+  void clear();
+  
+  void draw();
+  
+  void addToDraw(sf::Sprite *sprite);
+  
+private:
+  b2World world;
 };
 
 #endif //__WINDOW_H__
