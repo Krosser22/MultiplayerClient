@@ -8,59 +8,59 @@
 
 #include "object.h"
 
+Object::Object() {}
+
+Object::~Object() {}
+
 void Object::setTexture(const char *imagePath) {
   texture_.loadFromFile(ASSETS::ImagePath(imagePath));
   sprite_.setTexture(texture_);
-  setOrigin(originX_, originY_);
-  setPosition(positionX_, positionY_);
-}
-
-void Object::setOrigin(float x, float y) {
-  originX_ = x;
-  originY_ = y;
-  sprite_.setOrigin(originX_, originY_);
+  sprite_.setOrigin(0.0f, 0.0f);
+  sprite_.setRotation(0.0f);
+  sprite_.setScale(1.0f, 1.0f);
+  setPosition(0.0f, 0.0f);
 }
 
 void Object::setPosition(float x, float y) {
-  positionX_ = x;
-  positionY_ = y;
-  sprite_.setPosition(positionX_, positionY_);
+  sprite_.setPosition(x, y);
 }
 
 void Object::setPositionX(float x) {
-  positionX_ = x;
-  sprite_.setPosition(positionX_, positionY_);
+  setPosition(x, sprite_.getPosition().y);
 }
 
 void Object::setPositionY(float y) {
-  positionY_ = y;
-  sprite_.setPosition(positionX_, positionY_);
+  setPosition(sprite_.getPosition().x, y);
 }
 
 void Object::move(float x, float y) {
-  positionX_ += x;
-  positionY_ += y;
-  sprite_.setPosition(positionX_, positionY_);
+  setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y + y);
 }
 
 void Object::moveX(float x) {
-  positionX_ += x;
-  sprite_.setPosition(positionX_, positionY_);
+  setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y);
 }
 
 void Object::moveY(float y) {
-  positionY_ += y;
-  sprite_.setPosition(positionX_, positionY_);
+  setPosition(sprite_.getPosition().x, sprite_.getPosition().y + y);
 }
 
-void *Object::sprite() {
+sf::Sprite *Object::sprite() {
   return &sprite_;
 }
 
 float Object::positionX() {
-  return positionX_;
+  return sprite_.getPosition().x;
 }
 
 float Object::positionY() {
-  return positionY_;
+  return sprite_.getPosition().y;
+}
+
+float Object::width() {
+  return texture_.getSize().x * sprite_.getScale().x;
+}
+
+float Object::height() {
+  return texture_.getSize().y * sprite_.getScale().y;
 }

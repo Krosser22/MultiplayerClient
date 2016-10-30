@@ -14,12 +14,10 @@
 
 class Object {
 public:
-  Object() {};
-  ~Object() {};
+  Object();
+  ~Object();
   
   void setTexture(const char *imagePath = "default.png");
-
-  void setOrigin(float x, float y);
 
   void setPosition(float x, float y);
 
@@ -33,19 +31,19 @@ public:
 
   void moveY(float y);
 
-  void *sprite();
+  sf::Sprite *sprite();
 
   float positionX();
 
   float positionY();
 
+  float width();
+
+  float height();
+
 private:
   sf::Texture texture_;
   sf::Sprite sprite_;
-  float originX_;
-  float originY_;
-  float positionX_;
-  float positionY_;
 };
 
 #endif //__OBJECT_H__

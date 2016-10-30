@@ -22,7 +22,6 @@ solution "multiplayer"
     os.mkdir "../project/build/bin/debug"
     links {
       "openal32",
-      "Box2D",
       "sfml-audio-d",
       "sfml-graphics-d",
       "sfml-network-d",
@@ -37,7 +36,6 @@ solution "multiplayer"
     os.mkdir "../project/build/bin/release"
     links {
       "openal32",
-      "Box2D",
       "sfml-graphics",
       "sfml-network",
       "sfml-system",
@@ -110,29 +108,11 @@ project "multiplayer"
   includedirs {
     "../assets",
     "../include",
-    "../deps/Box2D",
     "../deps/SFML/include",
-    --"../examples/include",
-    --"../deps/glew/include",
-    --"../deps/glfw/include",
-    --"../deps/glm",
-    --"../deps/imgui",
-    --"../deps/openal/include",
-    --"../deps/soil",
-    --"../deps/stb",
-    --"../deps/tinyobjloader",
   }
   
   files {
     "../src/**.*",
     "../include/**.*",
     "../deps/SFML/include/**.*",
-    "../deps/Box2D/Box2D/Box2D.h",
-    --"../deps/glfw/src/*.c",
-    --"../deps/imgui/*.cpp",
-    --"../deps/soil/*.c",
-    --"../deps/stb/*.c",
-    --"../deps/tinyobjloader/*.cc",
-    --"../shaders/**.*",
-    --"../examples/**.*",
   }

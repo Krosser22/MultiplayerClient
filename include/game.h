@@ -10,6 +10,7 @@
 #define __GAME_H__
 
 #include "player.h"
+#include <vector>
 
 class Game {
 public:
@@ -26,9 +27,10 @@ public:
 
 private:
   Object map;
-  Object box;
+  Object ground;
   Player player;
-  float playerSpeed = 1.8f;
+  float playerSpeed = 2.22f;
+  std::vector<Object> objectList;
 };
 
 #endif //__GAME_H__

@@ -18,6 +18,9 @@ namespace GameManager {
   //Finish the GameManager
   void finish();
 
+  //Set the background of the game
+  void setBackground(const char *imagePath);
+
   //Add an object to the draw list
   void addToDraw(Object *object);
 
@@ -26,6 +29,12 @@ namespace GameManager {
 
   //Draw all the elements on the render buffer
   void draw();
+
+  //Return the position X of the mouse
+  float mouseX();
+
+  //Return the position Y of the mouse
+  float mouseY();
 };
 
 #endif //__GAME_MANAGER_H__

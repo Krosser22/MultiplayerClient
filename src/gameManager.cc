@@ -7,19 +7,13 @@
 **/
 
 #include <SFML/Graphics.hpp>
-#include <Box2D/Box2D.h>
 #include "gameManager.h"
 
 struct GameManagerData {
   sf::RenderWindow window;
+  sf::Texture backgroundTexture;
+  sf::Sprite backgroundSprite;
   std::vector<sf::Sprite *> listToDraw;
-  b2Vec2 gravity;
-  b2World *world;
-  GameManagerData() {
-    gravity.x = 0.0f;
-    gravity.y = 9.8f;
-    world = new b2World(gravity);
-  }
 } data;
 
 void GameManager::start() {
@@ -27,8 +21,13 @@ void GameManager::start() {
   data.window.setFramerateLimit(60);
 }
 
-void GameManager::finish() {
-  delete data.world;
+void GameManager::finish() {}
+
+void GameManager::setBackground(const char *imagePath) {
+  data.backgroundTexture.loadFromFile(ASSETS::ImagePath(imagePath));
+  data.backgroundSprite.setTexture(data.backgroundTexture);
+  data.backgroundSprite.setOrigin(0.0f, 0.0f);
+  data.backgroundSprite.setPosition(0.0f, 0.0f);
 }
 
 void GameManager::addToDraw(Object *object) {
@@ -43,18 +42,27 @@ bool GameManager::isOpen() {
     if (event.type == sf::Event::Closed) data.window.close();
   }
 
-  // Clear screen
+  //Clear screen
   data.window.clear(sf::Color::White);
-
-  /** Simulate the world */
-  data.world->Step(1 / 60.f, 8, 3);
 
   return opened;
 }
 
 void GameManager::draw() {
-  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) {
-    data.window.draw(*data.listToDraw.at(i));
-  }
+  //Draw the background
+  data.window.draw(data.backgroundSprite);
+
+  //Draw
+  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window.draw(*data.listToDraw.at(i));
+
+  //Display the buffer on the screen
   data.window.display();
+}
+
+float GameManager::mouseX() {
+  return (float)sf::Mouse::getPosition(data.window).x;
+}
+
+float GameManager::mouseY() {
+  return (float)sf::Mouse::getPosition(data.window).y;
 }
