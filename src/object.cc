@@ -7,6 +7,7 @@
 **/
 
 #include "object.h"
+#include "gameManager.h"
 
 Object::Object() {}
 
@@ -18,31 +19,45 @@ void Object::setTexture(const char *imagePath) {
   sprite_.setOrigin(0.0f, 0.0f);
   sprite_.setRotation(0.0f);
   sprite_.setScale(1.0f, 1.0f);
-  setPosition(0.0f, 0.0f);
+  sprite_.setPosition(0.0f, 0.0f);
 }
 
 void Object::setPosition(float x, float y) {
+  float lastX = sprite_.getPosition().x;
+  float lastY = sprite_.getPosition().y;
   sprite_.setPosition(x, y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, lastY);
 }
 
 void Object::setPositionX(float x) {
-  setPosition(x, sprite_.getPosition().y);
+  float lastX = sprite_.getPosition().x;
+  sprite_.setPosition(x, sprite_.getPosition().y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, sprite_.getPosition().y);
 }
 
 void Object::setPositionY(float y) {
-  setPosition(sprite_.getPosition().x, y);
+  float lastY = sprite_.getPosition().y;
+  sprite_.setPosition(sprite_.getPosition().x, y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(sprite_.getPosition().x, lastY);
 }
 
 void Object::move(float x, float y) {
-  setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y + y);
+  float lastX = sprite_.getPosition().x;
+  float lastY = sprite_.getPosition().y;
+  sprite_.setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y + y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, lastY);
 }
 
 void Object::moveX(float x) {
-  setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y);
+  float lastX = sprite_.getPosition().x;
+  sprite_.setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, sprite_.getPosition().y);
 }
 
 void Object::moveY(float y) {
-  setPosition(sprite_.getPosition().x, sprite_.getPosition().y + y);
+  float lastY = sprite_.getPosition().y;
+  sprite_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y + y);
+  if (GameManager::checkCollision(this)) sprite_.setPosition(sprite_.getPosition().x, lastY);
 }
 
 sf::Sprite *Object::sprite() {

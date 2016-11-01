@@ -14,6 +14,7 @@ struct GameManagerData {
   sf::Texture backgroundTexture;
   sf::Sprite backgroundSprite;
   std::vector<sf::Sprite *> listToDraw;
+  std::vector<Object *> collisionList;
 } data;
 
 void GameManager::start() {
@@ -30,9 +31,12 @@ void GameManager::setBackground(const char *imagePath) {
   data.backgroundSprite.setPosition(0.0f, 0.0f);
 }
 
-void GameManager::addToDraw(Object *object) {
-  data.listToDraw.push_back((sf::Sprite *)object->sprite());
+void GameManager::addObject(Object *object) {
+  data.listToDraw.push_back((sf::Sprite *) object->sprite());
+  data.collisionList.push_back(object);
 }
+
+void GameManager::removeObject(Object *object) {}
 
 bool GameManager::isOpen() {
   bool opened = data.window.isOpen();
@@ -65,4 +69,16 @@ float GameManager::mouseX() {
 
 float GameManager::mouseY() {
   return (float)sf::Mouse::getPosition(data.window).y;
+}
+
+bool GameManager::checkCollision(Object *object) {
+  bool collision = false;
+  for (unsigned int i = 0; i < data.collisionList.size() && !collision; ++i) {
+    if (object != data.collisionList.at(i)) {
+      if (object->sprite()->getGlobalBounds().intersects(data.collisionList.at(i)->sprite()->getGlobalBounds())) {
+        collision = true;
+      }
+    }
+  }
+  return collision;
 }

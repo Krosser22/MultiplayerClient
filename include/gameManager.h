@@ -21,8 +21,11 @@ namespace GameManager {
   //Set the background of the game
   void setBackground(const char *imagePath);
 
-  //Add an object to the draw list
-  void addToDraw(Object *object);
+  //Add an object to the draw list and the collision list
+  void addObject(Object *object);
+
+  //Remove an object from the draw list and from the collision list
+  void removeObject(Object *object);
 
   //Return if the window is open
   bool isOpen();
@@ -35,6 +38,9 @@ namespace GameManager {
 
   //Return the position Y of the mouse
   float mouseY();
+
+  //Return if an objects make collision with all the other objects
+  bool checkCollision(Object *object);
 };
 
 #endif //__GAME_MANAGER_H__

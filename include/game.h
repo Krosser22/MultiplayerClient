@@ -26,7 +26,6 @@ public:
   void finish();
 
 private:
-  Object map;
   Object ground;
   Player player;
   float playerSpeed = 2.22f;

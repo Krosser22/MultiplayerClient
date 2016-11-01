@@ -8,26 +8,29 @@ void Game::start() {
 
   //Set the ground
   ground.setTexture("ground.png");
-  ground.setPositionY(240.0f);
-  GameManager::addToDraw(&ground);
+  ground.setPositionY(640.0f);
+  GameManager::addObject(&ground);
 
   //Set the player
   player.setTexture("player.png");
-  GameManager::addToDraw(&player);
+  GameManager::addObject(&player);
 }
 
 void Game::input() {
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) player.moveY(-playerSpeed);
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) player.moveY(playerSpeed);
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) player.moveX(-playerSpeed);
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) player.moveX(playerSpeed);
+  float newX = 0.0f, newY = 0.0f;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) newY = -playerSpeed;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) newY = playerSpeed;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) newX = -playerSpeed;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) newX = playerSpeed;
+  player.moveX(newX);
+  player.moveY(newY);
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     Object *box = new Object();
     box->setTexture("box.png");
     box->setPosition(GameManager::mouseX(), GameManager::mouseY());
     objectList.push_back(*box);
-    GameManager::addToDraw(box);
+    GameManager::addObject(box);
   }
 }
 
