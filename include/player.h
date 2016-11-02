@@ -15,6 +15,8 @@ class Player : public Object {
 public:
   Player() {};
   ~Player() {};
+
+  void update();
 };
 
 #endif //__PLAYER_H__
