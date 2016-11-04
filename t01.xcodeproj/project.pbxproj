@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0B1D0A441D9EAAAA00319891 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B1D0A431D9EAAAA00319891 /* main.cpp */; };
-		B186C2EA1DBE2E0D004C3A3D /* player.cc in Sources */ = {isa = PBXBuildFile; fileRef = B186C2E91DBE2E0D004C3A3D /* player.cc */; };
+		B10228D51DC7770E00562C8D /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B10228D31DC7770E00562C8D /* game.cpp */; };
+		B10228D61DC7770E00562C8D /* gameManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10228D41DC7770E00562C8D /* gameManager.cc */; };
+		B10228D81DC7771900562C8D /* object.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10228D71DC7771900562C8D /* object.cc */; };
 		B186C2F21DBE2EC5004C3A3D /* assets.cc in Sources */ = {isa = PBXBuildFile; fileRef = B186C2F01DBE2EC5004C3A3D /* assets.cc */; };
-		B186C2F31DBE2EC5004C3A3D /* window.cc in Sources */ = {isa = PBXBuildFile; fileRef = B186C2F11DBE2EC5004C3A3D /* window.cc */; };
+		B18D4D4D1DCC98340037CFA5 /* actor.cc in Sources */ = {isa = PBXBuildFile; fileRef = B18D4D4C1DCC98340037CFA5 /* actor.cc */; };
 		B1DD46C71DBA1D33000F72CB /* libBox2D.2.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DD46C61DBA1D33000F72CB /* libBox2D.2.3.0.dylib */; };
 		B1E0D5851DB0E23600366B93 /* libsfml-audio.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1E0D5801DB0E23600366B93 /* libsfml-audio.2.4.0.dylib */; };
 		B1E0D5861DB0E23600366B93 /* libsfml-graphics.2.4.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1E0D5811DB0E23600366B93 /* libsfml-graphics.2.4.0.dylib */; };
@@ -36,12 +38,16 @@
 /* Begin PBXFileReference section */
 		0B1D0A401D9EAAAA00319891 /* t01 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = t01; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B1D0A431D9EAAAA00319891 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		B186C2E91DBE2E0D004C3A3D /* player.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = player.cc; sourceTree = "<group>"; };
+		B10228D31DC7770E00562C8D /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
+		B10228D41DC7770E00562C8D /* gameManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameManager.cc; sourceTree = "<group>"; };
+		B10228D71DC7771900562C8D /* object.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = object.cc; sourceTree = "<group>"; };
+		B10228D91DC7772B00562C8D /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = game.h; path = include/game.h; sourceTree = "<group>"; };
+		B10228DA1DC7772B00562C8D /* gameManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gameManager.h; path = include/gameManager.h; sourceTree = "<group>"; };
+		B10228DB1DC7772B00562C8D /* object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = object.h; path = include/object.h; sourceTree = "<group>"; };
 		B186C2ED1DBE2EAA004C3A3D /* assets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assets.h; path = include/assets.h; sourceTree = "<group>"; };
-		B186C2EE1DBE2EAA004C3A3D /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = player.h; path = include/player.h; sourceTree = "<group>"; };
-		B186C2EF1DBE2EAA004C3A3D /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = include/window.h; sourceTree = "<group>"; };
 		B186C2F01DBE2EC5004C3A3D /* assets.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assets.cc; sourceTree = "<group>"; };
-		B186C2F11DBE2EC5004C3A3D /* window.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cc; sourceTree = "<group>"; };
+		B18D4D4C1DCC98340037CFA5 /* actor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actor.cc; sourceTree = "<group>"; };
+		B18D4D4E1DCC98410037CFA5 /* actor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = actor.h; path = include/actor.h; sourceTree = "<group>"; };
 		B1DD46B21DBA177B000F72CB /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		B1DD46B31DBA177B000F72CB /* sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sounds; sourceTree = "<group>"; };
 		B1DD46C61DBA1D33000F72CB /* libBox2D.2.3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBox2D.2.3.0.dylib; path = ../../../../Users/s6106112/lib/libBox2D.2.3.0.dylib; sourceTree = "<group>"; };
@@ -95,10 +101,12 @@
 		0B1D0A421D9EAAAA00319891 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B18D4D4C1DCC98340037CFA5 /* actor.cc */,
 				B186C2F01DBE2EC5004C3A3D /* assets.cc */,
-				B186C2F11DBE2EC5004C3A3D /* window.cc */,
-				B186C2E91DBE2E0D004C3A3D /* player.cc */,
+				B10228D31DC7770E00562C8D /* game.cpp */,
+				B10228D41DC7770E00562C8D /* gameManager.cc */,
 				0B1D0A431D9EAAAA00319891 /* main.cpp */,
+				B10228D71DC7771900562C8D /* object.cc */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -106,9 +114,11 @@
 		B186C2EB1DBE2E16004C3A3D /* Include */ = {
 			isa = PBXGroup;
 			children = (
+				B18D4D4E1DCC98410037CFA5 /* actor.h */,
 				B186C2ED1DBE2EAA004C3A3D /* assets.h */,
-				B186C2EE1DBE2EAA004C3A3D /* player.h */,
-				B186C2EF1DBE2EAA004C3A3D /* window.h */,
+				B10228D91DC7772B00562C8D /* game.h */,
+				B10228DA1DC7772B00562C8D /* gameManager.h */,
+				B10228DB1DC7772B00562C8D /* object.h */,
 			);
 			name = Include;
 			sourceTree = "<group>";
@@ -164,7 +174,7 @@
 		0B1D0A381D9EAAAA00319891 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Cordry, Julien";
 				TargetAttributes = {
 					0B1D0A3F1D9EAAAA00319891 = {
@@ -194,10 +204,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B186C2EA1DBE2E0D004C3A3D /* player.cc in Sources */,
-				B186C2F31DBE2EC5004C3A3D /* window.cc in Sources */,
 				B186C2F21DBE2EC5004C3A3D /* assets.cc in Sources */,
+				B10228D61DC7770E00562C8D /* gameManager.cc in Sources */,
 				0B1D0A441D9EAAAA00319891 /* main.cpp in Sources */,
+				B18D4D4D1DCC98340037CFA5 /* actor.cc in Sources */,
+				B10228D81DC7771900562C8D /* object.cc in Sources */,
+				B10228D51DC7770E00562C8D /* game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,8 +230,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -263,8 +277,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";

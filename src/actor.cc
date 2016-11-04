@@ -77,7 +77,7 @@ void Actor::updateCollisions() {
   if (GameManager::checkCollision(this)) {
     sprite_.setPosition(lastX, lastY);
     if (lastY <= newY) {
-      printf("Ground: %f\n", newY);
+      //printf("Ground: %f\n", newY);
       bisGrounded_ = true;
       bisFalling_ = false;
       bcanJump_ = true;
@@ -86,7 +86,7 @@ void Actor::updateCollisions() {
     bisGrounded_ = false;
     bcanJump_ = bcanJump_ & actorMovement.up;
   }
-  printf(".");
+  
   //Restart the movements
   actorMovement.left = false;
   actorMovement.right = false;

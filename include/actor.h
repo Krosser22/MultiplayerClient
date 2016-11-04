@@ -42,7 +42,7 @@ private:
   float movementVelocity_ = 8.22f;
 
   //The jump velocity
-  float jumpVelocity_ = 12.22f;
+  float jumpVelocity_ = 10.22f;
 
   //The gravity velocity
   float gravityVelocity_ = 8.22f;
