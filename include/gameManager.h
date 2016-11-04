@@ -9,7 +9,7 @@
 #ifndef __GAME_MANAGER_H__
 #define __GAME_MANAGER_H__
 
-#include "object.h"
+#include "actor.h"
 
 namespace GameManager {
   //Starts the GameManager
@@ -21,8 +21,11 @@ namespace GameManager {
   //Set the background of the game
   void setBackground(const char *imagePath);
 
-  //Add an object to the draw list and the collision list
+  //Add an object to the draw list
   void addObject(Object *object);
+
+  //Add an actor to the draw list
+  void addActor(Actor *actor);
 
   //Remove an object from the draw list and from the collision list
   void removeObject(Object *object);
@@ -40,7 +43,9 @@ namespace GameManager {
   float mouseY();
 
   //Return if an objects make collision with all the other objects
-  bool checkCollision(Object *object);
+  bool checkCollision(Actor *actor);
+
+  sf::Time getTime();
 };
 
 #endif //__GAME_MANAGER_H__

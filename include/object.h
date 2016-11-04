@@ -21,16 +21,6 @@ public:
 
   void setPosition(float x, float y);
 
-  void setPositionX(float x);
-
-  void setPositionY(float y);
-
-  void move(float x, float y);
-
-  void moveX(float x);
-
-  void moveY(float y);
-
   sf::Sprite *sprite();
 
   float positionX();
@@ -41,7 +31,7 @@ public:
 
   float height();
 
-private:
+protected:
   sf::Texture texture_;
   sf::Sprite sprite_;
 };

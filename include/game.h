@@ -9,7 +9,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "player.h"
+#include "actor.h"
 #include <vector>
 
 class Game {
@@ -27,8 +27,10 @@ public:
 
 private:
   Object ground;
-  Player player;
-  float playerSpeed = 2.22f;
+  Object platformLeft;
+  Object platformRight;
+  Object platformCenter;
+  Actor actor;
   std::vector<Object> objectList;
 };
 

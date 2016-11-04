@@ -7,6 +7,7 @@
 **/
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Time.hpp>
 #include "gameManager.h"
 
 struct GameManagerData {
@@ -15,6 +16,8 @@ struct GameManagerData {
   sf::Sprite backgroundSprite;
   std::vector<sf::Sprite *> listToDraw;
   std::vector<Object *> collisionList;
+  std::vector<Actor *> dynamicCollisionList;
+  sf::Clock clock;
 } data;
 
 void GameManager::start() {
@@ -36,6 +39,12 @@ void GameManager::addObject(Object *object) {
   data.collisionList.push_back(object);
 }
 
+void GameManager::addActor(Actor *actor) {
+  data.listToDraw.push_back((sf::Sprite *) actor->sprite());
+  data.collisionList.push_back(actor);
+  data.dynamicCollisionList.push_back(actor);
+}
+
 void GameManager::removeObject(Object *object) {}
 
 bool GameManager::isOpen() {
@@ -53,6 +62,11 @@ bool GameManager::isOpen() {
 }
 
 void GameManager::draw() {
+  //Update the collisions
+  for (unsigned int i = 0; i < data.dynamicCollisionList.size(); ++i) {
+    data.dynamicCollisionList.at(i)->updateCollisions();
+  }
+
   //Draw the background
   data.window.draw(data.backgroundSprite);
 
@@ -71,14 +85,19 @@ float GameManager::mouseY() {
   return (float)sf::Mouse::getPosition(data.window).y;
 }
 
-bool GameManager::checkCollision(Object *object) {
+bool GameManager::checkCollision(Actor *actor) {
+  sf::FloatRect intersection;
   bool collision = false;
   for (unsigned int i = 0; i < data.collisionList.size() && !collision; ++i) {
-    if (object != data.collisionList.at(i)) {
-      if (object->sprite()->getGlobalBounds().intersects(data.collisionList.at(i)->sprite()->getGlobalBounds())) {
+    if (actor != data.collisionList.at(i)) {
+      if (actor->sprite()->getGlobalBounds().intersects(data.collisionList.at(i)->sprite()->getGlobalBounds(), intersection)) {
         collision = true;
       }
     }
   }
   return collision;
+}
+
+sf::Time GameManager::getTime() {
+  return data.clock.getElapsedTime();
 }

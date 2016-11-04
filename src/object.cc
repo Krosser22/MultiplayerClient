@@ -7,7 +7,6 @@
 **/
 
 #include "object.h"
-#include "gameManager.h"
 
 Object::Object() {}
 
@@ -23,41 +22,7 @@ void Object::setTexture(const char *imagePath) {
 }
 
 void Object::setPosition(float x, float y) {
-  float lastX = sprite_.getPosition().x;
-  float lastY = sprite_.getPosition().y;
   sprite_.setPosition(x, y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, lastY);
-}
-
-void Object::setPositionX(float x) {
-  float lastX = sprite_.getPosition().x;
-  sprite_.setPosition(x, sprite_.getPosition().y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, sprite_.getPosition().y);
-}
-
-void Object::setPositionY(float y) {
-  float lastY = sprite_.getPosition().y;
-  sprite_.setPosition(sprite_.getPosition().x, y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(sprite_.getPosition().x, lastY);
-}
-
-void Object::move(float x, float y) {
-  float lastX = sprite_.getPosition().x;
-  float lastY = sprite_.getPosition().y;
-  sprite_.setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y + y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, lastY);
-}
-
-void Object::moveX(float x) {
-  float lastX = sprite_.getPosition().x;
-  sprite_.setPosition(sprite_.getPosition().x + x, sprite_.getPosition().y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(lastX, sprite_.getPosition().y);
-}
-
-void Object::moveY(float y) {
-  float lastY = sprite_.getPosition().y;
-  sprite_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y + y);
-  if (GameManager::checkCollision(this)) sprite_.setPosition(sprite_.getPosition().x, lastY);
 }
 
 sf::Sprite *Object::sprite() {
