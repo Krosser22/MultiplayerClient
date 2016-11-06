@@ -25,7 +25,11 @@ void GameManager::start() {
   data.window.setFramerateLimit(60);
 }
 
-void GameManager::finish() {}
+void GameManager::finish() {
+  data.listToDraw.clear();
+  data.collisionList.clear();
+  data.dynamicCollisionList.clear();
+}
 
 void GameManager::setBackground(const char *imagePath) {
   data.backgroundTexture.loadFromFile(ASSETS::ImagePath(imagePath));

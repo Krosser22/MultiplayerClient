@@ -1,6 +1,33 @@
 #include "gameManager.h"
 #include "game.h"
+#include "server.h"
 
+#define SERVER_ON
+
+////////////////////////////////////////////
+//
+#ifdef SERVER_ON
+int main(int argc, char **argv) {
+  //Starts the Server
+  Server server;
+  server.start();
+
+  //Update the Server
+  while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+    server.update();
+  }
+
+  //Finish the server
+  server.finish();
+  return 0;
+}
+//
+////////////////////////////////////////////
+
+#else
+
+////////////////////////////////////////////
+//
 int main(int argc, char **argv) {
   //Starts the GameManager
   GameManager::start();
@@ -16,5 +43,8 @@ int main(int argc, char **argv) {
   }
   game.finish();
   GameManager::finish();
-  return EXIT_SUCCESS;
+  return 0;
 }
+#endif
+//
+////////////////////////////////////////////
