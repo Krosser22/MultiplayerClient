@@ -25,6 +25,9 @@ public:
   //Makes the actor jump
   void jump();
 
+  //Makes the actor stop jumping
+  void stopJumping();
+
   //Makes the actor crouch
   void crouch();
 
@@ -39,23 +42,25 @@ public:
 
 private:
   //The velocity to the left and right movements
-  float movementVelocity_ = 8.22f;
+  float movementVelocity_ = 6.22f;
+
+  //The movement velocity when is in air
+  float movementVelocityOnAir_ = 4.4f;
 
   //The jump velocity
-  float jumpVelocity_ = 10.22f;
+  float jumpVelocity_ = 14.22f;
+
+  //The impulse of the jump
+  float jumpImpulse_ = 0.0f;
+
+  //The decrease of the impulse of the jump
+  float jumpImpulseDecrease_ = 0.4f;
 
   //The gravity velocity
-  float gravityVelocity_ = 8.22f;
+  float gravityVelocity_ = 6.4f;
 
   //If the player is grounded
-  bool bisGrounded_ = false;
-
-  //If the player is falling
-  bool bisFalling_ = true;
-
-  //If the actor can jump (This is false when the player is in the air and already jumping)
-  //It is created to prevent air jumping
-  bool bcanJump_ = true;
+  bool bIsGrounded_ = false;
 
   //The max time the actor can jump until starts falling
   sf::Time actorMaxJumpTime_;

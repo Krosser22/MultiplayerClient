@@ -13,17 +13,17 @@ void Game::start() {
 
   //Set the ground
   platformLeft.setTexture("platform.png");
-  platformLeft.setPosition(192.0f, 300.0f);
+  platformLeft.setPosition(0.0f, 480.0f);
   GameManager::addObject(&platformLeft);
 
   //Set the ground
   platformCenter.setTexture("platform.png");
-  platformCenter.setPosition(384.0f, 100.0f);
+  platformCenter.setPosition(384.0f, 300.0f);
   GameManager::addObject(&platformCenter);
 
   //Set the ground
   platformRight.setTexture("platform.png");
-  platformRight.setPosition(576.0f, 300.0f);
+  platformRight.setPosition(768.0f, 480.0f);
   GameManager::addObject(&platformRight);
 
   //Set the player
@@ -34,6 +34,7 @@ void Game::start() {
 
 void Game::input() {
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) actor.jump();
+  else actor.stopJumping();
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) actor.crouch();
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) actor.moveLeft();
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) actor.moveRight();

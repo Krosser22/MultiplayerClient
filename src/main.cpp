@@ -2,7 +2,7 @@
 #include "game.h"
 #include "server.h"
 
-#define SERVER_ON
+//#define SERVER_ON
 
 ////////////////////////////////////////////
 //
@@ -12,13 +12,15 @@ int main(int argc, char **argv) {
   Server server;
   server.start();
 
-  //Update the Server
-  while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+  //Update the Server and the Game
+  while (GameManager::isOpen() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+    //Update the server
     server.update();
   }
 
   //Finish the server
   server.finish();
+
   return 0;
 }
 //
@@ -41,6 +43,8 @@ int main(int argc, char **argv) {
     game.update();
     GameManager::draw();
   }
+
+  //Finish the game
   game.finish();
   GameManager::finish();
   return 0;

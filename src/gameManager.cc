@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
 #include "gameManager.h"
+#include "server.h"
 
 struct GameManagerData {
   sf::RenderWindow window;
@@ -23,6 +24,8 @@ struct GameManagerData {
 void GameManager::start() {
   data.window.create(sf::VideoMode(960, 704), "Multiplayer");
   data.window.setFramerateLimit(60);
+
+  Server::Client();
 }
 
 void GameManager::finish() {
@@ -54,6 +57,7 @@ void GameManager::removeObject(Object *object) {}
 bool GameManager::isOpen() {
   bool opened = data.window.isOpen();
 
+  //Events
   sf::Event event;
   while (data.window.pollEvent(event)) {
     if (event.type == sf::Event::Closed) data.window.close();

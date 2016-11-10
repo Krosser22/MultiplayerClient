@@ -9,6 +9,7 @@
 #include <SFML/System/Time.hpp>
 #include "actor.h"
 #include "gameManager.h"
+#include "server.h"
 
 struct ActorMovement {
   bool left;
@@ -17,31 +18,35 @@ struct ActorMovement {
   bool down;
 } actorMovement;
 
-Actor::Actor() {
+Actor::Actor() {}
 
-}
-
-Actor::~Actor() {
-
-}
+Actor::~Actor() {}
 
 void Actor::moveLeft() {
   actorMovement.left = true;
+  Server::sendMsgToServer("Left");
 }
 
 void Actor::moveRight() {
   actorMovement.right = true;
+  Server::sendMsgToServer("Right");
 }
 
 void Actor::jump() {
-  if (bisGrounded_) {
-    //printf("Starts Jumping\n");
-    actorMovement.up = true;
+  actorMovement.up = true;
+  Server::sendMsgToServer("Jumping");
+
+  if (bIsGrounded_) {
+    jumpImpulse_ = -jumpVelocity_;
     actorStartJumpTime_ = GameManager::getTime();
     actorMaxJumpTime_ = actorStartJumpTime_ + sf::milliseconds(timeToBeJumping_);
-  } else if (actorMaxJumpTime_ > GameManager::getTime() && bcanJump_) {
-    //printf("Continue Jumping\n");
-    actorMovement.up = true;
+  }
+}
+
+void Actor::stopJumping() {
+  if (jumpImpulse_ < 0.0f) {
+    Server::sendMsgToServer("StopJumping");
+    jumpImpulse_ *= 0.8f;
   }
 }
 
@@ -54,39 +59,51 @@ void Actor::updateCollisions() {
   float lastX = sprite_.getPosition().x;
   float lastY = sprite_.getPosition().y;
 
-  //Variable to store the new Y position
-  float newY = sprite_.getPosition().y; //Actual Y position
-  //Jumping
-  float jumpTimePercent = ((float)(GameManager::getTime().asMilliseconds() - actorStartJumpTime_.asMilliseconds())) / timeToBeJumping_;
-  newY += -jumpVelocity_ * (1.0f - jumpTimePercent) * actorMovement.up; //If jumping
-  //Falling
-  if (!bisFalling_ && jumpTimePercent > 1.0f) {
-    bisFalling_ = true;
-    actorStartFallingTime_ = GameManager::getTime();
-  }
-
   //Variable to store the new X position
   float newX = sprite_.getPosition().x; //Actual X position
-  newX += -movementVelocity_ * actorMovement.left * ((0.5f * !bisGrounded_) + (1.0f * bisGrounded_)); //If going left
-  newX += movementVelocity_ * actorMovement.right * ((0.5f * !bisGrounded_) + (1.0f * bisGrounded_)); //If going right
+  newX += actorMovement.left * ((-movementVelocityOnAir_ * !bIsGrounded_) + (-movementVelocity_ * bIsGrounded_)); //If going left
+  newX += actorMovement.right * ((movementVelocityOnAir_ * !bIsGrounded_) + (movementVelocity_ * bIsGrounded_)); //If going right
 
-  float fallingTimePercent = ((float)(GameManager::getTime().asMilliseconds() - actorStartFallingTime_.asMilliseconds())) / timeToMaxFallingSpeed_;
-  if (fallingTimePercent > 1.0f) fallingTimePercent = 1.0f;
-  newY += gravityVelocity_ * fallingTimePercent * (actorMovement.down | !bisGrounded_) * !actorMovement.up; //If falling and not jumping
-  sprite_.setPosition(newX, newY);
+  //Variable to store the new Y position
+  float newY = sprite_.getPosition().y; //Actual Y position
+  newY += jumpImpulse_;
+  //Jumping
+  //float jumpTimePercent = ((float)(GameManager::getTime().asMilliseconds() - actorStartJumpTime_.asMilliseconds())) / timeToBeJumping_;
+  //newY += -jumpVelocity_ * (1.0f - jumpTimePercent) * actorMovement.up; //If jumping
+  //Falling
+  //newY += gravityVelocity_ * !bIsGrounded_;
+  //float fallingTimePercent = ((float)(GameManager::getTime().asMilliseconds() - actorStartFallingTime_.asMilliseconds())) / timeToMaxFallingSpeed_;
+  //if (fallingTimePercent > 1.0f) fallingTimePercent = 1.0f;
+  //newY += gravityVelocity_ * fallingTimePercent * (actorMovement.down | !bIsGrounded_) * !actorMovement.up; //If falling and not jumping
+  
+  //Collisions
+  float finalX = newX, finalY = newY;
+
+  //Check horizontal collisions
+  sprite_.setPosition(newX, lastY);
   if (GameManager::checkCollision(this)) {
-    sprite_.setPosition(lastX, lastY);
-    if (lastY <= newY) {
-      //printf("Ground: %f\n", newY);
-      bisGrounded_ = true;
-      bisFalling_ = false;
-      bcanJump_ = true;
+    finalX = lastX;
+  }
+
+  //Check vertical collisions
+  sprite_.setPosition(lastX, newY);
+  if (GameManager::checkCollision(this)) {
+    finalY = lastY;
+    if (lastY < newY) {
+      bIsGrounded_ = true;
+    } else {
+      jumpImpulse_ = gravityVelocity_;
     }
   } else {
-    bisGrounded_ = false;
-    bcanJump_ = bcanJump_ & actorMovement.up;
+    bIsGrounded_ = false;
   }
-  
+
+  jumpImpulse_ += jumpImpulseDecrease_;
+  if (jumpImpulse_ > gravityVelocity_) jumpImpulse_ = gravityVelocity_;
+
+  //Confirm the final position after the collisions
+  sprite_.setPosition(finalX, finalY);
+
   //Restart the movements
   actorMovement.left = false;
   actorMovement.right = false;
@@ -99,5 +116,5 @@ bool Actor::isJumping() {
 }
 
 bool Actor::isGrounded() {
-  return bisGrounded_;
+  return bIsGrounded_;
 }
