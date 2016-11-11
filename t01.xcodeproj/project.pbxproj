@@ -11,6 +11,7 @@
 		B10228D51DC7770E00562C8D /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B10228D31DC7770E00562C8D /* game.cpp */; };
 		B10228D61DC7770E00562C8D /* gameManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10228D41DC7770E00562C8D /* gameManager.cc */; };
 		B10228D81DC7771900562C8D /* object.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10228D71DC7771900562C8D /* object.cc */; };
+		B123B7F21DD5C081003BCD7F /* server.cc in Sources */ = {isa = PBXBuildFile; fileRef = B123B7F11DD5C081003BCD7F /* server.cc */; };
 		B186C2F21DBE2EC5004C3A3D /* assets.cc in Sources */ = {isa = PBXBuildFile; fileRef = B186C2F01DBE2EC5004C3A3D /* assets.cc */; };
 		B18D4D4D1DCC98340037CFA5 /* actor.cc in Sources */ = {isa = PBXBuildFile; fileRef = B18D4D4C1DCC98340037CFA5 /* actor.cc */; };
 		B1DD46C71DBA1D33000F72CB /* libBox2D.2.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DD46C61DBA1D33000F72CB /* libBox2D.2.3.0.dylib */; };
@@ -44,6 +45,8 @@
 		B10228D91DC7772B00562C8D /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = game.h; path = include/game.h; sourceTree = "<group>"; };
 		B10228DA1DC7772B00562C8D /* gameManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gameManager.h; path = include/gameManager.h; sourceTree = "<group>"; };
 		B10228DB1DC7772B00562C8D /* object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = object.h; path = include/object.h; sourceTree = "<group>"; };
+		B123B7F11DD5C081003BCD7F /* server.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cc; sourceTree = "<group>"; };
+		B123B7F31DD5C08B003BCD7F /* server.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = server.h; path = include/server.h; sourceTree = "<group>"; };
 		B186C2ED1DBE2EAA004C3A3D /* assets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = assets.h; path = include/assets.h; sourceTree = "<group>"; };
 		B186C2F01DBE2EC5004C3A3D /* assets.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assets.cc; sourceTree = "<group>"; };
 		B18D4D4C1DCC98340037CFA5 /* actor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actor.cc; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 				B10228D41DC7770E00562C8D /* gameManager.cc */,
 				0B1D0A431D9EAAAA00319891 /* main.cpp */,
 				B10228D71DC7771900562C8D /* object.cc */,
+				B123B7F11DD5C081003BCD7F /* server.cc */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -119,6 +123,7 @@
 				B10228D91DC7772B00562C8D /* game.h */,
 				B10228DA1DC7772B00562C8D /* gameManager.h */,
 				B10228DB1DC7772B00562C8D /* object.h */,
+				B123B7F31DD5C08B003BCD7F /* server.h */,
 			);
 			name = Include;
 			sourceTree = "<group>";
@@ -209,6 +214,7 @@
 				0B1D0A441D9EAAAA00319891 /* main.cpp in Sources */,
 				B18D4D4D1DCC98340037CFA5 /* actor.cc in Sources */,
 				B10228D81DC7771900562C8D /* object.cc in Sources */,
+				B123B7F21DD5C081003BCD7F /* server.cc in Sources */,
 				B10228D51DC7770E00562C8D /* game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

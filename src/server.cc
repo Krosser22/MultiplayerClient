@@ -18,7 +18,7 @@ struct ServerData {
   sf::Thread* thread;
 } serverData;
 
-void DoStuff() {
+void update() {
   sf::Packet packetReceive;
   std::string msg;
   while (true) {
@@ -43,11 +43,9 @@ void Server::start() {
   listener.listen(SERVER_PORT);
   listener.accept(serverData.socket);
   printf("New client connected : %s\n", serverData.socket.getRemoteAddress().toString().c_str());
-  serverData.thread = new sf::Thread(&DoStuff);
+  serverData.thread = new sf::Thread(&update);
   serverData.thread->launch();
 }
-
-void Server::update() {}
 
 void Server::finish() {
   if (serverData.thread) {

@@ -16,9 +16,6 @@ public:
   //Starts the Server
   void start();
 
-  //Update the server every frame
-  void update();
-
   //Finish the server
   void finish();
 
