@@ -14,10 +14,10 @@
 class Server {
 public:
   //Starts the Server
-  void start();
+  //void start();
 
   //Finish the server
-  void finish();
+  //void finish();
 
   //Send a msg to the server
   static void sendMsgToServer(const char *msg);

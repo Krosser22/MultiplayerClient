@@ -15,10 +15,10 @@
 
 struct ServerData {
   sf::TcpSocket socket;
-  sf::Thread* thread;
+  //sf::Thread* thread;
 } serverData;
 
-void update() {
+/*void update() {
   sf::Packet packetReceive;
   std::string msg;
   while (true) {
@@ -52,11 +52,14 @@ void Server::finish() {
     serverData.thread->wait();
     delete serverData.thread;
   }
-}
+}*/
 
 void Server::sendMsgToServer(const char *msg) {
   sf::Packet packetSend;
-  packetSend << msg;
+  packetSend.clear();
+  packetSend.append(msg, strlen(msg));
+  packetSend.append("\0", 1);
+  //printf("%s\n", packetSend.getData());
   serverData.socket.send(packetSend);
 }
 

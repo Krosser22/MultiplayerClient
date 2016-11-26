@@ -85,10 +85,10 @@ solution "multiplayer"
   os.copyfile("../lib/sfml-window-d.lib", "../project/build/bin/windows/sfml-window-d.lib")
 
 --[[--------------------------------------------
-------------- MULTIPLAYER PROJECT --------------
+------------- MULTIPLAYER CLIENT ---------------
 --]]--------------------------------------------
-project "multiplayer"
-  targetname "multiplayer"
+project "multiplayerClient"
+  targetname "multiplayerClient"
   language "C++"
   location "../project/build"
   libdirs "../lib"
@@ -115,4 +115,22 @@ project "multiplayer"
     "../src/**.*",
     "../include/**.*",
     "../deps/SFML/include/**.*",
+  }
+  
+--[[--------------------------------------------
+------------- MULTIPLAYER SERVER ---------------
+--]]--------------------------------------------
+project "multiplayerServer"
+  targetname "multiplayerServer"
+  language "C#"
+  location "../project/build"
+  libdirs "../lib"
+  kind "ConsoleApp"
+  
+  includedirs {
+    "../server",
+  }
+  
+  files {
+    "../server/**.*",
   }
