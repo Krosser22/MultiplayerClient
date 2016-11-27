@@ -8,7 +8,7 @@
 
 #include <SFML/System/Time.hpp>
 #include "actor.h"
-#include "gameManager.h"
+#include "managers/gameManager.h"
 #include "server.h"
 
 struct ActorMovement {
@@ -24,17 +24,17 @@ Actor::~Actor() {}
 
 void Actor::moveLeft() {
   actorMovement.left = true;
-  Server::sendMsgToServer("Left");
+  Server::sendUDPMsgToServer("Left");
 }
 
 void Actor::moveRight() {
   actorMovement.right = true;
-  Server::sendMsgToServer("Right");
+  Server::sendUDPMsgToServer("Right");
 }
 
 void Actor::jump() {
   actorMovement.up = true;
-  Server::sendMsgToServer("Jumping");
+  Server::sendUDPMsgToServer("Jumping");
 
   if (bIsGrounded_) {
     jumpImpulse_ = -jumpVelocity_;
@@ -45,7 +45,7 @@ void Actor::jump() {
 
 void Actor::stopJumping() {
   if (jumpImpulse_ < 0.0f) {
-    Server::sendMsgToServer("StopJumping");
+    Server::sendUDPMsgToServer("StopJumping");
     jumpImpulse_ *= 0.8f;
   }
 }

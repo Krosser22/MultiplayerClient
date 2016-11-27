@@ -6,26 +6,21 @@
 *** ////////////////////////////////////////////
 **/
 
-#include "gameManager.h"
-#include "game.h"
-#include "server.h"
+#include "managers/sceneManager.h"
+#include "scenes/introScene.h"
+#include "scenes/gameScene.h"
 
 int main(int argc, char **argv) {
-  //Starts the GameManager
-  GameManager::start();
+  //Intro Scene
+  IntroScene introScene;
+  introScene.setName("Intro");
+  SceneManager::AddScene(&introScene);
 
-  //Starts the Game
-  Game game;
-  game.start();
+  //Game Scene
+  GameScene gameScene;
+  gameScene.setName("Game");
+  SceneManager::AddScene(&gameScene);
 
-  while (GameManager::isOpen() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-    game.input();
-    game.update();
-    GameManager::draw();
-  }
-
-  //Finish the game
-  game.finish();
-  GameManager::finish();
+  SceneManager::StartSceneManager("Intro");
   return 0;
 }

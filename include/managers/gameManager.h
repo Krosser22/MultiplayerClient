@@ -21,6 +21,9 @@ namespace GameManager {
   //Set the background of the game
   void setBackground(const char *imagePath);
 
+  //Remove the actual background of the game
+  void removeBackground();
+
   //Add an object to the draw list
   void addObject(Object *object);
 
@@ -32,6 +35,12 @@ namespace GameManager {
 
   //Return if the window is open
   bool isOpen();
+
+  //Close the actual window
+  void closeWindow();
+
+  //Return if the windows has the focus
+  bool windowHasFocus();
 
   //Draw all the elements on the render buffer
   void draw();

@@ -13,8 +13,11 @@
 #include <stdio.h>
 #include <SFML/Network.hpp>
 
+static const sf::IpAddress ip("127.0.0.1");
+#define SERVER_PORT 8080
+
 struct ServerData {
-  sf::TcpSocket socket;
+  sf::TcpSocket tcpSocket;
   //sf::Thread* thread;
 } serverData;
 
@@ -54,20 +57,32 @@ void Server::finish() {
   }
 }*/
 
-void Server::sendMsgToServer(const char *msg) {
+void Server::sendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
   //printf("%s\n", packetSend.getData());
-  serverData.socket.send(packetSend);
+  serverData.tcpSocket.send(packetSend);
 }
 
-void Server::Client() {
-  const std::string IPADDRESS("127.0.0.1");
-  if (serverData.socket.connect(IPADDRESS, SERVER_PORT) == sf::Socket::Done) {
+void Server::sendUDPMsgToServer(const char *msg) {
+  sf::Packet packetSend;
+  packetSend.clear();
+  packetSend.append(msg, strlen(msg));
+  packetSend.append("\0", 1);
+  //printf("%s\n", packetSend.getData());
+  serverData.tcpSocket.send(packetSend);
+}
+
+void Server::startClient() {
+  if (serverData.tcpSocket.connect(ip, SERVER_PORT) == sf::Socket::Done) {
     printf("Connected\n");
   } else {
     printf("No Connected\n");
   }
+}
+
+void Server::finishClient() {
+  serverData.tcpSocket.disconnect();
 }

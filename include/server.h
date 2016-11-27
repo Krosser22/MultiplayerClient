@@ -9,8 +9,6 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-#define SERVER_PORT 8080
-
 class Server {
 public:
   //Starts the Server
@@ -19,10 +17,15 @@ public:
   //Finish the server
   //void finish();
 
-  //Send a msg to the server
-  static void sendMsgToServer(const char *msg);
+  //Send a TCP msg to the server
+  static void sendTCPMsgToServer(const char *msg);
 
-  static void Client();
+  //Send a UPD msg to the server
+  static void sendUDPMsgToServer(const char *msg);
+
+  static void startClient();
+
+  static void finishClient();
 };
 
 #endif //__SERVER_H__

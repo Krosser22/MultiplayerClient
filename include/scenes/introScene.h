@@ -6,16 +6,15 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __GAME_H__
-#define __GAME_H__
+#ifndef __INTRO_SCENE_H__
+#define __INTRO_SCENE_H__
 
-#include "actor.h"
-#include <vector>
+#include "scenes/scene.h"
 
-class Game {
+class IntroScene : public Scene {
 public:
-  Game() {};
-  ~Game() {};
+  IntroScene() {};
+  ~IntroScene() {};
 
   void start();
 
@@ -26,12 +25,8 @@ public:
   void finish();
 
 private:
-  Object ground;
-  Object platformLeft;
-  Object platformRight;
-  Object platformCenter;
-  Actor actor;
-  std::vector<Object> objectList;
+  sf::Time startTime_;
+  float timeInScene_ = 2.2f;
 };
 
-#endif //__GAME_H__
+#endif //__INTRO_SCENE_H__

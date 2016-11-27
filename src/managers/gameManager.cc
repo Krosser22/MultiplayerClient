@@ -8,7 +8,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
-#include "gameManager.h"
+#include "managers/gameManager.h"
 #include "server.h"
 
 struct GameManagerData {
@@ -22,13 +22,19 @@ struct GameManagerData {
 } data;
 
 void GameManager::start() {
+  //Create the window with a default values
   data.window.create(sf::VideoMode(960, 704), "Multiplayer");
   data.window.setFramerateLimit(60);
 
-  Server::Client();
+  //Starts the connection with the server
+  Server::startClient();
 }
 
 void GameManager::finish() {
+  //Finish the connection with the server
+  Server::finishClient();
+
+  //Empty the lists of objects
   data.listToDraw.clear();
   data.collisionList.clear();
   data.dynamicCollisionList.clear();
@@ -39,6 +45,11 @@ void GameManager::setBackground(const char *imagePath) {
   data.backgroundSprite.setTexture(data.backgroundTexture);
   data.backgroundSprite.setOrigin(0.0f, 0.0f);
   data.backgroundSprite.setPosition(0.0f, 0.0f);
+}
+
+void GameManager::removeBackground() {
+  data.backgroundTexture.create(1, 1);
+  data.backgroundSprite.setTexture(data.backgroundTexture);
 }
 
 void GameManager::addObject(Object *object) {
@@ -67,6 +78,14 @@ bool GameManager::isOpen() {
   data.window.clear(sf::Color::White);
 
   return opened;
+}
+
+void GameManager::closeWindow() {
+  data.window.close();
+}
+
+bool GameManager::windowHasFocus() {
+  return data.window.hasFocus();
 }
 
 void GameManager::draw() {
