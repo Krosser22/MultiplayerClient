@@ -109,14 +109,12 @@ project "multiplayerClient"
     "../assets",
     "../include",
     "../deps/SFML/include",
-    "../deps/sqlite",
   }
   
   files {
     "../src/**.*",
     "../include/**.*",
     "../deps/SFML/include/**.*",
-    "../deps/sqlite/**.*",
   }
   
 --[[--------------------------------------------

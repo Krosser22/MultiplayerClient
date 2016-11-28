@@ -7,6 +7,7 @@
 **/
 
 using System;
+using System.Data.SQLite;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -31,6 +32,44 @@ public class AsynchronousSocketListener {
   // Thread signal.
   public static ManualResetEvent allDone = new ManualResetEvent(false);
   
+  public static void StartSQLite() {
+    // Holds our connection with the database
+    SQLiteConnection dbConnection;
+
+    // Creates an empty database file
+    SQLiteConnection.CreateFile("DB.sqlite");
+
+    // Creates a connection with our database file.
+    dbConnection = new SQLiteConnection("Data Source=DB.sqlite;Version=3;");
+    dbConnection.Open();
+    
+    // Creates a table
+    string sql = "create table Users (Nick varchar(20), Password varchar(20))";
+    SQLiteCommand command = new SQLiteCommand(sql, dbConnection);
+    command.ExecuteNonQuery();
+
+    // Inserts some values in the highscores table.
+    // As you can see, there is quite some duplicate code here, we'll solve this in part two.
+    sql = "insert into Users (Nick, Password) values ('Admin', 'Password')";
+    command = new SQLiteCommand(sql, dbConnection);
+    command.ExecuteNonQuery();
+    sql = "insert into Users (Nick, Password) values ('Krosser22', 'MIAU')";
+    command = new SQLiteCommand(sql, dbConnection);
+    command.ExecuteNonQuery();
+    sql = "insert into Users (Nick, Password) values ('Charmander', 'RAWR')";
+    command = new SQLiteCommand(sql, dbConnection);
+    command.ExecuteNonQuery();
+
+    // Writes the highscores to the console sorted on score in descending order.
+    sql = "select * from Users order by Nick asc";
+    command = new SQLiteCommand(sql, dbConnection);
+    SQLiteDataReader reader = command.ExecuteReader();
+    while (reader.Read()) {
+      Console.WriteLine("Nick: " + reader["Nick"] + "\nPassword: " + reader["Password"] + "\n");
+    }
+    Console.ReadLine();
+  }
+
   public static void StartListening() {
     // Data buffer for incoming data.
     byte[] bytes = new Byte[StateObject.BufferSize];
@@ -146,6 +185,7 @@ public class AsynchronousSocketListener {
   }
   
   public static int Main(String[] args) {
+    StartSQLite();
     StartListening();
     return 0;
   }
