@@ -22,7 +22,7 @@ namespace ASSETS {
 
   //@param font: The path from the assets/fonts folder
   //@return: the correct path (it will be different on Windows or IOS)
-  std::string *FontPath(const char *font);
+  std::string FontPath(const char *font);
 }
 
 #endif //__ASSETS_H__

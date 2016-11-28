@@ -10,6 +10,8 @@
 #define __LOGIN_SCENE_H__
 
 #include "scenes/scene.h"
+#include "formulary/button.h"
+#include "formulary/text.h"
 
 class LoginScene : public Scene {
 public:
@@ -25,11 +27,11 @@ public:
   void finish();
 
 private:
-  sf::Text txtUser_;
-  sf::Text txtPass_;
-  Object btnForgotPass_;
-  Object btnNewAccount_;
-  Object btnLogin_;
+  Text txtUser_;
+  Text txtPass_;
+  Button btnLogin_;
+  Button btnForgotPass_;
+  Button btnNewAccount_;
 };
 
 #endif //__LOGIN_SCENE_H__

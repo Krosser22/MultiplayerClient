@@ -11,11 +11,14 @@
 #include "managers/gameManager.h"
 #include "server.h"
 
+#define WINDOW_WIDTH 960
+#define WINDOW_HEIGHT 704
+
 struct GameManagerData {
   sf::RenderWindow window;
   sf::Texture backgroundTexture;
   sf::Sprite backgroundSprite;
-  std::vector<sf::Sprite *> listToDraw;
+  std::vector<sf::Drawable *> listToDraw;
   std::vector<Object *> collisionList;
   std::vector<Actor *> dynamicCollisionList;
   sf::Clock clock;
@@ -24,14 +27,16 @@ struct GameManagerData {
 
 void GameManager::start() {
   //Create the window with a default values
-  data.window.create(sf::VideoMode(960, 704), "Multiplayer");
+  data.window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Multiplayer");
   data.window.setFramerateLimit(60);
 
   //Starts the connection with the server
   Server::startClient();
 
   //Set the project default font
-  data.font.loadFromFile(*ASSETS::FontPath("arial.ttf"));
+  if (!data.font.loadFromFile(ASSETS::FontPath("arial.ttf"))) {
+    printf("ERROR loading the default font");
+  }
 }
 
 void GameManager::finish() {
@@ -57,17 +62,33 @@ void GameManager::removeBackground() {
 }
 
 void GameManager::addObject(Object *object) {
-  data.listToDraw.push_back((sf::Sprite *) object->sprite());
+  data.listToDraw.push_back(object->sprite());
   data.collisionList.push_back(object);
 }
 
 void GameManager::addActor(Actor *actor) {
-  data.listToDraw.push_back((sf::Sprite *) actor->sprite());
+  data.listToDraw.push_back(actor->sprite());
   data.collisionList.push_back(actor);
   data.dynamicCollisionList.push_back(actor);
 }
 
-void GameManager::removeObject(Object *object) {}
+void GameManager::addButton(Button *button) {
+  data.listToDraw.push_back(button->sprite());
+  data.listToDraw.push_back(button->getText());
+}
+
+void GameManager::addText(Text *text) {
+  data.listToDraw.push_back(text->sprite());
+  data.listToDraw.push_back(text->getText());
+}
+
+void GameManager::removeObject(Object *object) {
+  printf("Empty function: removeObject()\n");
+}
+
+void GameManager::clearDrawList() {
+  printf("Empty function: clearDrawList()\n");
+}
 
 bool GameManager::isOpen() {
   bool opened = data.window.isOpen();
@@ -116,6 +137,14 @@ float GameManager::mouseY() {
   return (float)sf::Mouse::getPosition(data.window).y;
 }
 
+float GameManager::getWindowWidth() {
+  return WINDOW_WIDTH;
+}
+
+float GameManager::getWindowHeight() {
+  return WINDOW_HEIGHT;
+}
+
 bool GameManager::checkCollision(Actor *actor) {
   sf::FloatRect intersection;
   bool collision = false;
@@ -133,6 +162,6 @@ sf::Time GameManager::getTime() {
   return data.clock.getElapsedTime();
 }
 
-sf::Font GameManager::getFont() {
-  return data.font;
+sf::Font *GameManager::getFont() {
+  return &data.font;
 }

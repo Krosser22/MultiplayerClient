@@ -42,7 +42,7 @@ const char *ASSETS::SoundPath(const char *sound) {
 }
 
 static std::string fontPath;
-std::string *ASSETS::FontPath(const char *font) {
+std::string ASSETS::FontPath(const char *font) {
   fontPath = FONT_PATH;
-  return &fontPath.append(font);
+  return fontPath.append(font);
 }

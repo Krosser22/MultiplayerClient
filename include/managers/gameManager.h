@@ -10,6 +10,8 @@
 #define __GAME_MANAGER_H__
 
 #include "actor.h"
+#include "formulary/button.h"
+#include "formulary/text.h"
 
 namespace GameManager {
   //Starts the GameManager
@@ -30,8 +32,17 @@ namespace GameManager {
   //Add an actor to the draw list
   void addActor(Actor *actor);
 
+  //Add a button to the draw list
+  void addButton(Button *button);
+
+  //Add a text to the draw list
+  void addText(Text *text);
+
   //Remove an object from the draw list and from the collision list
   void removeObject(Object *object);
+
+  //Clear the list of objects to draw
+  void clearDrawList();
 
   //Return if the window is open
   bool isOpen();
@@ -51,6 +62,12 @@ namespace GameManager {
   //Return the position Y of the mouse
   float mouseY();
 
+  //Return the width of the window
+  float getWindowWidth();
+
+  //Return the height of the window
+  float getWindowHeight();
+
   //Return if an objects make collision with all the other objects
   bool checkCollision(Actor *actor);
 
@@ -58,7 +75,7 @@ namespace GameManager {
   sf::Time getTime();
 
   //Return the font of the project
-  sf::Font getFont();
+  sf::Font *getFont();
 };
 
 #endif //__GAME_MANAGER_H__
