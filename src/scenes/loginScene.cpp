@@ -7,27 +7,31 @@
 **/
 
 #include <SFML/Window.hpp>
+#include <imgui.h>
 #include "scenes/loginScene.h"
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
 
 void LoginScene::start() {
-  //Set the background
-  GameManager::setBackground("credits.png");
-
-  //Set the start time of the scene
-  startTime_ = GameManager::getTime();
+  txtPass_.setString("hello");
+  txtPass_.setFont(GameManager::getFont());
+  txtPass_.setCharacterSize(30);
+  txtPass_.setStyle(sf::Text::Bold);
+  txtPass_.setOutlineColor(sf::Color::Red);
+  //GameManager::addObject(&txtPass_);
 }
 
 void LoginScene::input() {
   if (GameManager::windowHasFocus()) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-      SceneManager::ChangeScene("Game");
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      //Check collision with the mouse and the txt and buttons
+      ImguiTestWindowOpened_ = !ImguiTestWindowOpened_;
     }
   }
 }
 
 void LoginScene::update() {
+  ImGui::ShowTestWindow(&ImguiTestWindowOpened_);
 }
 
 void LoginScene::finish() {

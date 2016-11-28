@@ -23,6 +23,13 @@ public:
   void update();
 
   void finish();
+
+private:
+  sf::Text txtUser_;
+  sf::Text txtPass_;
+  Object btnForgotPass_;
+  Object btnNewAccount_;
+  Object btnLogin_;
 };
 
 #endif //__LOGIN_SCENE_H__

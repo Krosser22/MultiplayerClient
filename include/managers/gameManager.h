@@ -54,7 +54,11 @@ namespace GameManager {
   //Return if an objects make collision with all the other objects
   bool checkCollision(Actor *actor);
 
+  //Return the time since the application starts
   sf::Time getTime();
+
+  //Return the font of the project
+  sf::Font getFont();
 };
 
 #endif //__GAME_MANAGER_H__

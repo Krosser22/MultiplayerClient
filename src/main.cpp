@@ -8,6 +8,7 @@
 
 #include "managers/sceneManager.h"
 #include "scenes/introScene.h"
+#include "scenes/loginScene.h"
 #include "scenes/gameScene.h"
 
 int main(int argc, char **argv) {
@@ -16,11 +17,17 @@ int main(int argc, char **argv) {
   introScene.setName("Intro");
   SceneManager::AddScene(&introScene);
 
+  //Login Scene
+  LoginScene loginScene;
+  loginScene.setName("Login");
+  SceneManager::AddScene(&loginScene);
+
   //Game Scene
   GameScene gameScene;
   gameScene.setName("Game");
   SceneManager::AddScene(&gameScene);
 
+  //Starts the scene manager
   SceneManager::StartSceneManager("Intro");
   return 0;
 }

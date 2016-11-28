@@ -19,6 +19,7 @@ struct GameManagerData {
   std::vector<Object *> collisionList;
   std::vector<Actor *> dynamicCollisionList;
   sf::Clock clock;
+  sf::Font font;
 } data;
 
 void GameManager::start() {
@@ -28,6 +29,9 @@ void GameManager::start() {
 
   //Starts the connection with the server
   Server::startClient();
+
+  //Set the project default font
+  data.font.loadFromFile(*ASSETS::FontPath("arial.ttf"));
 }
 
 void GameManager::finish() {
@@ -127,4 +131,8 @@ bool GameManager::checkCollision(Actor *actor) {
 
 sf::Time GameManager::getTime() {
   return data.clock.getElapsedTime();
+}
+
+sf::Font GameManager::getFont() {
+  return data.font;
 }

@@ -22,14 +22,14 @@ void IntroScene::start() {
 void IntroScene::input() {
   if (GameManager::windowHasFocus()) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-      SceneManager::ChangeScene("Game");
+      SceneManager::ChangeScene("Login");
     }
   }
 }
 
 void IntroScene::update() {
   if (startTime_.asSeconds() + timeInScene_ < GameManager::getTime().asSeconds()) {
-    SceneManager::ChangeScene("Game");
+    SceneManager::ChangeScene("Login");
   }
 }
 
