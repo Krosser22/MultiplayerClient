@@ -28,6 +28,6 @@ int main(int argc, char **argv) {
   SceneManager::AddScene(&gameScene);
 
   //Starts the scene manager
-  SceneManager::StartSceneManager("Intro");
+  SceneManager::StartSceneManager("Login");
   return 0;
 }

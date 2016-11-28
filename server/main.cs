@@ -105,15 +105,16 @@ public class AsynchronousSocketListener {
       content = state.sb.ToString().Substring(0, state.sb.ToString().IndexOf('\0'));
       Console.WriteLine("{0}", content.ToString());
       //if (content.IndexOf("<EOF>") > -1) {
-        // All the data has been read from the 
-        // client. Display it on the console.
-        Console.WriteLine("Read {0} bytes from socket.\n Data : {1}", content.Length, content);
+      // All the data has been read from the 
+      // client. Display it on the console.
+      //Console.WriteLine("Read {0} bytes from socket.\n Data : {1}", content.Length, content);
+      Console.WriteLine("{0}\n", content);
 
-        // Echo the data back to the client.
-        //Send(handler, content);
+      // Echo the data back to the client.
+      //Send(handler, content);
       //} else {
-        // Not all data received. Get more.
-        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+      // Not all data received. Get more.
+      handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
       //}
     } else {
       Console.WriteLine("HHHH");

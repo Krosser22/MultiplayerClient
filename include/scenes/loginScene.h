@@ -10,8 +10,8 @@
 #define __LOGIN_SCENE_H__
 
 #include "scenes/scene.h"
-#include "formulary/button.h"
-#include "formulary/text.h"
+#include "UI/UIButton.h"
+#include "UI/UITextBox.h"
 
 class LoginScene : public Scene {
 public:
@@ -27,11 +27,9 @@ public:
   void finish();
 
 private:
-  Text txtUser_;
-  Text txtPass_;
-  Button btnLogin_;
-  Button btnForgotPass_;
-  Button btnNewAccount_;
+  UIButton btnLogin_;
+  UIButton btnForgotPassword_;
+  UIButton btnNewAccount_;
 };
 
 #endif //__LOGIN_SCENE_H__

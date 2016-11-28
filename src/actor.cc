@@ -24,28 +24,28 @@ Actor::~Actor() {}
 
 void Actor::moveLeft() {
   actorMovement.left = true;
-  Server::sendUDPMsgToServer("Left");
+  Server::SendUDPMsgToServer("Left");
 }
 
 void Actor::moveRight() {
   actorMovement.right = true;
-  Server::sendUDPMsgToServer("Right");
+  Server::SendUDPMsgToServer("Right");
 }
 
 void Actor::jump() {
   actorMovement.up = true;
-  Server::sendUDPMsgToServer("Jumping");
+  Server::SendUDPMsgToServer("Jumping");
 
   if (bIsGrounded_) {
     jumpImpulse_ = -jumpVelocity_;
-    actorStartJumpTime_ = GameManager::getTime();
+    actorStartJumpTime_ = GameManager::Time();
     actorMaxJumpTime_ = actorStartJumpTime_ + sf::milliseconds(timeToBeJumping_);
   }
 }
 
 void Actor::stopJumping() {
   if (jumpImpulse_ < 0.0f) {
-    Server::sendUDPMsgToServer("StopJumping");
+    Server::SendUDPMsgToServer("StopJumping");
     jumpImpulse_ *= 0.8f;
   }
 }
@@ -81,13 +81,13 @@ void Actor::updateCollisions() {
 
   //Check horizontal collisions
   sprite_.setPosition(newX, lastY);
-  if (GameManager::checkCollision(this)) {
+  if (GameManager::CheckCollision(this)) {
     finalX = lastX;
   }
 
   //Check vertical collisions
   sprite_.setPosition(lastX, newY);
-  if (GameManager::checkCollision(this)) {
+  if (GameManager::CheckCollision(this)) {
     finalY = lastY;
     if (lastY < newY) {
       bIsGrounded_ = true;

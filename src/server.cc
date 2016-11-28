@@ -41,7 +41,7 @@ struct ServerData {
   }
 }
 
-void Server::start() {
+void Server::Start() {
   sf::TcpListener listener;
   listener.listen(SERVER_PORT);
   listener.accept(serverData.socket);
@@ -50,14 +50,14 @@ void Server::start() {
   serverData.thread->launch();
 }
 
-void Server::finish() {
+void Server::Finish() {
   if (serverData.thread) {
     serverData.thread->wait();
     delete serverData.thread;
   }
 }*/
 
-void Server::sendTCPMsgToServer(const char *msg) {
+void Server::SendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
@@ -66,7 +66,7 @@ void Server::sendTCPMsgToServer(const char *msg) {
   serverData.tcpSocket.send(packetSend);
 }
 
-void Server::sendUDPMsgToServer(const char *msg) {
+void Server::SendUDPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
@@ -75,7 +75,7 @@ void Server::sendUDPMsgToServer(const char *msg) {
   serverData.tcpSocket.send(packetSend);
 }
 
-void Server::startClient() {
+void Server::StartClient() {
   if (serverData.tcpSocket.connect(ip, SERVER_PORT) == sf::Socket::Done) {
     printf("Connected\n");
   } else {
@@ -83,6 +83,14 @@ void Server::startClient() {
   }
 }
 
-void Server::finishClient() {
+void Server::FinishClient() {
   serverData.tcpSocket.disconnect();
+}
+
+void Server::Login(const char *user, const char *password) {
+  std::string msg = "Login:";
+  msg.append(user);
+  msg.append(":");
+  msg.append(password);
+  SendTCPMsgToServer(msg.c_str());
 }

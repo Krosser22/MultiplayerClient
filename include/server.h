@@ -9,23 +9,24 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-class Server {
-public:
+namespace Server {
   //Starts the Server
-  //void start();
+  //void Start();
 
   //Finish the server
-  //void finish();
+  //void Finish();
 
   //Send a TCP msg to the server
-  static void sendTCPMsgToServer(const char *msg);
+  void SendTCPMsgToServer(const char *msg);
 
   //Send a UPD msg to the server
-  static void sendUDPMsgToServer(const char *msg);
+  void SendUDPMsgToServer(const char *msg);
 
-  static void startClient();
+  void StartClient();
 
-  static void finishClient();
+  void FinishClient();
+
+  void Login(const char *user, const char *password);
 };
 
 #endif //__SERVER_H__

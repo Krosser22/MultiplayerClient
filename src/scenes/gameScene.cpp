@@ -17,31 +17,31 @@ void GameScene::start() {
   //Set the ground
   ground_.setTexture("ground.png");
   ground_.setPosition(0.0f, 640.0f);
-  GameManager::addObject(&ground_);
+  GameManager::AddObject(&ground_);
 
   //Set the ground
   platformLeft_.setTexture("platform.png");
   platformLeft_.setPosition(0.0f, 480.0f);
-  GameManager::addObject(&platformLeft_);
+  GameManager::AddObject(&platformLeft_);
 
   //Set the ground
   platformCenter_.setTexture("platform.png");
   platformCenter_.setPosition(384.0f, 300.0f);
-  GameManager::addObject(&platformCenter_);
+  GameManager::AddObject(&platformCenter_);
 
   //Set the ground
   platformRight_.setTexture("platform.png");
   platformRight_.setPosition(768.0f, 480.0f);
-  GameManager::addObject(&platformRight_);
+  GameManager::AddObject(&platformRight_);
 
   //Set the player
   actor_.setTexture("player.png");
   ground_.setPosition(0.0f, 600.0f);
-  GameManager::addActor(&actor_);
+  GameManager::AddActor(&actor_);
 }
 
 void GameScene::input() {
-  if (GameManager::windowHasFocus()) {
+  if (GameManager::WindowHasFocus()) {
     //Player movement
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) actor_.crouch();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) actor_.moveLeft();
@@ -53,9 +53,9 @@ void GameScene::input() {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
       Object *box = new Object();
       box->setTexture("box.png");
-      box->setPosition(GameManager::mouseX(), GameManager::mouseY());
+      box->setPosition(GameManager::MouseX(), GameManager::MouseY());
       objectList_.push_back(*box);
-      GameManager::addObject(box);
+      GameManager::AddObject(box);
     }
   }
 }

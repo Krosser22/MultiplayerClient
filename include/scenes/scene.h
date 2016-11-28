@@ -27,7 +27,7 @@ public:
 
   void setName(std::string newName);
 
-  std::string getName();
+  std::string name();
 
 protected:
   std::string name_;

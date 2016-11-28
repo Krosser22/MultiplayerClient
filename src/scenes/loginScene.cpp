@@ -8,45 +8,65 @@
 
 #include <SFML/Window.hpp>
 #include "scenes/loginScene.h"
+#include "managers/UIManager.h"
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
+#include "server.h"
+
+UITextBox txtUser_;
+UITextBox txtPass_;
+
+void checkLogin() {
+  //SceneManager::ChangeScene("Game");
+  Server::Login(txtUser_.text()->getString().toAnsiString().c_str(), txtPass_.text()->getString().toAnsiString().c_str());
+}
+
+void forgotPassword() {
+  SceneManager::ChangeScene("ForgotPassword");
+}
+
+void createAccount() {
+  SceneManager::ChangeScene("CreateAccount");
+}
 
 void LoginScene::start() {
   //User text
-  txtUser_.setTexture("textFormulary.png");
-  txtUser_.setText("");
+  txtUser_.setText("ii");
   txtUser_.setHintText("User");
-  txtUser_.setPosition(GameManager::getWindowWidth() * 0.5f, GameManager::getWindowHeight() * 0.3f);
-  GameManager::addText(&txtUser_);
+  txtUser_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
+  UIManager::AddUITextBox(&txtUser_);
 
   //Password text
-  txtPass_.setTexture("textFormulary.png");
   txtPass_.setText("");
   txtPass_.setHintText("Password");
-  txtPass_.setPosition(GameManager::getWindowWidth() * 0.5f, GameManager::getWindowHeight() * 0.4f);
-  GameManager::addText(&txtPass_);
+  txtPass_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
+  txtPass_.setIsPassword(true);
+  UIManager::AddUITextBox(&txtPass_);
 
   //Login button
   btnLogin_.setTexture("btnLogin.png");
-  btnLogin_.setText("Login");
-  btnLogin_.setPosition(GameManager::getWindowWidth() * 0.5f, GameManager::getWindowHeight() * 0.5f);
-  GameManager::addButton(&btnLogin_);
+  btnLogin_.setFocusTexture("btnFocusLogin.png");
+  btnLogin_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.5f);
+  btnLogin_.setOnClick(checkLogin);
+  UIManager::AddUIButton(&btnLogin_);
 
   //Forgot the Pass button
-  btnForgotPass_.setTexture("btnForgotPass.png");
-  btnForgotPass_.setText("Forgot password ?");
-  btnForgotPass_.setPosition(GameManager::getWindowWidth() * 0.5f, GameManager::getWindowHeight() * 0.6f);
-  GameManager::addButton(&btnForgotPass_);
+  btnForgotPassword_.setTexture("btnForgotPassword.png");
+  btnForgotPassword_.setFocusTexture("btnFocusForgotPassword.png");
+  btnForgotPassword_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.6f);
+  btnForgotPassword_.setOnClick(forgotPassword);
+  UIManager::AddUIButton(&btnForgotPassword_);
 
   //New Account button
   btnNewAccount_.setTexture("btnNewAccount.png");
-  btnNewAccount_.setText("Create New Account");
-  btnNewAccount_.setPosition(GameManager::getWindowWidth() * 0.5f, GameManager::getWindowHeight() * 0.7f);
-  GameManager::addButton(&btnNewAccount_);
+  btnNewAccount_.setFocusTexture("btnFocusNewAccount.png");
+  btnNewAccount_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.7f);
+  btnNewAccount_.setOnClick(createAccount);
+  UIManager::AddUIButton(&btnNewAccount_);
 }
 
 void LoginScene::input() {
-  if (GameManager::windowHasFocus()) {
+  if (GameManager::WindowHasFocus()) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       //Check collision with the mouse and the txt and buttons
     }
@@ -57,5 +77,5 @@ void LoginScene::update() {
 }
 
 void LoginScene::finish() {
-  GameManager::removeBackground();
+  GameManager::RemoveBackground();
 }

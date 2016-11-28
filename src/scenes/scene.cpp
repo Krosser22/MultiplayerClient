@@ -12,6 +12,6 @@ void Scene::setName(std::string newName) {
   name_ = newName;
 }
 
-std::string Scene::getName() {
+std::string Scene::name() {
   return name_;
 }

@@ -33,6 +33,7 @@ public:
 
 protected:
   sf::Texture texture_;
+
   sf::Sprite sprite_;
 };
 
