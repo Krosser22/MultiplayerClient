@@ -13,9 +13,6 @@
 #include <stdio.h>
 #include <SFML/Network.hpp>
 
-static const sf::IpAddress ip("127.0.0.1");
-#define SERVER_PORT 8080
-
 struct ServerData {
   sf::TcpSocket tcpSocket;
   //sf::Thread* thread;
@@ -70,8 +67,9 @@ void Server::SendTCPMsgToServer(const char *msg) {
 void Server::GetTCPMsgFromServer() {
   sf::Packet packetGet;
   packetGet.clear();
+  printf("Waiting msg... \n");
   serverData.tcpSocket.receive(packetGet);
-  printf("%s\n", packetGet.getData());
+  printf("msg: %s\n", packetGet.getData());
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
@@ -84,7 +82,10 @@ void Server::SendUDPMsgToServer(const char *msg) {
 }
 
 void Server::StartClient() {
-  if (serverData.tcpSocket.connect(ip, SERVER_PORT) == sf::Socket::Done) {
+  sf::IpAddress ip("127.0.0.1");
+  unsigned short port = 8080;
+  if (serverData.tcpSocket.connect(ip, port) == sf::Socket::Done) {
+    printf("port: %d\n", serverData.tcpSocket.getLocalPort());
     printf("Connected\n");
   } else {
     printf("No Connected\n");
