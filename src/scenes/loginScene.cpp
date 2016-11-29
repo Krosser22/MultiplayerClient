@@ -31,13 +31,13 @@ void createAccount() {
 
 void LoginScene::start() {
   //User text
-  txtUser_.setText("ii");
+  txtUser_.setText("Admin");
   txtUser_.setHintText("User");
   txtUser_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
   UIManager::AddUITextBox(&txtUser_);
 
   //Password text
-  txtPass_.setText("");
+  txtPass_.setText("Password");
   txtPass_.setHintText("Password");
   txtPass_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
   txtPass_.setIsPassword(true);

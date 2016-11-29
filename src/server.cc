@@ -62,8 +62,16 @@ void Server::SendTCPMsgToServer(const char *msg) {
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
+  packetSend.endOfPacket();
   //printf("%s\n", packetSend.getData());
   serverData.tcpSocket.send(packetSend);
+}
+
+void Server::GetTCPMsgFromServer() {
+  sf::Packet packetGet;
+  packetGet.clear();
+  serverData.tcpSocket.receive(packetGet);
+  printf("%s\n", packetGet.getData());
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
@@ -93,4 +101,5 @@ void Server::Login(const char *user, const char *password) {
   msg.append(":");
   msg.append(password);
   SendTCPMsgToServer(msg.c_str());
+  GetTCPMsgFromServer();
 }
