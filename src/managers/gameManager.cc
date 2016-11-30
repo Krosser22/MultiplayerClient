@@ -29,9 +29,6 @@ void GameManager::Start(sf::RenderWindow *window) {
   //Set the window
   gameManagerData.window = window;
 
-  //Starts the connection with the server
-  Server::StartClient();
-
   //Set the project default font
   if (!gameManagerData.font.loadFromFile(ASSETS::FontPath("arial.ttf"))) {
     printf("ERROR loading the default font");
@@ -39,9 +36,6 @@ void GameManager::Start(sf::RenderWindow *window) {
 }
 
 void GameManager::Finish() {
-  //Finish the connection with the server
-  Server::FinishClient();
-
   //Empty the lists of objects
   gameManagerData.listToDraw.clear();
   gameManagerData.collisionList.clear();

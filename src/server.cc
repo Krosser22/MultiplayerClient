@@ -54,53 +54,66 @@ void Server::Finish() {
   }
 }*/
 
+bool Server::Connect() {
+  sf::IpAddress ip("127.0.0.1");
+  unsigned short port = 8080;
+  return (serverData.tcpSocket.connect(ip, port) == sf::Socket::Done);
+}
+
+void Server::Disconnect() {
+  serverData.tcpSocket.disconnect();
+}
+
 void Server::SendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
-  packetSend.endOfPacket();
+  //packetSend.endOfPacket();
   //printf("%s\n", packetSend.getData());
-  serverData.tcpSocket.send(packetSend);
+  if (serverData.tcpSocket.send(packetSend) != sf::Socket::Done) {
+    printf("Error sending data\n");
+  }
 }
 
-void Server::GetTCPMsgFromServer() {
-  sf::Packet packetGet;
-  packetGet.clear();
-  printf("Waiting msg... \n");
-  serverData.tcpSocket.receive(packetGet);
-  printf("msg: %s\n", packetGet.getData());
+char *Server::GetTCPMsgFromServer() {
+  static const int maxDataLength = 1024;
+  char data[maxDataLength];
+  for (unsigned int i = 0; i < maxDataLength; ++i) data[i] = '\0';
+  std::size_t received = 0;
+  if (serverData.tcpSocket.receive(data, 100, received) != sf::Socket::Done) {
+    printf("Error receiving data\n");
+  }
+  //printf("Received %d bytes\n", received);
+  printf("[Server]: %s\n", data);
+  return data;
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
   sf::Packet packetSend;
-  packetSend.clear();
+  //packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
   //printf("%s\n", packetSend.getData());
   serverData.tcpSocket.send(packetSend);
 }
 
-void Server::StartClient() {
-  sf::IpAddress ip("127.0.0.1");
-  unsigned short port = 8080;
-  if (serverData.tcpSocket.connect(ip, port) == sf::Socket::Done) {
-    printf("port: %d\n", serverData.tcpSocket.getLocalPort());
-    printf("Connected\n");
-  } else {
-    printf("No Connected\n");
-  }
-}
-
-void Server::FinishClient() {
-  serverData.tcpSocket.disconnect();
-}
-
 void Server::Login(const char *user, const char *password) {
-  std::string msg = "Login:";
-  msg.append(user);
-  msg.append(":");
-  msg.append(password);
-  SendTCPMsgToServer(msg.c_str());
-  GetTCPMsgFromServer();
+  //Connect
+  if (Connect()) {
+    //Msg to send
+    std::string msg = "Login:";
+    msg.append(user).append(":").append(password).append("\0");
+
+    //Send msg
+    SendTCPMsgToServer(msg.c_str());
+
+    //Receive response
+    msg = GetTCPMsgFromServer();
+
+    //Disconnect
+    Disconnect();
+  } else {
+    printf("Server Off\n");
+  }
 }

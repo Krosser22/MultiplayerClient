@@ -10,26 +10,21 @@
 #define __SERVER_H__
 
 namespace Server {
-  //Starts the Server
-  //void Start();
 
-  //Finish the server
-  //void Finish();
+  //Connects with the server
+  bool Connect();
+
+  //Disconnect with the server
+  void Disconnect();
 
   //Send a TCP msg to the server
   void SendTCPMsgToServer(const char *msg);
 
   //Get a TCP msg from the server
-  void GetTCPMsgFromServer();
+  char *GetTCPMsgFromServer();
 
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
-
-  //Starts the client
-  void StartClient();
-
-  //Finish the client
-  void FinishClient();
 
   //Login with the server
   void Login(const char *user, const char *password);
