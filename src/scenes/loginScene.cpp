@@ -17,8 +17,9 @@ UITextBox txtUser_;
 UITextBox txtPass_;
 
 void checkLogin() {
-  //SceneManager::ChangeScene("Game");
-  Server::Login(txtUser_.text()->getString().toAnsiString().c_str(), txtPass_.text()->getString().toAnsiString().c_str());
+  if (Server::Login(txtUser_.text()->getString().toAnsiString().c_str(), txtPass_.text()->getString().toAnsiString().c_str())) {
+    SceneManager::ChangeScene("Game");
+  }
 }
 
 void forgotPassword() {

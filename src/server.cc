@@ -15,7 +15,9 @@
 
 struct ServerData {
   sf::TcpSocket tcpSocket;
+  std::string data;
   //sf::Thread* thread;
+  std::string tokenID;
 } serverData;
 
 /*void update() {
@@ -54,17 +56,17 @@ void Server::Finish() {
   }
 }*/
 
-bool Server::Connect() {
+bool connect() {
   sf::IpAddress ip("127.0.0.1");
   unsigned short port = 8080;
   return (serverData.tcpSocket.connect(ip, port) == sf::Socket::Done);
 }
 
-void Server::Disconnect() {
+void disconnect() {
   serverData.tcpSocket.disconnect();
 }
 
-void Server::SendTCPMsgToServer(const char *msg) {
+void sendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.clear();
   packetSend.append(msg, strlen(msg));
@@ -76,7 +78,7 @@ void Server::SendTCPMsgToServer(const char *msg) {
   }
 }
 
-char *Server::GetTCPMsgFromServer() {
+void getTCPMsgFromServer() {
   static const int maxDataLength = 1024;
   char data[maxDataLength];
   for (unsigned int i = 0; i < maxDataLength; ++i) data[i] = '\0';
@@ -86,7 +88,23 @@ char *Server::GetTCPMsgFromServer() {
   }
   //printf("Received %d bytes\n", received);
   printf("[Server]: %s\n", data);
-  return data;
+  serverData.data = data;
+}
+
+void TCPConnection() {
+  //Connect
+  if (connect()) {
+    //Send msg
+    sendTCPMsgToServer(serverData.data.c_str());
+
+    //Receive response
+    getTCPMsgFromServer();
+
+    //Disconnect
+    disconnect();
+  } else {
+    printf("ERROR: Server Off\n");
+  }
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
@@ -98,22 +116,20 @@ void Server::SendUDPMsgToServer(const char *msg) {
   serverData.tcpSocket.send(packetSend);
 }
 
-void Server::Login(const char *user, const char *password) {
-  //Connect
-  if (Connect()) {
-    //Msg to send
-    std::string msg = "Login:";
-    msg.append(user).append(":").append(password).append("\0");
+bool Server::Login(const char *user, const char *password) {
+  //Msg to send
+  std::string msg = "Login:";
+  msg.append(user).append(":").append(password).append("\0");
+  serverData.data = msg;
 
-    //Send msg
-    SendTCPMsgToServer(msg.c_str());
+  //Receive a response from the server
+  TCPConnection();
 
-    //Receive response
-    msg = GetTCPMsgFromServer();
-
-    //Disconnect
-    Disconnect();
+  if (serverData.data == "ERROR") {
+    serverData.tokenID = "";
+    return false;
   } else {
-    printf("Server Off\n");
+    serverData.tokenID = serverData.data;
+    return true;
   }
 }

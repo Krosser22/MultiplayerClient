@@ -9,6 +9,7 @@
 #include <SFML/Window.hpp>
 #include "scenes/gameScene.h"
 #include "managers/gameManager.h"
+#include "managers/sceneManager.h"
 
 void GameScene::start() {
   //Set the background
@@ -56,6 +57,10 @@ void GameScene::input() {
       box->setPosition(GameManager::MouseX(), GameManager::MouseY());
       objectList_.push_back(*box);
       GameManager::AddObject(box);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+      SceneManager::ChangeScene("Login");
     }
   }
 }

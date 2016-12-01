@@ -70,7 +70,9 @@ void GameManager::RemoveObject(Object *object) {
 }
 
 void GameManager::ClearDrawList() {
-  printf("Empty function: clearDrawList()\n");
+  gameManagerData.listToDraw.clear();
+  gameManagerData.collisionList.clear();
+  gameManagerData.dynamicCollisionList.clear();
 }
 
 bool GameManager::IsOpen() {

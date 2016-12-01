@@ -58,6 +58,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   while (GameManager::IsOpen()) {
     if (sceneData.sceneChanged) {
       UIManager::ClearUI();
+      GameManager::ClearDrawList();
       sceneData.actualScene->finish();
       sceneData.actualScene = sceneData.nextScene;
       sceneData.actualScene->start();
