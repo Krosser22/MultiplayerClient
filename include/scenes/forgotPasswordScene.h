@@ -6,15 +6,15 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __LOGIN_SCENE_H__
-#define __LOGIN_SCENE_H__
+#ifndef __FORGOT_PASSWORD_SCENE_H__
+#define __FORGOT_PASSWORD_SCENE_H__
 
 #include "scenes/scene.h"
 
-class LoginScene : public Scene {
+class ForgotPasswordScene : public Scene {
 public:
-  LoginScene() {};
-  ~LoginScene() {};
+  ForgotPasswordScene() {};
+  ~ForgotPasswordScene() {};
 
   void start();
 
@@ -25,9 +25,8 @@ public:
   void finish();
 
 private:
-  UIButton btnLogin_;
-  UIButton btnForgotPassword_;
-  UIButton btnNewAccount_;
+  UIButton btnSendInfoToEmail_;
+  UIButton btnBack_;
 };
 
-#endif //__LOGIN_SCENE_H__
+#endif //__FORGOT_PASSWORD_SCENE_H__

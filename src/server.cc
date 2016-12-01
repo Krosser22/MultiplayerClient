@@ -8,7 +8,7 @@
 
 #include "server.h"
 
-#pragma comment(lib, "sfml-network.lib")
+//#pragma comment(lib, "sfml-network.lib")
 
 #include <stdio.h>
 #include <SFML/Network.hpp>
@@ -68,7 +68,6 @@ void disconnect() {
 
 void sendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
-  packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
   //packetSend.endOfPacket();
@@ -83,7 +82,7 @@ void getTCPMsgFromServer() {
   char data[maxDataLength];
   for (unsigned int i = 0; i < maxDataLength; ++i) data[i] = '\0';
   std::size_t received = 0;
-  if (serverData.tcpSocket.receive(data, 100, received) != sf::Socket::Done) {
+  if (serverData.tcpSocket.receive(data, maxDataLength, received) != sf::Socket::Done) {
     printf("Error receiving data\n");
   }
   //printf("Received %d bytes\n", received);
@@ -104,6 +103,7 @@ void TCPConnection() {
     disconnect();
   } else {
     printf("ERROR: Server Off\n");
+    serverData.data = "ERROR";
   }
 }
 

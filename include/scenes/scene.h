@@ -9,8 +9,7 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include "actor.h"
-#include <vector>
+#include "managers/UIManager.h"
 
 class Scene {
 public:

@@ -12,6 +12,7 @@
 #include "actor.h"
 #include "UI/UIButton.h"
 #include "UI/UITextBox.h"
+#include <vector>
 
 namespace UIManager {
   //Sets the window to draw the UI
@@ -26,8 +27,11 @@ namespace UIManager {
   //Add a button to the UI
   void AddUIButton(UIButton *button);
 
-  //Add a text to the UI
+  //Add a textBox to the UI
   void AddUITextBox(UITextBox *textBox);
+
+  //Add a text to the UI
+  void AddUIText(sf::Text *text);
 
   //Clear all the elements from the list of elements to update and draw
   void ClearUI();

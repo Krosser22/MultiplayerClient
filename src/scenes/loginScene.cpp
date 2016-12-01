@@ -8,17 +8,22 @@
 
 #include <SFML/Window.hpp>
 #include "scenes/loginScene.h"
-#include "managers/UIManager.h"
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
 #include "server.h"
 
-UITextBox txtUser_;
-UITextBox txtPass_;
+struct LoginSceneData {
+  sf::Text textInfo;
+  UITextBox txtNick;
+  UITextBox txtPass;
+} loginSceneData;
 
 void checkLogin() {
-  if (Server::Login(txtUser_.text()->getString().toAnsiString().c_str(), txtPass_.text()->getString().toAnsiString().c_str())) {
-    SceneManager::ChangeScene("Game");
+  loginSceneData.textInfo.setString("");
+  if (Server::Login(loginSceneData.txtNick.text()->getString().toAnsiString().c_str(), loginSceneData.txtPass.text()->getString().toAnsiString().c_str())) {
+    SceneManager::ChangeScene("GameMenu");
+  } else {
+    loginSceneData.textInfo.setString("Incorrect Nick or Password");
   }
 }
 
@@ -31,18 +36,30 @@ void createAccount() {
 }
 
 void LoginScene::start() {
-  //User text
-  txtUser_.setText("Admin");
-  txtUser_.setHintText("User");
-  txtUser_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
-  UIManager::AddUITextBox(&txtUser_);
+  //Set the background
+  GameManager::SetBackground("background.png");
+
+  //Info text
+  loginSceneData.textInfo.setString("");
+  loginSceneData.textInfo.setFont(*GameManager::Font());
+  loginSceneData.textInfo.setFillColor(sf::Color::Red);
+  loginSceneData.textInfo.setCharacterSize(22);
+  loginSceneData.textInfo.setStyle(sf::Text::Bold);
+  loginSceneData.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
+  UIManager::AddUIText(&loginSceneData.textInfo);
+
+  //Nick text
+  loginSceneData.txtNick.setText("Admin");
+  loginSceneData.txtNick.setHintText("Nick");
+  loginSceneData.txtNick.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
+  UIManager::AddUITextBox(&loginSceneData.txtNick);
 
   //Password text
-  txtPass_.setText("Password");
-  txtPass_.setHintText("Password");
-  txtPass_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
-  txtPass_.setIsPassword(true);
-  UIManager::AddUITextBox(&txtPass_);
+  loginSceneData.txtPass.setText("Password");
+  loginSceneData.txtPass.setHintText("Password");
+  loginSceneData.txtPass.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
+  loginSceneData.txtPass.setIsPassword(true);
+  UIManager::AddUITextBox(&loginSceneData.txtPass);
 
   //Login button
   btnLogin_.setTexture("btnLogin.png");
@@ -74,8 +91,7 @@ void LoginScene::input() {
   }
 }
 
-void LoginScene::update() {
-}
+void LoginScene::update() {}
 
 void LoginScene::finish() {
   GameManager::RemoveBackground();

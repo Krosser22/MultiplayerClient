@@ -13,7 +13,7 @@
 
 void GameScene::start() {
   //Set the background
-  //GameManager::setBackground("map.png");
+  GameManager::SetBackground("background.png");
 
   //Set the ground
   ground_.setTexture("ground.png");

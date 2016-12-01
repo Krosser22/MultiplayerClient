@@ -7,11 +7,17 @@
 **/
 
 #include "managers/sceneManager.h"
+#include "scenes/forgotPasswordScene.h"
 #include "scenes/introScene.h"
 #include "scenes/loginScene.h"
 #include "scenes/gameScene.h"
 
 int main(int argc, char **argv) {
+  //Forgot Password Scene
+  ForgotPasswordScene forgotPasswordScene;
+  forgotPasswordScene.setName("ForgotPassword");
+  SceneManager::AddScene(&forgotPasswordScene);
+
   //Intro Scene
   IntroScene introScene;
   introScene.setName("Intro");
@@ -28,6 +34,6 @@ int main(int argc, char **argv) {
   SceneManager::AddScene(&gameScene);
 
   //Starts the scene manager
-  SceneManager::StartSceneManager("Login");
+  SceneManager::StartSceneManager("Intro");
   return 0;
 }
