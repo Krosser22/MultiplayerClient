@@ -6,15 +6,12 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __SERVER_H__
-#define __SERVER_H__
+#include "scenes/scene.h"
 
-namespace Server {
-  //Send a UPD msg to the server
-  void SendUDPMsgToServer(const char *msg);
+void Scene::setName(std::string newName) {
+  name_ = newName;
+}
 
-  //Login with the server
-  bool Login(const char *user, const char *password);
-};
-
-#endif //__SERVER_H__
+std::string Scene::name() {
+  return name_;
+}

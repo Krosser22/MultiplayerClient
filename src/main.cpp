@@ -1,54 +1,39 @@
-#include "gameManager.h"
-#include "game.h"
-#include "server.h"
+/**
+*** ////////////////////////////////////////////
+*** /////Autor: Juan Daniel Laserna Condado/////
+*** /////Email: S6106112@live.tees.ac.uk   /////
+*** /////            2016-2017             /////
+*** ////////////////////////////////////////////
+**/
 
-//#define SERVER_ON
+#include "managers/sceneManager.h"
+#include "scenes/forgotPasswordScene.h"
+#include "scenes/introScene.h"
+#include "scenes/loginScene.h"
+#include "scenes/gameScene.h"
 
-////////////////////////////////////////////
-//
-#ifdef SERVER_ON
 int main(int argc, char **argv) {
-  //Starts the Server
-  Server server;
-  server.start();
+  //Forgot Password Scene
+  ForgotPasswordScene forgotPasswordScene;
+  forgotPasswordScene.setName("ForgotPassword");
+  SceneManager::AddScene(&forgotPasswordScene);
 
-  //Update the Server and the Game
-  while (GameManager::isOpen() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-    //Update the server
-    server.update();
-  }
+  //Intro Scene
+  IntroScene introScene;
+  introScene.setName("Intro");
+  SceneManager::AddScene(&introScene);
 
-  //Finish the server
-  server.finish();
+  //Login Scene
+  LoginScene loginScene;
+  loginScene.setName("Login");
+  SceneManager::AddScene(&loginScene);
 
+  //Game Scene
+  GameScene gameScene;
+  gameScene.setName("Game");
+  SceneManager::AddScene(&gameScene);
+
+  //Starts the scene manager
+  SceneManager::StartSceneManager("Intro");
   return 0;
 }
-//
-////////////////////////////////////////////
-
-#else
-
-////////////////////////////////////////////
-//
-int main(int argc, char **argv) {
-  //Starts the GameManager
-  GameManager::start();
-
-  //Starts the Game
-  Game game;
-  game.start();
-
-  while (GameManager::isOpen() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-    game.input();
-    game.update();
-    GameManager::draw();
-  }
-
-  //Finish the game
-  game.finish();
-  GameManager::finish();
-  return 0;
-}
-#endif
-//
-////////////////////////////////////////////

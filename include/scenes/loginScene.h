@@ -6,16 +6,15 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __GAME_H__
-#define __GAME_H__
+#ifndef __LOGIN_SCENE_H__
+#define __LOGIN_SCENE_H__
 
-#include "actor.h"
-#include <vector>
+#include "scenes/scene.h"
 
-class Game {
+class LoginScene : public Scene {
 public:
-  Game() {};
-  ~Game() {};
+  LoginScene() {};
+  ~LoginScene() {};
 
   void start();
 
@@ -26,12 +25,9 @@ public:
   void finish();
 
 private:
-  Object ground;
-  Object platformLeft;
-  Object platformRight;
-  Object platformCenter;
-  Actor actor;
-  std::vector<Object> objectList;
+  UIButton btnLogin_;
+  UIButton btnForgotPassword_;
+  UIButton btnNewAccount_;
 };
 
-#endif //__GAME_H__
+#endif //__LOGIN_SCENE_H__

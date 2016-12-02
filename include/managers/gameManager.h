@@ -13,39 +13,61 @@
 
 namespace GameManager {
   //Starts the GameManager
-  void start();
+  void Start(sf::RenderWindow *window);
 
   //Finish the GameManager
-  void finish();
+  void Finish();
 
   //Set the background of the game
-  void setBackground(const char *imagePath);
+  void SetBackground(const char *imagePath);
+
+  //Remove the actual background of the game
+  void RemoveBackground();
 
   //Add an object to the draw list
-  void addObject(Object *object);
+  void AddObject(Object *object);
 
   //Add an actor to the draw list
-  void addActor(Actor *actor);
+  void AddActor(Actor *actor);
 
   //Remove an object from the draw list and from the collision list
-  void removeObject(Object *object);
+  void RemoveObject(Object *object);
+
+  //Clear the list of objects to draw
+  void ClearDrawList();
 
   //Return if the window is open
-  bool isOpen();
+  bool IsOpen();
+
+  //Close the actual window
+  void CloseWindow();
+
+  //Return if the windows has the focus
+  bool WindowHasFocus();
 
   //Draw all the elements on the render buffer
-  void draw();
+  void Draw();
 
   //Return the position X of the mouse
-  float mouseX();
+  float MouseX();
 
   //Return the position Y of the mouse
-  float mouseY();
+  float MouseY();
+
+  //Return the width of the window
+  int WindowWidth();
+
+  //Return the height of the window
+  int WindowHeight();
 
   //Return if an objects make collision with all the other objects
-  bool checkCollision(Actor *actor);
+  bool CheckCollision(Actor *actor);
 
-  sf::Time getTime();
+  //Return the time since the application starts
+  sf::Time Time();
+
+  //Return the font of the project
+  sf::Font *Font();
 };
 
 #endif //__GAME_MANAGER_H__
