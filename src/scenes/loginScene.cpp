@@ -21,7 +21,7 @@ struct LoginSceneData {
 void checkLogin() {
   loginSceneData.textInfo.setString("");
   if (Server::Login(loginSceneData.txtNick.text()->getString().toAnsiString().c_str(), loginSceneData.txtPass.text()->getString().toAnsiString().c_str())) {
-    SceneManager::ChangeScene("GameMenu");
+    SceneManager::ChangeScene("Game");
   } else {
     loginSceneData.textInfo.setString("Incorrect Nick or Password");
   }
