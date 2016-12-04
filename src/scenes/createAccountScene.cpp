@@ -17,7 +17,18 @@ struct CreateAccountSceneData {
 } data;
 
 static void createAccount() {
-  printf("createAccount Empty function\n");
+  data.textInfo.setString("");
+  std::string strEmail = data.txtEmail.text()->getString().toAnsiString();
+  std::string strNick = data.txtNick.text()->getString().toAnsiString();
+  std::string strPass1 = data.txtPassword1.text()->getString().toAnsiString();
+  std::string strPass2 = data.txtPassword2.text()->getString().toAnsiString();
+  int atPos = strEmail.find('@');
+  int dotPos = strEmail.find('.');
+  if (atPos > 0 && dotPos > 0 && atPos < dotPos && !strNick.empty() && !strPass1.empty() && strPass1 == strPass2) {
+    Server::CreateAccount(strEmail.c_str(), strNick.c_str(), strPass1.c_str());
+  } else {
+    data.textInfo.setString("Something is not correct");
+  }
 }
 
 static void back() {
@@ -38,7 +49,7 @@ void CreateAccountScene::start() {
   UIManager::AddUIText(&data.textInfo);
 
   //Email textBox
-  data.txtEmail.setText("");
+  data.txtEmail.setText("condadodaniel@hotmail.com");
   data.txtEmail.setHintText("Email");
   data.txtEmail.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
   UIManager::AddUITextBox(&data.txtEmail);

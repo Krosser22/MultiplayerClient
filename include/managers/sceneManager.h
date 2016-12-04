@@ -16,6 +16,12 @@ class Scene;
 namespace SceneManager {
   void AddScene(Scene *scene);
 
+  void AddPopupScene(Scene *scene);
+
+  void PopInScene(std::string sceneName);
+
+  void PopOutScene(std::string sceneName);
+
   void StartSceneManager(std::string sceneName);
 
   void ChangeScene(std::string sceneName);

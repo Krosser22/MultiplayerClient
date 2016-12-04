@@ -19,6 +19,8 @@ static struct SceneData {
   Scene *nextScene;
   bool sceneChanged = false;
   std::vector<Scene *> sceneList;
+  std::vector<Scene *> popupSceneList;
+  std::vector<Scene *> visiblePopupSceneList;
 } data;
 
 Scene *getSceneByName(std::string sceneName) {
@@ -32,8 +34,41 @@ Scene *getSceneByName(std::string sceneName) {
   return scene;
 }
 
+Scene *getPopupSceneByName(std::string sceneName) {
+  Scene *scene = nullptr;
+
+  for (unsigned int i = 0; i < data.popupSceneList.size(); ++i) {
+    if (data.popupSceneList.at(i)->name() == sceneName) {
+      scene = data.popupSceneList.at(i);
+    }
+  }
+  return scene;
+}
+
 void SceneManager::AddScene(Scene *scene) {
   data.sceneList.push_back(scene);
+}
+
+void SceneManager::AddPopupScene(Scene *scene) {
+  data.popupSceneList.push_back(scene);
+}
+
+void SceneManager::PopInScene(std::string sceneName) {
+  Scene *scene = getPopupSceneByName(sceneName);
+
+  if (scene != nullptr) {
+    data.visiblePopupSceneList.push_back(scene);
+  }
+}
+
+void SceneManager::PopOutScene(std::string sceneName) {
+  Scene *scene = getPopupSceneByName(sceneName);
+  for (unsigned int i = 0; i < data.visiblePopupSceneList.size(); ++i) {
+    if (scene == data.visiblePopupSceneList.at(i)) {
+      data.visiblePopupSceneList.erase(data.visiblePopupSceneList.begin() + i);
+      //IS THIS WORKING???
+    }
+  }
 }
 
 void SceneManager::StartSceneManager(std::string sceneName) {

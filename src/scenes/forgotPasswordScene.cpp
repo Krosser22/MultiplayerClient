@@ -13,7 +13,17 @@ static struct ForGotPasswordSceneData {
   UITextBox txtEmail;
 } data;
 
-static void sendInfoToEmail() {}
+static void sendInfoToEmail() {
+  data.textInfo.setString("");
+  std::string strEmail = data.txtEmail.text()->getString().toAnsiString();
+  int atPos = strEmail.find('@');
+  int dotPos = strEmail.find('.');
+  if (atPos > 0 && dotPos > 0 && atPos < dotPos) {
+    Server::ForgotPassword(strEmail.c_str());
+  } else {
+    data.textInfo.setString("The email format is incorrect");
+  }
+}
 
 static void back() {
   SceneManager::ChangeScene("Login");

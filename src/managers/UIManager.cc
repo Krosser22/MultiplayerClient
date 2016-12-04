@@ -19,6 +19,7 @@ static struct UIManagerData {
   std::vector<sf::Text *> textList;
   UIObject *actualFocus;
   bool isATextBoxFocused = false;
+  bool wasLeftClickPressedLastFrame = false;
 } data;
 
 void UIManager::Start(sf::RenderWindow *window) {
@@ -28,7 +29,7 @@ void UIManager::Start(sf::RenderWindow *window) {
 void UIManager::Update() {
   static sf::FloatRect intersection;
 
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !data.wasLeftClickPressedLastFrame) {
     sf::FloatRect mousePosition(sf::Vector2f(GameManager::MouseX(), GameManager::MouseY()), sf::Vector2f(1, 1));
 
     //Check collision with the buttons
@@ -60,6 +61,12 @@ void UIManager::Update() {
     }
 
     if (!collision) data.isATextBoxFocused = false;
+
+    data.wasLeftClickPressedLastFrame = true;
+  }
+
+  if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    data.wasLeftClickPressedLastFrame = false;
   }
 
   //Write on the textBox focused

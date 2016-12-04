@@ -64,6 +64,6 @@ int main(int argc, char **argv) {
   SceneManager::AddScene(&waitingGameScene);
 
   //Starts the scene manager
-  SceneManager::StartSceneManager("Intro");
+  SceneManager::StartSceneManager("GameMenu");
   return 0;
 }

@@ -23,6 +23,10 @@ public:
   void update();
 
   void finish();
+
+private:
+  UIButton btnCreateGame_;
+  UIButton btnJoinGame_;
 };
 
 #endif //__GAME_MENU_SCENE_H__

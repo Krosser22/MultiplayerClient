@@ -14,7 +14,13 @@ namespace Server {
   void SendUDPMsgToServer(const char *msg);
 
   //Login with the server
-  bool Login(const char *user, const char *password);
+  bool Login(const char *nick, const char *password);
+
+  //Send an email with the user and the password
+  bool ForgotPassword(const char *email);
+
+  //Create an account into the BD of the server
+  bool CreateAccount(const char *email, const char *nick, const char *password);
 };
 
 #endif //__SERVER_H__

@@ -116,10 +116,46 @@ void Server::SendUDPMsgToServer(const char *msg) {
   data.tcpSocket.send(packetSend);
 }
 
-bool Server::Login(const char *user, const char *password) {
+bool Server::Login(const char *nick, const char *password) {
   //Msg to send
   std::string msg = "Login:";
-  msg.append(user).append(":").append(password).append("\0");
+  msg.append(nick).append(":").append(password).append("\0");
+  data.content = msg;
+
+  //Receive a response from the server
+  TCPConnection();
+
+  if (data.content == "ERROR") {
+    data.tokenID = "";
+    return false;
+  } else {
+    data.tokenID = data.content;
+    return true;
+  }
+}
+
+bool Server::ForgotPassword(const char *email) {
+  //Msg to send
+  std::string msg = "Login:";
+  msg.append(email).append("\0");
+  data.content = msg;
+
+  //Receive a response from the server
+  TCPConnection();
+
+  if (data.content == "ERROR") {
+    data.tokenID = "";
+    return false;
+  } else {
+    data.tokenID = data.content;
+    return true;
+  }
+}
+
+bool Server::CreateAccount(const char *email, const char *nick, const char *password) {
+  //Msg to send
+  std::string msg = "Create:";
+  msg.append(email).append(":").append(nick).append(":").append(password).append("\0");
   data.content = msg;
 
   //Receive a response from the server
