@@ -6,26 +6,16 @@
 *** ////////////////////////////////////////////
 **/
 
-#include <SFML/Window.hpp>
 #include "scenes/forgotPasswordScene.h"
-#include "managers/gameManager.h"
-#include "managers/sceneManager.h"
-#include "server.h"
 
-struct ForgotPasswordSceneData {
+static struct ForGotPasswordSceneData {
   sf::Text textInfo;
   UITextBox txtEmail;
-} forgotPasswordSceneData;
+} data;
 
-void sendInfoToEmail() {
-  /*if (Server::Login(forgotPasswordSceneData.txtNick.text()->getString().toAnsiString().c_str(), forgotPasswordSceneData.txtPass.text()->getString().toAnsiString().c_str())) {
-    SceneManager::ChangeScene("Game");
-  } else {
-    forgotPasswordSceneData.textInfo.setString("Incorrect Nick or Password");
-  }*/
-}
+static void sendInfoToEmail() {}
 
-void back() {
+static void back() {
   SceneManager::ChangeScene("Login");
 }
 
@@ -33,20 +23,20 @@ void ForgotPasswordScene::start() {
   //Set the background
   GameManager::SetBackground("background.png");
 
-  //Info text
-  forgotPasswordSceneData.textInfo.setString("");
-  forgotPasswordSceneData.textInfo.setFont(*GameManager::Font());
-  forgotPasswordSceneData.textInfo.setFillColor(sf::Color::Red);
-  forgotPasswordSceneData.textInfo.setCharacterSize(22);
-  forgotPasswordSceneData.textInfo.setStyle(sf::Text::Bold);
-  forgotPasswordSceneData.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
-  UIManager::AddUIText(&forgotPasswordSceneData.textInfo);
+  //Info textBox
+  data.textInfo.setString("");
+  data.textInfo.setFont(*GameManager::Font());
+  data.textInfo.setFillColor(sf::Color::Red);
+  data.textInfo.setCharacterSize(22);
+  data.textInfo.setStyle(sf::Text::Bold);
+  data.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
+  UIManager::AddUIText(&data.textInfo);
 
-  //Email text
-  forgotPasswordSceneData.txtEmail.setText("");
-  forgotPasswordSceneData.txtEmail.setHintText("Email");
-  forgotPasswordSceneData.txtEmail.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
-  UIManager::AddUITextBox(&forgotPasswordSceneData.txtEmail);
+  //Email textBox
+  data.txtEmail.setText("");
+  data.txtEmail.setHintText("Email");
+  data.txtEmail.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
+  UIManager::AddUITextBox(&data.txtEmail);
 
   //Send info to email button
   btnSendInfoToEmail_.setTexture("btnSendToEmail.png");
@@ -73,6 +63,4 @@ void ForgotPasswordScene::input() {
 
 void ForgotPasswordScene::update() {}
 
-void ForgotPasswordScene::finish() {
-  GameManager::RemoveBackground();
-}
+void ForgotPasswordScene::finish() {}

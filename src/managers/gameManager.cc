@@ -14,7 +14,7 @@
 #define WINDOW_WIDTH 960
 #define WINDOW_HEIGHT 704
 
-struct GameManagerData {
+static struct GameManagerData {
   sf::RenderWindow *window;
   sf::Texture backgroundTexture;
   sf::Sprite backgroundSprite;
@@ -23,110 +23,108 @@ struct GameManagerData {
   std::vector<Actor *> dynamicCollisionList;
   sf::Clock clock;
   sf::Font font;
-} gameManagerData;
+} data;
 
 void GameManager::Start(sf::RenderWindow *window) {
   //Set the window
-  gameManagerData.window = window;
+  data.window = window;
 
   //Set the project default font
-  if (!gameManagerData.font.loadFromFile(ASSETS::FontPath("arial.ttf"))) {
+  if (!data.font.loadFromFile(ASSETS::FontPath("arial.ttf"))) {
     printf("ERROR loading the default font");
   }
 }
 
 void GameManager::Finish() {
   //Empty the lists of objects
-  gameManagerData.listToDraw.clear();
-  gameManagerData.collisionList.clear();
-  gameManagerData.dynamicCollisionList.clear();
+  data.listToDraw.clear();
+  data.collisionList.clear();
+  data.dynamicCollisionList.clear();
+  RemoveBackground();
 }
 
 void GameManager::SetBackground(const char *imagePath) {
-  gameManagerData.backgroundTexture.loadFromFile(ASSETS::ImagePath(imagePath));
-  gameManagerData.backgroundSprite.setTexture(gameManagerData.backgroundTexture);
-  gameManagerData.backgroundSprite.setOrigin(0.0f, 0.0f);
-  gameManagerData.backgroundSprite.setPosition(0.0f, 0.0f);
+  data.backgroundTexture.loadFromFile(ASSETS::ImagePath(imagePath));
+  data.backgroundSprite.setTexture(data.backgroundTexture);
+  data.backgroundSprite.setOrigin(0.0f, 0.0f);
+  data.backgroundSprite.setPosition(0.0f, 0.0f);
 }
 
 void GameManager::RemoveBackground() {
-  gameManagerData.backgroundTexture.create(1, 1);
-  gameManagerData.backgroundSprite.setTexture(gameManagerData.backgroundTexture);
+  data.backgroundTexture.create(1, 1);
+  data.backgroundSprite.setTexture(data.backgroundTexture);
 }
 
 void GameManager::AddObject(Object *object) {
-  gameManagerData.listToDraw.push_back(object->sprite());
-  gameManagerData.collisionList.push_back(object);
+  data.listToDraw.push_back(object->sprite());
+  data.collisionList.push_back(object);
 }
 
 void GameManager::AddActor(Actor *actor) {
-  gameManagerData.listToDraw.push_back(actor->sprite());
-  gameManagerData.collisionList.push_back(actor);
-  gameManagerData.dynamicCollisionList.push_back(actor);
-}
-
-void GameManager::RemoveObject(Object *object) {
-  printf("Empty function: removeObject()\n");
+  data.listToDraw.push_back(actor->sprite());
+  data.collisionList.push_back(actor);
+  data.dynamicCollisionList.push_back(actor);
 }
 
 void GameManager::ClearDrawList() {
-  gameManagerData.listToDraw.clear();
-  gameManagerData.collisionList.clear();
-  gameManagerData.dynamicCollisionList.clear();
+  data.listToDraw.clear();
+  data.collisionList.clear();
+  data.dynamicCollisionList.clear();
+  RemoveBackground();
 }
 
 bool GameManager::IsOpen() {
-  bool opened = gameManagerData.window->isOpen();
+  bool opened = data.window->isOpen();
 
   //Clear screen
-  gameManagerData.window->clear(sf::Color::White);
+  data.window->clear(sf::Color::White);
 
   return opened;
 }
 
 void GameManager::CloseWindow() {
-  gameManagerData.window->close();
+  data.window->close();
 }
 
 bool GameManager::WindowHasFocus() {
-  return gameManagerData.window->hasFocus();
+  return data.window->hasFocus();
 }
 
 void GameManager::Draw() {
   //Update the collisions
-  for (unsigned int i = 0; i < gameManagerData.dynamicCollisionList.size(); ++i) {
-    gameManagerData.dynamicCollisionList.at(i)->updateCollisions();
+  for (unsigned int i = 0; i < data.dynamicCollisionList.size(); ++i) {
+    data.dynamicCollisionList.at(i)->updateCollisions();
   }
 
   //Draw the background
-  gameManagerData.window->draw(gameManagerData.backgroundSprite);
+  data.window->draw(data.backgroundSprite);
 
   //Draw
-  for (unsigned int i = 0; i < gameManagerData.listToDraw.size(); ++i) gameManagerData.window->draw(*gameManagerData.listToDraw.at(i));
+  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window->draw(*data.listToDraw.at(i));
 }
 
 float GameManager::MouseX() {
-  return (float)sf::Mouse::getPosition(*gameManagerData.window).x;
+  return (float)sf::Mouse::getPosition(*data.window).x;
 }
 
 float GameManager::MouseY() {
-  return (float)sf::Mouse::getPosition(*gameManagerData.window).y;
+  return (float)sf::Mouse::getPosition(*data.window).y;
 }
 
-int GameManager::WindowWidth() {
+const int GameManager::WindowWidth() {
   return WINDOW_WIDTH;
 }
 
-int GameManager::WindowHeight() {
+const int GameManager::WindowHeight() {
   return WINDOW_HEIGHT;
 }
 
 bool GameManager::CheckCollision(Actor *actor) {
   static sf::FloatRect intersection;
   bool collision = false;
-  for (unsigned int i = 0; i < gameManagerData.collisionList.size() && !collision; ++i) {
-    if (actor != gameManagerData.collisionList.at(i)) {
-      if (actor->sprite()->getGlobalBounds().intersects(gameManagerData.collisionList.at(i)->sprite()->getGlobalBounds(), intersection)) {
+  for (unsigned int i = 0; i < data.collisionList.size() && !collision; ++i) {
+    if (actor != data.collisionList.at(i)) {
+      if (actor->sprite()->getGlobalBounds().intersects(data.collisionList.at(i)->sprite()->getGlobalBounds(), intersection)) {
         collision = true;
       }
     }
@@ -135,9 +133,9 @@ bool GameManager::CheckCollision(Actor *actor) {
 }
 
 sf::Time GameManager::Time() {
-  return gameManagerData.clock.getElapsedTime();
+  return data.clock.getElapsedTime();
 }
 
 sf::Font *GameManager::Font() {
-  return &gameManagerData.font;
+  return &data.font;
 }

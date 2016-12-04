@@ -6,10 +6,7 @@
 *** ////////////////////////////////////////////
 **/
 
-#include <SFML/Window.hpp>
 #include "scenes/introScene.h"
-#include "managers/gameManager.h"
-#include "managers/sceneManager.h"
 
 void IntroScene::start() {
   //Set the background
@@ -33,6 +30,4 @@ void IntroScene::update() {
   }
 }
 
-void IntroScene::finish() {
-  GameManager::RemoveBackground();
-}
+void IntroScene::finish() {}

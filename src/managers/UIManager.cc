@@ -11,7 +11,7 @@
 
 #define DELETE_KEY 8
 
-struct UIManagerData {
+static struct UIManagerData {
   sf::RenderWindow *window;
   std::vector<UIObject *> focusOrderList;
   std::vector<UIButton *> buttonList;
@@ -19,10 +19,10 @@ struct UIManagerData {
   std::vector<sf::Text *> textList;
   UIObject *actualFocus;
   bool isATextBoxFocused = false;
-} UIData;
+} data;
 
 void UIManager::Start(sf::RenderWindow *window) {
-  UIData.window = window;
+  data.window = window;
 }
 
 void UIManager::Update() {
@@ -33,51 +33,51 @@ void UIManager::Update() {
 
     //Check collision with the buttons
     bool collision = false;
-    for (unsigned int i = 0; i < UIData.buttonList.size() && !collision; ++i) {
-      if (UIData.buttonList.at(i)->sprite()->getGlobalBounds().intersects(mousePosition, intersection)) {
+    for (unsigned int i = 0; i < data.buttonList.size() && !collision; ++i) {
+      if (data.buttonList.at(i)->sprite()->getGlobalBounds().intersects(mousePosition, intersection)) {
         collision = true;
-        if (UIData.actualFocus != UIData.buttonList.at(i)) {
-          if (UIData.actualFocus != nullptr) UIData.actualFocus->setFocus(false);
-          UIData.actualFocus = UIData.buttonList.at(i);
-          UIData.actualFocus->setFocus(true);
-          UIData.buttonList.at(i)->onClick();
-          UIData.isATextBoxFocused = false;
+        if (data.actualFocus != data.buttonList.at(i)) {
+          if (data.actualFocus != nullptr) data.actualFocus->setFocus(false);
+          data.actualFocus = data.buttonList.at(i);
+          data.actualFocus->setFocus(true);
+          data.buttonList.at(i)->onClick();
+          data.isATextBoxFocused = false;
         }
       }
     }
 
     //Check collision with the textBox
-    for (unsigned int i = 0; i < UIData.textBoxList.size() && !collision; ++i) {
-      if (UIData.textBoxList.at(i)->sprite()->getGlobalBounds().intersects(mousePosition, intersection)) {
+    for (unsigned int i = 0; i < data.textBoxList.size() && !collision; ++i) {
+      if (data.textBoxList.at(i)->sprite()->getGlobalBounds().intersects(mousePosition, intersection)) {
         collision = true;
-        if (UIData.actualFocus != UIData.textBoxList.at(i)) {
-          if (UIData.actualFocus != nullptr) UIData.actualFocus->setFocus(false);
-          UIData.actualFocus = UIData.textBoxList.at(i);
-          UIData.actualFocus->setFocus(true);
-          UIData.isATextBoxFocused = true;
+        if (data.actualFocus != data.textBoxList.at(i)) {
+          if (data.actualFocus != nullptr) data.actualFocus->setFocus(false);
+          data.actualFocus = data.textBoxList.at(i);
+          data.actualFocus->setFocus(true);
+          data.isATextBoxFocused = true;
         }
       }
     }
 
-    if (!collision) UIData.isATextBoxFocused = false;
+    if (!collision) data.isATextBoxFocused = false;
   }
 
   //Write on the textBox focused
   UITextBox *textBox;
   std::string str;
-  if (UIData.isATextBoxFocused) {
-    textBox = (UITextBox *)(UIData.actualFocus);
+  if (data.isATextBoxFocused) {
+    textBox = (UITextBox *)(data.actualFocus);
     str = textBox->text()->getString().toAnsiString();
   }
 
   //Events
   sf::Event event;
   std::string newChar;
-  while (UIData.window->pollEvent(event)) {
+  while (data.window->pollEvent(event)) {
     //Remove focus
-    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && !UIData.isATextBoxFocused && UIData.actualFocus != nullptr) {
-      UIData.actualFocus->setFocus(false);
-      UIData.actualFocus = nullptr;
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && !data.isATextBoxFocused && data.actualFocus != nullptr) {
+      data.actualFocus->setFocus(false);
+      data.actualFocus = nullptr;
     }
 
     //Close windows
@@ -86,35 +86,35 @@ void UIManager::Update() {
     }
 
     //Change focus (TAB key)
-    /*if (UIData.focusOrderList.size() > 0) {
+    /*if (data.focusOrderList.size() > 0) {
       if (event.text.unicode == sf::Keyboard::Tab && event.type == sf::Event::KeyReleased) {
-        if (UIData.actualFocus == nullptr) {
-          UIData.actualFocus = UIData.focusOrderList.at(0);
+        if (data.actualFocus == nullptr) {
+          data.actualFocus = data.focusOrderList.at(0);
         } else {
           int pos = -1;
-          for (unsigned int i = 0; i < UIData.focusOrderList.size() && pos == -1; ++i) {
-            if (UIData.actualFocus == UIData.focusOrderList.at(i)) {
+          for (unsigned int i = 0; i < data.focusOrderList.size() && pos == -1; ++i) {
+            if (data.actualFocus == data.focusOrderList.at(i)) {
               pos = i + 1;
             }
           }
 
-          if (pos == UIData.focusOrderList.size()) {
+          if (pos == data.focusOrderList.size()) {
             pos = 0;
           }
 
-          UIData.actualFocus = UIData.focusOrderList.at(pos);
+          data.actualFocus = data.focusOrderList.at(pos);
         }
       }
     }*/
 
     //Delete key
-    if (UIData.isATextBoxFocused && event.text.unicode == DELETE_KEY) {
+    if (data.isATextBoxFocused && event.text.unicode == DELETE_KEY) {
       str = str.substr(0, str.size() - 1);
       textBox->setText(str.c_str());
     }
 
     //TextBox keys
-    if (UIData.isATextBoxFocused && event.type == sf::Event::TextEntered) {
+    if (data.isATextBoxFocused && event.type == sf::Event::TextEntered) {
       // Handle a few amount of characters only
       if ((event.text.unicode >= 48 && event.text.unicode <= 57) || //Numbers
         (event.text.unicode >= 65 && event.text.unicode <= 90) ||   //Mayus
@@ -129,34 +129,34 @@ void UIManager::Update() {
 
 void UIManager::Draw() {
   //Draw the list of buttons
-  for (unsigned int i = 0; i < UIData.buttonList.size(); ++i) UIData.window->draw(*UIData.buttonList.at(i)->sprite());
+  for (unsigned int i = 0; i < data.buttonList.size(); ++i) data.window->draw(*data.buttonList.at(i)->sprite());
 
   //Draw the list of textBox
-  for (unsigned int i = 0; i < UIData.textBoxList.size(); ++i) {
-    UIData.window->draw(*UIData.textBoxList.at(i)->sprite());
-    UIData.window->draw(*UIData.textBoxList.at(i)->textToDraw());
+  for (unsigned int i = 0; i < data.textBoxList.size(); ++i) {
+    data.window->draw(*data.textBoxList.at(i)->sprite());
+    data.window->draw(*data.textBoxList.at(i)->textToDraw());
   }
 
   //Draw the list of text
-  for (unsigned int i = 0; i < UIData.textList.size(); ++i) UIData.window->draw(*UIData.textList.at(i));
+  for (unsigned int i = 0; i < data.textList.size(); ++i) data.window->draw(*data.textList.at(i));
 }
 
 void UIManager::AddUIButton(UIButton *button) {
-  UIData.buttonList.push_back(button);
-  UIData.focusOrderList.push_back(button);
+  data.buttonList.push_back(button);
+  data.focusOrderList.push_back(button);
 }
 
 void UIManager::AddUITextBox(UITextBox *textBox) {
-  UIData.textBoxList.push_back(textBox);
-  UIData.focusOrderList.push_back(textBox);
+  data.textBoxList.push_back(textBox);
+  data.focusOrderList.push_back(textBox);
 }
 
 void UIManager::AddUIText(sf::Text *text) {
-  UIData.textList.push_back(text);
+  data.textList.push_back(text);
 }
 
 void UIManager::ClearUI() {
-  UIData.buttonList.clear();
-  UIData.textBoxList.clear();
-  UIData.textList.clear();
+  data.buttonList.clear();
+  data.textBoxList.clear();
+  data.textList.clear();
 }

@@ -13,12 +13,12 @@
 #include <stdio.h>
 #include <SFML/Network.hpp>
 
-struct ServerData {
+static struct ServerData {
   sf::TcpSocket tcpSocket;
-  std::string data;
+  std::string content;
   //sf::Thread* thread;
   std::string tokenID;
-} serverData;
+} data;
 
 /*void update() {
   sf::Packet packetReceive;
@@ -26,16 +26,16 @@ struct ServerData {
   while (true) {
     //Receive a packet
     packetReceive.clear();
-    serverData.socket.receive(packetReceive);
+    data.socket.receive(packetReceive);
     packetReceive >> msg;
     if (!msg.empty()) {
       printf("%s\n", msg.c_str());
 
       //sf::Packet packetSend;
-      //serverData.globalMutex.lock();
+      //data.globalMutex.lock();
       //packetSend << msg;
-      //serverData.globalMutex.unlock();
-      //serverData.socket.send(packetSend);
+      //data.globalMutex.unlock();
+      //data.socket.send(packetSend);
     }
   }
 }
@@ -43,27 +43,27 @@ struct ServerData {
 void Server::Start() {
   sf::TcpListener listener;
   listener.listen(SERVER_PORT);
-  listener.accept(serverData.socket);
-  printf("New client connected : %s\n", serverData.socket.getRemoteAddress().toString().c_str());
-  serverData.thread = new sf::Thread(&update);
-  serverData.thread->launch();
+  listener.accept(data.socket);
+  printf("New client connected : %s\n", data.socket.getRemoteAddress().toString().c_str());
+  data.thread = new sf::Thread(&update);
+  data.thread->launch();
 }
 
 void Server::Finish() {
-  if (serverData.thread) {
-    serverData.thread->wait();
-    delete serverData.thread;
+  if (data.thread) {
+    data.thread->wait();
+    delete data.thread;
   }
 }*/
 
 bool connect() {
   sf::IpAddress ip("127.0.0.1");
   unsigned short port = 8080;
-  return (serverData.tcpSocket.connect(ip, port) == sf::Socket::Done);
+  return (data.tcpSocket.connect(ip, port) == sf::Socket::Done);
 }
 
 void disconnect() {
-  serverData.tcpSocket.disconnect();
+  data.tcpSocket.disconnect();
 }
 
 void sendTCPMsgToServer(const char *msg) {
@@ -72,29 +72,29 @@ void sendTCPMsgToServer(const char *msg) {
   packetSend.append("\0", 1);
   //packetSend.endOfPacket();
   //printf("%s\n", packetSend.getData());
-  if (serverData.tcpSocket.send(packetSend) != sf::Socket::Done) {
+  if (data.tcpSocket.send(packetSend) != sf::Socket::Done) {
     printf("Error sending data\n");
   }
 }
 
 void getTCPMsgFromServer() {
-  static const int maxDataLength = 1024;
-  char data[maxDataLength];
-  for (unsigned int i = 0; i < maxDataLength; ++i) data[i] = '\0';
+  static const int maxContentLength = 1024;
+  char content[maxContentLength];
+  for (unsigned int i = 0; i < maxContentLength; ++i) content[i] = '\0';
   std::size_t received = 0;
-  if (serverData.tcpSocket.receive(data, maxDataLength, received) != sf::Socket::Done) {
+  if (data.tcpSocket.receive(content, maxContentLength, received) != sf::Socket::Done) {
     printf("Error receiving data\n");
   }
   //printf("Received %d bytes\n", received);
-  printf("[Server]: %s\n", data);
-  serverData.data = data;
+  printf("[Server]: %s\n", content);
+  data.content = content;
 }
 
 void TCPConnection() {
   //Connect
   if (connect()) {
     //Send msg
-    sendTCPMsgToServer(serverData.data.c_str());
+    sendTCPMsgToServer(data.content.c_str());
 
     //Receive response
     getTCPMsgFromServer();
@@ -103,7 +103,7 @@ void TCPConnection() {
     disconnect();
   } else {
     printf("ERROR: Server Off\n");
-    serverData.data = "ERROR";
+    data.content = "ERROR";
   }
 }
 
@@ -113,23 +113,23 @@ void Server::SendUDPMsgToServer(const char *msg) {
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
   //printf("%s\n", packetSend.getData());
-  serverData.tcpSocket.send(packetSend);
+  data.tcpSocket.send(packetSend);
 }
 
 bool Server::Login(const char *user, const char *password) {
   //Msg to send
   std::string msg = "Login:";
   msg.append(user).append(":").append(password).append("\0");
-  serverData.data = msg;
+  data.content = msg;
 
   //Receive a response from the server
   TCPConnection();
 
-  if (serverData.data == "ERROR") {
-    serverData.tokenID = "";
+  if (data.content == "ERROR") {
+    data.tokenID = "";
     return false;
   } else {
-    serverData.tokenID = serverData.data;
+    data.tokenID = data.content;
     return true;
   }
 }

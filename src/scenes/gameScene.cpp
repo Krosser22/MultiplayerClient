@@ -6,10 +6,7 @@
 *** ////////////////////////////////////////////
 **/
 
-#include <SFML/Window.hpp>
 #include "scenes/gameScene.h"
-#include "managers/gameManager.h"
-#include "managers/sceneManager.h"
 
 void GameScene::start() {
   //Set the background

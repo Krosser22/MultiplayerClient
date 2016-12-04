@@ -6,19 +6,23 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __SCENE_MANAGER_H__
-#define __SCENE_MANAGER_H__
+#ifndef __GAME_MENU_SCENE_H__
+#define __GAME_MENU_SCENE_H__
 
 #include "scenes/scene.h"
 
-class Scene;
+class GameMenuScene : public Scene {
+public:
+  GameMenuScene() {};
+  ~GameMenuScene() {};
 
-namespace SceneManager {
-  void AddScene(Scene *scene);
+  void start();
 
-  void StartSceneManager(std::string sceneName);
+  void input();
+  
+  void update();
 
-  void ChangeScene(std::string sceneName);
+  void finish();
 };
 
-#endif //__SCENE_MANAGER_H__
+#endif //__GAME_MENU_SCENE_H__

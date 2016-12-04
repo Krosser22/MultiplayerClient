@@ -30,9 +30,6 @@ namespace GameManager {
   //Add an actor to the draw list
   void AddActor(Actor *actor);
 
-  //Remove an object from the draw list and from the collision list
-  void RemoveObject(Object *object);
-
   //Clear the list of objects to draw
   void ClearDrawList();
 
@@ -55,10 +52,10 @@ namespace GameManager {
   float MouseY();
 
   //Return the width of the window
-  int WindowWidth();
+  const int WindowWidth();
 
   //Return the height of the window
-  int WindowHeight();
+  const int WindowHeight();
 
   //Return if an objects make collision with all the other objects
   bool CheckCollision(Actor *actor);

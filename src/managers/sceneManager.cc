@@ -13,72 +13,72 @@
 #include "scenes/introScene.h"
 #include <assert.h>
 
-struct SceneData {
+static struct SceneData {
   sf::RenderWindow window;
   Scene *actualScene;
   Scene *nextScene;
   bool sceneChanged = false;
   std::vector<Scene *> sceneList;
-} sceneData;
+} data;
 
 Scene *getSceneByName(std::string sceneName) {
   Scene *scene = nullptr;
 
-  for (unsigned int i = 0; i < sceneData.sceneList.size(); ++i) {
-    if (sceneData.sceneList.at(i)->name() == sceneName) {
-      scene = sceneData.sceneList.at(i);
+  for (unsigned int i = 0; i < data.sceneList.size(); ++i) {
+    if (data.sceneList.at(i)->name() == sceneName) {
+      scene = data.sceneList.at(i);
     }
   }
   return scene;
 }
 
 void SceneManager::AddScene(Scene *scene) {
-  sceneData.sceneList.push_back(scene);
+  data.sceneList.push_back(scene);
 }
 
 void SceneManager::StartSceneManager(std::string sceneName) {
   //Create the window with a default values
-  sceneData.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "Multiplayer");
-  sceneData.window.setFramerateLimit(60);
+  data.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "Multiplayer");
+  data.window.setFramerateLimit(60);
 
   //Starts the GameManager
-  GameManager::Start(&sceneData.window);
+  GameManager::Start(&data.window);
 
   //Starts the UIManager
-  UIManager::Start(&sceneData.window);
+  UIManager::Start(&data.window);
 
   //Set the default values of the scene
-  sceneData.nextScene = getSceneByName(sceneName);
-  sceneData.actualScene = sceneData.nextScene;
+  data.nextScene = getSceneByName(sceneName);
+  data.actualScene = data.nextScene;
 
   //Start the default scene
-  sceneData.actualScene->start();
+  data.actualScene->start();
 
   //Main loop
   while (GameManager::IsOpen()) {
-    if (sceneData.sceneChanged) {
+    if (data.sceneChanged) {
       UIManager::ClearUI();
       GameManager::ClearDrawList();
-      sceneData.actualScene->finish();
-      sceneData.actualScene = sceneData.nextScene;
-      sceneData.actualScene->start();
-      sceneData.sceneChanged = false;
+      data.actualScene->finish();
+      data.actualScene = data.nextScene;
+      data.actualScene->start();
+      data.sceneChanged = false;
     }
-    sceneData.actualScene = sceneData.nextScene;
-    sceneData.actualScene->input();
-    sceneData.actualScene->update();
+    data.actualScene = data.nextScene;
+    data.actualScene->input();
+    data.actualScene->update();
     UIManager::Update();
 
     //Display the buffer on the screen
     GameManager::Draw();
     UIManager::Draw();
-    sceneData.window.display();
+    data.window.display();
   }
 
   //Finish the game
-  sceneData.actualScene->finish();
-  sceneData.actualScene = nullptr;
-  sceneData.nextScene = nullptr;
+  data.actualScene->finish();
+  data.actualScene = nullptr;
+  data.nextScene = nullptr;
   GameManager::Finish();
 }
 
@@ -86,8 +86,8 @@ void SceneManager::ChangeScene(std::string sceneName) {
   Scene *newScene = getSceneByName(sceneName);
 
   if (newScene != nullptr) {
-    sceneData.nextScene = newScene;
-    sceneData.sceneChanged = true;
+    data.nextScene = newScene;
+    data.sceneChanged = true;
   } else {
     printf("ERROR LOADING SCENE: NOT FOUND\n");
   }

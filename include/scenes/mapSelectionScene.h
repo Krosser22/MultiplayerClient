@@ -6,19 +6,23 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __SCENE_MANAGER_H__
-#define __SCENE_MANAGER_H__
+#ifndef __MAP_SELECTION_SCENE_H__
+#define __MAP_SELECTION_SCENE_H__
 
 #include "scenes/scene.h"
 
-class Scene;
+class MapSelectionScene : public Scene {
+public:
+  MapSelectionScene() {};
+  ~MapSelectionScene() {};
 
-namespace SceneManager {
-  void AddScene(Scene *scene);
+  void start();
 
-  void StartSceneManager(std::string sceneName);
+  void input();
+  
+  void update();
 
-  void ChangeScene(std::string sceneName);
+  void finish();
 };
 
-#endif //__SCENE_MANAGER_H__
+#endif //__MAP_SELECTION_SCENE_H__
