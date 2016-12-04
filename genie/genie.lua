@@ -23,6 +23,7 @@ solution "multiplayerClient"
     debugdir "../project/build/bin/windows"
     links {
       "openal32",
+      "opengl32",
       "sfml-audio-d",
       "sfml-graphics-d",
       "sfml-network-d",
@@ -36,6 +37,7 @@ solution "multiplayerClient"
     debugdir "../project/build/bin/windows"
     links {
       "openal32",
+      "opengl32",
       "sfml-graphics",
       "sfml-network",
       "sfml-system",
@@ -95,10 +97,21 @@ project "multiplayerClient"
   includedirs {
     "../include",
     "../deps/SFML/include",
+    "../deps/imgui",
   }
   
   files {
     "../src/**.*",
     "../include/**.*",
     "../deps/SFML/include/**.*",
+    "../deps/imgui/imgui.cpp",
+    "../deps/imgui/imgui_draw.cpp",
+    "../deps/imgui/imgui-SFML.cpp",
+    "../deps/imgui/imgui_demo.cpp",
+  }
+
+  defines {
+    "_GLFW_WIN32",
+    "_GLFW_WGL",
+    "_GLFW_USE_OPENGL",
   }

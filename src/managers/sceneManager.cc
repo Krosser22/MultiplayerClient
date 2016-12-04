@@ -6,12 +6,15 @@
 *** ////////////////////////////////////////////
 **/
 
+#include <assert.h>
+#include <imgui.h>
+#include <imgui-sfml.h>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
 #include "managers/UIManager.h"
 #include "managers/sceneManager.h"
 #include "managers/gameManager.h"
-#include "scenes/gameScene.h"
-#include "scenes/introScene.h"
-#include <assert.h>
 
 static struct SceneData {
   sf::RenderWindow window;
@@ -73,13 +76,15 @@ void SceneManager::PopOutScene(std::string sceneName) {
 
 void SceneManager::StartSceneManager(std::string sceneName) {
   //Create the window with a default values
-  data.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "Multiplayer");
+  data.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "MultiplayerClient");
   data.window.setFramerateLimit(60);
+  //data.window.setVerticalSyncEnabled(true);
 
   //Starts the GameManager
   GameManager::Start(&data.window);
 
   //Starts the UIManager
+  ImGui::SFML::Init(data.window);
   UIManager::Start(&data.window);
 
   //Set the default values of the scene
@@ -89,8 +94,12 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   //Start the default scene
   data.actualScene->start();
 
+  sf::Clock deltaClock;
+  data.window.clear(sf::Color::White);
+
   //Main loop
   while (GameManager::IsOpen()) {
+    ImGui::SFML::Update(data.window, deltaClock.restart());
     if (data.sceneChanged) {
       UIManager::ClearUI();
       GameManager::ClearDrawList();
@@ -103,14 +112,19 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     data.actualScene->input();
     data.actualScene->update();
     UIManager::Update();
+    
+    //For testing
+    ImGui::ShowTestWindow();
 
-    //Display the buffer on the screen
     GameManager::Draw();
     UIManager::Draw();
+    ImGui::Render();
+    data.window.resetGLStates();
     data.window.display();
   }
 
   //Finish the game
+  ImGui::SFML::Shutdown();
   data.actualScene->finish();
   data.actualScene = nullptr;
   data.nextScene = nullptr;
