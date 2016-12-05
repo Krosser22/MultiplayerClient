@@ -12,8 +12,7 @@ static struct WaitingGameSceneData {
 } data;
 
 void WaitingGameScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 }
 
 void WaitingGameScene::input() {

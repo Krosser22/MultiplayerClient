@@ -158,6 +158,13 @@ void Update(const sf::Vector2i& mousePos, const sf::Vector2f& displaySize, sf::T
         }
     }
 
+    /////
+    /*sf::Event event;
+    while (data.window->pollEvent(event)) {
+      ProcessEvent()
+    }*/
+    /////
+
     assert(io.Fonts->Fonts.Size > 0); // You forgot to create and set up font atlas (see createFontTexture)
     ImGui::NewFrame();
 }

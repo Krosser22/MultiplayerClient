@@ -23,10 +23,6 @@ public:
   void update();
 
   void finish();
-
-private:
-  UIButton btnSendInfoToEmail_;
-  UIButton btnBack_;
 };
 
 #endif //__FORGOT_PASSWORD_SCENE_H__

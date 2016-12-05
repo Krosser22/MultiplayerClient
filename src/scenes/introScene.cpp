@@ -9,11 +9,8 @@
 #include "scenes/introScene.h"
 
 void IntroScene::start() {
-  //Set the background
-  GameManager::SetBackground("credits.png");
-
-  //Set the start time of the scene
-  startTime_ = GameManager::Time();
+  GameManager::SetBackground("credits.png"); //Set the background
+  startTime_ = GameManager::Time(); //Set the start time of the scene
 }
 
 void IntroScene::input() {

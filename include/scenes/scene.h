@@ -9,8 +9,9 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
+#include <imgui.h>
+#include <imgui-sfml.h>
 #include <SFML/Window.hpp>
-#include "managers/UIManager.h"
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
 #include "server.h"

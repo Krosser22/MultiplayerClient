@@ -12,8 +12,7 @@ struct MapSelectionSceneData {
 } data;
 
 void MapSelectionScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 }
 
 void MapSelectionScene::input() {

@@ -23,11 +23,6 @@ public:
   void update();
 
   void finish();
-
-private:
-  UIButton btnLogin_;
-  UIButton btnForgotPassword_;
-  UIButton btnNewAccount_;
 };
 
 #endif //__LOGIN_SCENE_H__

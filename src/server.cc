@@ -136,7 +136,7 @@ bool Server::Login(const char *nick, const char *password) {
 
 bool Server::ForgotPassword(const char *email) {
   //Msg to send
-  std::string msg = "Login:";
+  std::string msg = "Forgot:";
   msg.append(email).append("\0");
   data.content = msg;
 

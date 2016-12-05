@@ -9,84 +9,92 @@
 #include "scenes/loginScene.h"
 
 static struct LoginSceneData {
-  sf::Text textInfo;
-  UITextBox txtNick;
-  UITextBox txtPass;
+  ImGuiWindowFlags flags = 0;
+
+  bool opened = true;
+
+  float positionX = 0.0f;
+  float positionY = 0.0f;
+
+  float width = 200.0f;
+  float height = 350.0f;
+
+  char nick[32] = { "" };
+  char password[32] = { "" };
+  std::string info;
 } data;
 
 static void checkLogin() {
-  data.textInfo.setString("");
-  if (Server::Login(data.txtNick.text()->getString().toAnsiString().c_str(), data.txtPass.text()->getString().toAnsiString().c_str())) {
+  data.info = ""; //Reset the info msg
+
+  if (Server::Login(data.nick, data.password)) {
     SceneManager::ChangeScene("Game");
   } else {
-    data.textInfo.setString("Incorrect Nick or Password");
+    data.info = "Something goes wrong";
   }
 }
 
 static void forgotPassword() {
+  data.info = ""; //Reset the info msg
+
   SceneManager::ChangeScene("ForgotPassword");
 }
 
 static void createAccount() {
+  data.info = ""; //Reset the info msg
+
   SceneManager::ChangeScene("CreateAccount");
 }
 
 void LoginScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 
-  //Info textBox
-  data.textInfo.setString("");
-  data.textInfo.setFont(*GameManager::Font());
-  data.textInfo.setFillColor(sf::Color::Red);
-  data.textInfo.setCharacterSize(22);
-  data.textInfo.setStyle(sf::Text::Bold);
-  data.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
-  UIManager::AddUIText(&data.textInfo);
+  data.flags |= ImGuiWindowFlags_NoResize;
+  data.flags |= ImGuiWindowFlags_NoMove;
+  data.flags |= ImGuiWindowFlags_NoCollapse;
+  data.flags |= ImGuiWindowFlags_NoTitleBar;
 
-  //Nick textBox
-  data.txtNick.setText("Admin");
-  data.txtNick.setHintText("Nick");
-  data.txtNick.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
-  UIManager::AddUITextBox(&data.txtNick);
-
-  //Password textBox
-  data.txtPass.setText("Password");
-  data.txtPass.setHintText("Password");
-  data.txtPass.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
-  data.txtPass.setIsPassword(true);
-  UIManager::AddUITextBox(&data.txtPass);
-
-  //Login button
-  btnLogin_.setTexture("btnLogin.png");
-  btnLogin_.setFocusTexture("btnFocusLogin.png");
-  btnLogin_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.5f);
-  btnLogin_.setOnClick(checkLogin);
-  UIManager::AddUIButton(&btnLogin_);
-
-  //Forgot the Pass button
-  btnForgotPassword_.setTexture("btnForgotPassword.png");
-  btnForgotPassword_.setFocusTexture("btnFocusForgotPassword.png");
-  btnForgotPassword_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.6f);
-  btnForgotPassword_.setOnClick(forgotPassword);
-  UIManager::AddUIButton(&btnForgotPassword_);
-
-  //New Account button
-  btnNewAccount_.setTexture("btnNewAccount.png");
-  btnNewAccount_.setFocusTexture("btnFocusNewAccount.png");
-  btnNewAccount_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.7f);
-  btnNewAccount_.setOnClick(createAccount);
-  UIManager::AddUIButton(&btnNewAccount_);
+  data.positionX = GameManager::WindowWidth() * 0.5f - data.width * 0.5f;
+  data.positionY = GameManager::WindowHeight() * 0.5f - data.height * 0.5f;
 }
 
-void LoginScene::input() {
-  if (GameManager::WindowHasFocus()) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      //Check collision with the mouse and the txt and buttons
-    }
+void LoginScene::input() {}
+
+void LoginScene::update() {
+  ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
+  ImGui::Begin("Login", &data.opened, ImVec2(data.width, data.height), 0.0f, data.flags);
+  {
+    //Info
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), data.info.c_str());
+
+    ImGui::NewLine();
+
+    //Nick
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Nick:");
+    ImGui::InputText("##Nick", data.nick, IM_ARRAYSIZE(data.nick));
+
+    ImGui::NewLine();
+
+    //Password
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Password:");
+    ImGui::InputText("##Password", data.password, IM_ARRAYSIZE(data.password), ImGuiInputTextFlags_Password);
+
+    ImGui::NewLine();
+
+    //Check Login
+    if (ImGui::Button("Login")) checkLogin();
+
+    ImGui::NewLine();
+
+    //Create Account
+    if (ImGui::Button("Create Account")) createAccount();
+
+    ImGui::NewLine();
+
+    //Forgot Password
+    if (ImGui::Button("Forgot Password")) forgotPassword();
   }
+  ImGui::End();
 }
-
-void LoginScene::update() {}
 
 void LoginScene::finish() {}

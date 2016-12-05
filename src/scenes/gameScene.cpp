@@ -9,8 +9,7 @@
 #include "scenes/gameScene.h"
 
 void GameScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 
   //Set the ground
   ground_.setTexture("ground.png");

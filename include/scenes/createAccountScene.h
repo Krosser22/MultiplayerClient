@@ -23,10 +23,6 @@ public:
   void update();
 
   void finish();
-
-private:
-  UIButton btnCreateAccount_;
-  UIButton btnBack_;
 };
 
 #endif //__CREATE_ACCOUNT_SCENE_H__

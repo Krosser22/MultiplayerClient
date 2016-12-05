@@ -3,6 +3,8 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Time.hpp>
 
+#define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
+
 namespace sf
 {
     class Event;

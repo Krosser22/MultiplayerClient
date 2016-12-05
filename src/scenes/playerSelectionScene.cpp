@@ -12,8 +12,7 @@ static struct PlayerSelectionSceneData {
 } data;
 
 void PlayerSelectionScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 }
 
 void PlayerSelectionScene::input() {

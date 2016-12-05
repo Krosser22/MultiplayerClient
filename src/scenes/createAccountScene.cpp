@@ -8,91 +8,110 @@
 
 #include "scenes/createAccountScene.h"
 
-struct CreateAccountSceneData {
-  sf::Text textInfo;
-  UITextBox txtEmail;
-  UITextBox txtNick;
-  UITextBox txtPassword1;
-  UITextBox txtPassword2;
+static struct CreateAccountSceneData {
+  ImGuiWindowFlags flags = 0;
+
+  bool opened = true;
+
+  float positionX = 0.0f;
+  float positionY = 0.0f;
+
+  float width = 200.0f;
+  float height = 350.0f;
+
+  char email[32] = { "" };
+  char nick[32] = { "" };
+  char password1[32] = { "" };
+  char password2[32] = { "" };
+  std::string info;
 } data;
 
 static void createAccount() {
-  data.textInfo.setString("");
-  std::string strEmail = data.txtEmail.text()->getString().toAnsiString();
-  std::string strNick = data.txtNick.text()->getString().toAnsiString();
-  std::string strPass1 = data.txtPassword1.text()->getString().toAnsiString();
-  std::string strPass2 = data.txtPassword2.text()->getString().toAnsiString();
+  data.info = ""; //Reset the info msg
+
+  std::string strEmail = data.email;
+  std::string strNick = data.nick;
+  std::string strPass1 = data.password1;
+  std::string strPass2 = data.password2;
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos && !strNick.empty() && !strPass1.empty() && strPass1 == strPass2) {
-    Server::CreateAccount(strEmail.c_str(), strNick.c_str(), strPass1.c_str());
+    if (Server::CreateAccount(data.email, data.nick, data.password1)) {
+      SceneManager::ChangeScene("Login");
+    }
   } else {
-    data.textInfo.setString("Something is not correct");
+    data.info = "Something goes wrong";
   }
 }
 
 static void back() {
+  data.info = ""; //Reset the info msg
+
   SceneManager::ChangeScene("Login");
 }
 
 void CreateAccountScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 
-  //Info textBox
-  data.textInfo.setString("");
-  data.textInfo.setFont(*GameManager::Font());
-  data.textInfo.setFillColor(sf::Color::Red);
-  data.textInfo.setCharacterSize(22);
-  data.textInfo.setStyle(sf::Text::Bold);
-  data.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
-  UIManager::AddUIText(&data.textInfo);
+  data.flags |= ImGuiWindowFlags_NoResize;
+  data.flags |= ImGuiWindowFlags_NoMove;
+  data.flags |= ImGuiWindowFlags_NoCollapse;
+  data.flags |= ImGuiWindowFlags_NoTitleBar;
 
-  //Email textBox
-  data.txtEmail.setText("condadodaniel@hotmail.com");
-  data.txtEmail.setHintText("Email");
-  data.txtEmail.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
-  UIManager::AddUITextBox(&data.txtEmail);
-
-  //Nick textBox
-  data.txtNick.setText("");
-  data.txtNick.setHintText("Nick");
-  data.txtNick.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
-  UIManager::AddUITextBox(&data.txtNick);
-
-  //Password1 textBox
-  data.txtPassword1.setText("");
-  data.txtPassword1.setHintText("Password");
-  data.txtPassword1.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.5f);
-  data.txtPassword1.setIsPassword(true);
-  UIManager::AddUITextBox(&data.txtPassword1);
-
-  //Password2 textBox
-  data.txtPassword2.setText("");
-  data.txtPassword2.setHintText("Password");
-  data.txtPassword2.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.6f);
-  data.txtPassword2.setIsPassword(true);
-  UIManager::AddUITextBox(&data.txtPassword2);
-
-  //Create account button
-  btnCreateAccount_.setTexture("btnCreateAccount.png");
-  btnCreateAccount_.setFocusTexture("btnFocusCreateAccount.png");
-  btnCreateAccount_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.7f);
-  btnCreateAccount_.setOnClick(createAccount);
-  UIManager::AddUIButton(&btnCreateAccount_);
-
-  //Back button
-  btnBack_.setTexture("btnBack.png");
-  btnBack_.setFocusTexture("btnFocusBack.png");
-  btnBack_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.8f);
-  btnBack_.setOnClick(back);
-  UIManager::AddUIButton(&btnBack_);
+  data.positionX = GameManager::WindowWidth() * 0.5f - data.width * 0.5f;
+  data.positionY = GameManager::WindowHeight() * 0.5f - data.height * 0.5f;
 }
 
 void CreateAccountScene::input() {
-  if (GameManager::WindowHasFocus()) {}
+  if (GameManager::WindowHasFocus()) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+      SceneManager::ChangeScene("Login");
+    }
+  }
 }
 
-void CreateAccountScene::update() {}
+void CreateAccountScene::update() {
+  ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
+  ImGui::Begin("CreateAccount", &data.opened, ImVec2(data.width, data.height), 0.0f, data.flags);
+  {
+    //Info
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), data.info.c_str());
+
+    ImGui::NewLine();
+
+    //Email
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Email:");
+    ImGui::InputText("##Email", data.email, IM_ARRAYSIZE(data.email));
+
+    ImGui::NewLine();
+
+    //Nick
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Nick:");
+    ImGui::InputText("##Nick", data.nick, IM_ARRAYSIZE(data.nick));
+
+    ImGui::NewLine();
+
+    //Password 1
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Password:");
+    ImGui::InputText("##Password1", data.password1, IM_ARRAYSIZE(data.password1), ImGuiInputTextFlags_Password);
+
+    ImGui::NewLine();
+
+    //Password 2
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Confirm Password:");
+    ImGui::InputText("##Password2", data.password2, IM_ARRAYSIZE(data.password2), ImGuiInputTextFlags_Password);
+
+    ImGui::NewLine();
+
+    //Create Account
+    if (ImGui::Button("Create Account")) createAccount();
+
+    ImGui::NewLine();
+
+    //Back
+    if (ImGui::Button("Back")) back();
+  }
+  ImGui::End();
+}
 
 void CreateAccountScene::finish() {}

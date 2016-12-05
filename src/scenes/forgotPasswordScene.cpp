@@ -8,59 +8,53 @@
 
 #include "scenes/forgotPasswordScene.h"
 
-static struct ForGotPasswordSceneData {
-  sf::Text textInfo;
-  UITextBox txtEmail;
+static struct ForgotPasswordSceneData {
+  ImGuiWindowFlags flags = 0;
+
+  bool opened = true;
+
+  float positionX = 0.0f;
+  float positionY = 0.0f;
+
+  float width = 200.0f;
+  float height = 350.0f;
+
+  char email[32] = { "" };
+  std::string info;
 } data;
 
 static void sendInfoToEmail() {
-  data.textInfo.setString("");
-  std::string strEmail = data.txtEmail.text()->getString().toAnsiString();
+  data.info = ""; //Reset the info msg
+  std::string strEmail = data.email;
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos) {
-    Server::ForgotPassword(strEmail.c_str());
+    if (Server::ForgotPassword(data.email)) {
+      SceneManager::ChangeScene("Login");
+    } else {
+      data.info = "Something goes wrong";
+    }
   } else {
-    data.textInfo.setString("The email format is incorrect");
+    data.info = "Incorrect Email format";
   }
 }
 
 static void back() {
+  data.info = ""; //Reset the info msg
+
   SceneManager::ChangeScene("Login");
 }
 
 void ForgotPasswordScene::start() {
-  //Set the background
-  GameManager::SetBackground("background.png");
+  GameManager::SetBackground("background.png"); //Set the background
 
-  //Info textBox
-  data.textInfo.setString("");
-  data.textInfo.setFont(*GameManager::Font());
-  data.textInfo.setFillColor(sf::Color::Red);
-  data.textInfo.setCharacterSize(22);
-  data.textInfo.setStyle(sf::Text::Bold);
-  data.textInfo.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.25f);
-  UIManager::AddUIText(&data.textInfo);
+  data.flags |= ImGuiWindowFlags_NoResize;
+  data.flags |= ImGuiWindowFlags_NoMove;
+  data.flags |= ImGuiWindowFlags_NoCollapse;
+  data.flags |= ImGuiWindowFlags_NoTitleBar;
 
-  //Email textBox
-  data.txtEmail.setText("");
-  data.txtEmail.setHintText("Email");
-  data.txtEmail.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.3f);
-  UIManager::AddUITextBox(&data.txtEmail);
-
-  //Send info to email button
-  btnSendInfoToEmail_.setTexture("btnSendToEmail.png");
-  btnSendInfoToEmail_.setFocusTexture("btnFocusSendToEmail.png");
-  btnSendInfoToEmail_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.4f);
-  btnSendInfoToEmail_.setOnClick(sendInfoToEmail);
-  UIManager::AddUIButton(&btnSendInfoToEmail_);
-
-  //Back button
-  btnBack_.setTexture("btnBack.png");
-  btnBack_.setFocusTexture("btnFocusBack.png");
-  btnBack_.setPosition(GameManager::WindowWidth() * 0.5f - UIOBJECT_HALF_WIDTH, GameManager::WindowHeight() * 0.5f);
-  btnBack_.setOnClick(back);
-  UIManager::AddUIButton(&btnBack_);
+  data.positionX = GameManager::WindowWidth() * 0.5f - data.width * 0.5f;
+  data.positionY = GameManager::WindowHeight() * 0.5f - data.height * 0.5f;
 }
 
 void ForgotPasswordScene::input() {
@@ -71,6 +65,30 @@ void ForgotPasswordScene::input() {
   }
 }
 
-void ForgotPasswordScene::update() {}
+void ForgotPasswordScene::update() {
+  ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
+  ImGui::Begin("CreateAccount", &data.opened, ImVec2(data.width, data.height), 0.0f, data.flags);
+  {
+    //Info
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), data.info.c_str());
+
+    ImGui::NewLine();
+
+    //Email
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Email:");
+    ImGui::InputText("##Email", data.email, IM_ARRAYSIZE(data.email));
+
+    ImGui::NewLine();
+
+    //Create Account
+    if (ImGui::Button("Send To Email")) sendInfoToEmail();
+
+    ImGui::NewLine();
+
+    //Back
+    if (ImGui::Button("Back")) back();
+  }
+  ImGui::End();
+}
 
 void ForgotPasswordScene::finish() {}

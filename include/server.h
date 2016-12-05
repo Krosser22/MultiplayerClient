@@ -10,6 +10,12 @@
 #define __SERVER_H__
 
 namespace Server {
+  enum Status {
+    Done = 0,
+    Off,
+    Error,
+  };
+
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
 
