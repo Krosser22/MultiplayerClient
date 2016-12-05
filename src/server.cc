@@ -15,6 +15,7 @@
 
 static struct ServerData {
   sf::TcpSocket tcpSocket;
+  sf::UdpSocket updSocket;
   std::string content;
   //sf::Thread* thread;
   std::string tokenID;
@@ -70,8 +71,7 @@ void sendTCPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
-  //packetSend.endOfPacket();
-  //printf("%s\n", packetSend.getData());
+  //printf("%s\n", msg);
   if (data.tcpSocket.send(packetSend) != sf::Socket::Done) {
     printf("Error sending data\n");
   }
@@ -109,11 +109,10 @@ void TCPConnection() {
 
 void Server::SendUDPMsgToServer(const char *msg) {
   sf::Packet packetSend;
-  //packetSend.clear();
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
-  //printf("%s\n", packetSend.getData());
-  data.tcpSocket.send(packetSend);
+  printf("%s\n", msg);
+  data.updSocket.send(packetSend, "127.0.0.1", 2055);
 }
 
 bool Server::Login(const char *nick, const char *password) {
