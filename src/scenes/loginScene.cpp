@@ -65,7 +65,7 @@ void LoginScene::update() {
     data.info = "";
   }
 
-  if (Server::ImLogged()) {
+  if (gameData.completed) {
     SceneManager::ChangeScene("Game");
   } else {
     ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));

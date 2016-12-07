@@ -14,6 +14,8 @@
 #include <deque>
 #include <SFML/Network.hpp>
 
+static const int kMaxLength = 1024;
+
 static struct ServerData {
   std::string serverIp = "127.0.0.1";
   unsigned short serverPort = 8080;
@@ -25,7 +27,6 @@ static struct ServerData {
   sf::UdpSocket updSocket;
   std::deque<std::string> msgUDPReceived;
 
-  std::string content;
   //sf::Thread* thread;
   std::string tokenID;
 } data;
@@ -85,33 +86,32 @@ void sendTCPMsgToServer(const char *msg) {
   }
 }
 
-void getTCPMsgFromServer() {
-  static const int maxContentLength = 1024;
-  char content[maxContentLength];
-  for (unsigned int i = 0; i < maxContentLength; ++i) content[i] = '\0';
+const char *getTCPMsgFromServer() {
+  char content[kMaxLength];
+  for (unsigned int i = 0; i < kMaxLength; ++i) content[i] = '\0';
   std::size_t received = 0;
-  if (data.tcpSocket.receive(content, maxContentLength, received) != sf::Socket::Done) {
+  if (data.tcpSocket.receive(content, kMaxLength, received) != sf::Socket::Done) {
     printf("Error receiving data\n");
   }
   //printf("Received %d bytes\n", received);
   printf("[Server]: %s\n", content);
-  data.content = content;
+  return content;
 }
 
-void TCPConnection() {
+const char *TCPConnection(const char *msg) {
   //Connect
   if (connect()) {
     //Send msg
-    sendTCPMsgToServer(data.content.c_str());
+    sendTCPMsgToServer(msg);
 
     //Receive response
-    getTCPMsgFromServer();
+    return getTCPMsgFromServer();
 
     //Disconnect
     disconnect();
   } else {
     printf("ERROR: Server Off\n");
-    data.content = "ERROR";
+    return "ERROR";
   }
 }
 
@@ -119,10 +119,6 @@ bool Server::IsServerOn() {
   bool conected = connect();
   disconnect();
   return conected;
-}
-
-bool Server::ImLogged() {
-  return false;
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
@@ -137,16 +133,15 @@ bool Server::Login(const char *nick, const char *password) {
   //Msg to send
   std::string msg = "Login:";
   msg.append(nick).append(":").append(password).append("\0");
-  data.content = msg;
-
+  
   //Receive a response from the server
-  TCPConnection();
+  const char *response = TCPConnection(msg.c_str());
 
-  if (data.content == "ERROR") {
+  if (response == "ERROR") {
     data.tokenID = "";
     return false;
   } else {
-    data.tokenID = data.content;
+    data.tokenID = response;
     return true;
   }
 }
@@ -155,34 +150,20 @@ bool Server::ForgotPassword(const char *email) {
   //Msg to send
   std::string msg = "Forgot:";
   msg.append(email).append("\0");
-  data.content = msg;
 
   //Receive a response from the server
-  TCPConnection();
+  const char *response = TCPConnection(msg.c_str());
 
-  if (data.content == "ERROR") {
-    data.tokenID = "";
-    return false;
-  } else {
-    data.tokenID = data.content;
-    return true;
-  }
+  return !(response == "ERROR");
 }
 
 bool Server::CreateAccount(const char *email, const char *nick, const char *password) {
   //Msg to send
   std::string msg = "Create:";
   msg.append(email).append(":").append(nick).append(":").append(password).append("\0");
-  data.content = msg;
 
   //Receive a response from the server
-  TCPConnection();
+  const char *response = TCPConnection(msg.c_str());
 
-  if (data.content == "ERROR") {
-    data.tokenID = "";
-    return false;
-  } else {
-    data.tokenID = data.content;
-    return true;
-  }
+  return !(response == "ERROR");
 }

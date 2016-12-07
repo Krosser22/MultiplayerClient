@@ -9,16 +9,11 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
+#include "scenes/scene.h"
+
 namespace Server {
-  enum Status {
-    Done = 0,
-    Off,
-    Error,
-  };
-
+  //Check if the server is On
   bool IsServerOn();
-
-  bool ImLogged();
 
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);

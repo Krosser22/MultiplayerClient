@@ -10,10 +10,17 @@
 #define __SCENE_H__
 
 #include <imgui-sfml.h>
+#include <deque>
 #include <SFML/Window.hpp>
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
 #include "server.h"
+
+static struct GameData {
+  Actor player;
+  std::deque<Actor> enemies;
+  bool completed = false;
+} gameData;
 
 class Scene {
 public:
