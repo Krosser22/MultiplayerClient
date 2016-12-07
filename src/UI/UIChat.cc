@@ -6,7 +6,6 @@
 *** ////////////////////////////////////////////
 **/
 
-#include <imgui.h>
 #include <string>
 #include <imgui-sfml.h>
 #include "UI/UIChat.h"

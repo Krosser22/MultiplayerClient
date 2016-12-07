@@ -16,6 +16,10 @@ namespace Server {
     Error,
   };
 
+  bool IsServerOn();
+
+  bool ImLogged();
+
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
 

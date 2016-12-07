@@ -29,6 +29,8 @@ private:
   Object platformLeft_;
   Object platformRight_;
   Object platformCenter_;
+  Actor player_;
+  Actor enemy_;
 };
 
 #endif //__GAME_SCENE_H__

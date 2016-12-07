@@ -9,7 +9,6 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include <imgui.h>
 #include <imgui-sfml.h>
 #include <SFML/Window.hpp>
 #include "managers/gameManager.h"
@@ -35,8 +34,6 @@ public:
 
 protected:
   std::string name_;
-  Actor actor_;
-  std::vector<Object> objectList_;
 };
 
 #endif //__SCENE_H__

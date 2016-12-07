@@ -11,11 +11,20 @@
 //#pragma comment(lib, "sfml-network.lib")
 
 #include <stdio.h>
+#include <deque>
 #include <SFML/Network.hpp>
 
 static struct ServerData {
+  std::string serverIp = "127.0.0.1";
+  unsigned short serverPort = 8080;
+  bool conected = false;
+
   sf::TcpSocket tcpSocket;
+  std::deque<std::string> msgTCPReceived;
+
   sf::UdpSocket updSocket;
+  std::deque<std::string> msgUDPReceived;
+
   std::string content;
   //sf::Thread* thread;
   std::string tokenID;
@@ -58,9 +67,8 @@ void Server::Finish() {
 }*/
 
 bool connect() {
-  sf::IpAddress ip("127.0.0.1");
-  unsigned short port = 8080;
-  return (data.tcpSocket.connect(ip, port) == sf::Socket::Done);
+  sf::IpAddress ip(data.serverIp);
+  return (data.tcpSocket.connect(ip, data.serverPort) == sf::Socket::Done);
 }
 
 void disconnect() {
@@ -105,6 +113,16 @@ void TCPConnection() {
     printf("ERROR: Server Off\n");
     data.content = "ERROR";
   }
+}
+
+bool Server::IsServerOn() {
+  bool conected = connect();
+  disconnect();
+  return conected;
+}
+
+bool Server::ImLogged() {
+  return false;
 }
 
 void Server::SendUDPMsgToServer(const char *msg) {
