@@ -9,23 +9,40 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-#include "scenes/scene.h"
+#include <deque>
+#include "actor.h"
+
+struct SceneData {
+  Actor player;
+  std::vector<Actor> enemies;
+  bool completed = false;
+  bool playing = false;
+};
 
 namespace Server {
-  //Check if the server is On
-  bool IsServerOn();
+  //Set the scene data
+  void SetSceneData(SceneData *sceneData);
+
+  //Starts the server
+  void Start();
+
+  //Finish the server
+  void Finish();
+
+  //Update the server
+  void Update();
 
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
 
   //Login with the server
-  bool Login(const char *nick, const char *password);
+  void Login(const char *nick, const char *password);
 
   //Send an email with the user and the password
-  bool ForgotPassword(const char *email);
+  void ForgotPassword(const char *email);
 
   //Create an account into the BD of the server
-  bool CreateAccount(const char *email, const char *nick, const char *password);
+  void CreateAccount(const char *email, const char *nick, const char *password);
 };
 
 #endif //__SERVER_H__

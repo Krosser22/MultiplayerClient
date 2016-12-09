@@ -32,24 +32,25 @@ void GameScene::start() {
   GameManager::AddObject(&platformRight_);
 
   //Set the player
-  player_.setTexture("player.png");
-  player_.setPosition(0.0f, 600.0f);
-  GameManager::AddActor(&player_);
+  sceneData_->player.setTexture("player.png");
+  sceneData_->player.setPosition(0.0f, 600.0f);
+  GameManager::AddActor(&sceneData_->player);
 
   //Set the enemy
-  enemy_.setTexture("enemy.png");
-  enemy_.setPosition(800.0f, 600.0f);
-  GameManager::AddActor(&enemy_);
+  /*sceneData_.enemies[0].setTexture("enemy.png");
+  sceneData_.enemies[0].setPosition(800.0f, 600.0f);
+  GameManager::AddActor(&sceneData_.enemies[0]);*/
+
+  sceneData_->playing = true;
 }
 
 void GameScene::input() {
   if (GameManager::WindowHasFocus()) {
     //Player movement
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) player_.crouch();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) player_.moveLeft();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) player_.moveRight();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) player_.jump();
-    else player_.stopJumping();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) sceneData_->player.crouch();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
 
     //Spawn test
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {

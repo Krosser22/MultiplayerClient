@@ -16,16 +16,12 @@
 #include "managers/sceneManager.h"
 #include "server.h"
 
-static struct GameData {
-  Actor player;
-  std::deque<Actor> enemies;
-  bool completed = false;
-} gameData;
-
 class Scene {
 public:
   Scene() {};
   ~Scene() {};
+
+  SceneData *sceneData_;
 
   virtual void start() = 0;
 

@@ -36,9 +36,7 @@ static void createAccount() {
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos && !strNick.empty() && !strPass1.empty() && strPass1 == strPass2) {
-    if (Server::CreateAccount(data.email, data.nick, data.password1)) {
-      SceneManager::ChangeScene("Login");
-    }
+    Server::CreateAccount(data.email, data.nick, data.password1);
   } else {
     data.info = "Something goes wrong";
   }
@@ -112,6 +110,8 @@ void CreateAccountScene::update() {
     if (ImGui::Button("Back")) back();
   }
   ImGui::End();
+
+  if (sceneData_->completed) SceneManager::ChangeScene("Login");
 }
 
 void CreateAccountScene::finish() {}

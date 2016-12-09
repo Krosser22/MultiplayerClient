@@ -25,36 +25,20 @@ void Actor::setID(std::string *newID) {
   ID_ = *newID;
 }
 
-std::string *Actor::ID() {
-  return &ID_;
+std::string Actor::ID() {
+  return ID_;
 }
 
 void Actor::moveLeft() {
   actorMovement.left = true;
-  Server::SendUDPMsgToServer("Left");
 }
 
 void Actor::moveRight() {
   actorMovement.right = true;
-  Server::SendUDPMsgToServer("Right");
 }
 
 void Actor::jump() {
   actorMovement.up = true;
-  Server::SendUDPMsgToServer("Jumping");
-
-  if (bIsGrounded_) {
-    jumpImpulse_ = -jumpVelocity_;
-    actorStartJumpTime_ = GameManager::Time();
-    actorMaxJumpTime_ = actorStartJumpTime_ + sf::milliseconds(timeToBeJumping_);
-  }
-}
-
-void Actor::stopJumping() {
-  if (jumpImpulse_ < 0.0f) {
-    Server::SendUDPMsgToServer("StopJumping");
-    jumpImpulse_ *= 0.8f;
-  }
 }
 
 void Actor::crouch() {
@@ -70,6 +54,16 @@ void Actor::updateCollisions() {
   float newX = sprite_.getPosition().x; //Actual X position
   newX += actorMovement.left * ((-movementVelocityOnAir_ * !bIsGrounded_) + (-movementVelocity_ * bIsGrounded_)); //If going left
   newX += actorMovement.right * ((movementVelocityOnAir_ * !bIsGrounded_) + (movementVelocity_ * bIsGrounded_)); //If going right
+
+  if (actorMovement.up) {
+    if (bIsGrounded_) {
+      jumpImpulse_ = -jumpVelocity_;
+      actorStartJumpTime_ = GameManager::Time();
+      actorMaxJumpTime_ = actorStartJumpTime_ + sf::milliseconds(timeToBeJumping_);
+    }
+  } else if (jumpImpulse_ < 0.0f) {
+    jumpImpulse_ *= 0.8f;
+  }
 
   //Variable to store the new Y position
   float newY = sprite_.getPosition().y; //Actual Y position

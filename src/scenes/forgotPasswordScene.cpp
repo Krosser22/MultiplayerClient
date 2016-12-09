@@ -29,11 +29,7 @@ static void sendInfoToEmail() {
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos) {
-    if (Server::ForgotPassword(data.email)) {
-      SceneManager::ChangeScene("Login");
-    } else {
-      data.info = "Something goes wrong";
-    }
+    Server::ForgotPassword(data.email);
   } else {
     data.info = "Incorrect Email format";
   }
@@ -89,6 +85,10 @@ void ForgotPasswordScene::update() {
     if (ImGui::Button("Back")) back();
   }
   ImGui::End();
+
+  if (sceneData_->completed) {
+    SceneManager::ChangeScene("Login");
+  }
 }
 
 void ForgotPasswordScene::finish() {}

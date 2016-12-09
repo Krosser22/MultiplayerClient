@@ -14,7 +14,7 @@
 #include "managers/gameManager.h"
 #include "input.h"
 
-static struct SceneData {
+static struct SceneManagerData {
   sf::RenderWindow window;
   Scene *actualScene;
   Scene *nextScene;
@@ -22,6 +22,7 @@ static struct SceneData {
   std::vector<Scene *> sceneList;
   std::vector<Scene *> popupSceneList;
   std::vector<Scene *> visiblePopupSceneList;
+  SceneData sceneData;
 } data;
 
 Scene *getSceneByName(std::string sceneName) {
@@ -88,8 +89,13 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   data.nextScene = getSceneByName(sceneName);
   data.actualScene = data.nextScene;
 
+  //Server
+  Server::Start();
+  Server::SetSceneData(&data.sceneData);
+
   //Start the default scene
   data.actualScene->start();
+  data.actualScene->sceneData_ = &data.sceneData;
 
   sf::Clock deltaClock;
   data.window.clear(sf::Color::White);
@@ -165,6 +171,8 @@ void SceneManager::StartSceneManager(std::string sceneName) {
       GameManager::ClearDrawList();
       data.actualScene->finish();
       data.actualScene = data.nextScene;
+      Server::SetSceneData(&data.sceneData);
+      data.actualScene->sceneData_ = &data.sceneData;
       data.actualScene->start();
       data.sceneChanged = false;
     }
@@ -174,6 +182,9 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     
     //For testing
     ImGui::ShowTestWindow();
+
+    //Server
+    Server::Update();
 
     //FPS
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
@@ -193,6 +204,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   }
 
   //Finish the game
+  Server::Finish();
   ImGui::SFML::Shutdown();
   data.actualScene->finish();
   data.actualScene = nullptr;

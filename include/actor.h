@@ -18,7 +18,7 @@ public:
 
   void setID(std::string *newID);
 
-  std::string *ID();
+  std::string ID();
 
   //Move the actor to the left
   void moveLeft();
@@ -28,9 +28,6 @@ public:
 
   //Makes the actor jump
   void jump();
-
-  //Makes the actor stop jumping
-  void stopJumping();
 
   //Makes the actor crouch
   void crouch();

@@ -66,6 +66,10 @@ void GameManager::AddActor(Actor *actor) {
   data.dynamicCollisionList.push_back(actor);
 }
 
+void GameManager::AddEnemy(Actor *actor) {
+  data.listToDraw.push_back(actor->sprite());
+}
+
 void GameManager::ClearDrawList() {
   data.listToDraw.clear();
   data.collisionList.clear();

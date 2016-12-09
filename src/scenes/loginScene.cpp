@@ -24,12 +24,10 @@ static struct LoginSceneData {
   std::string info;
 } data;
 
-static void checkLogin() {
+static void checkLogin(SceneData *sceneData) {
   data.info = ""; //Reset the info msg
 
-  if (!Server::Login(data.nick, data.password)) {
-    data.info = "Wrong Data";
-  }
+  Server::Login(data.nick, data.password);
 }
 
 static void forgotPassword() {
@@ -59,13 +57,13 @@ void LoginScene::start() {
 void LoginScene::input() {}
 
 void LoginScene::update() {
-  if (!Server::IsServerOn()) {
+  /*if (!Server::IsServerOn()) {
     data.info = "The server is Off";
   } else if (data.info == "The server is Off") {
     data.info = "";
-  }
+  }*/
 
-  if (gameData.completed) {
+  if (sceneData_->completed) {
     SceneManager::ChangeScene("Game");
   } else {
     ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
@@ -89,7 +87,7 @@ void LoginScene::update() {
       ImGui::NewLine();
 
       //Check Login
-      if (ImGui::Button("Login")) checkLogin();
+      if (ImGui::Button("Login")) checkLogin(sceneData_);
 
       ImGui::NewLine();
 
