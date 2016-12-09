@@ -12,6 +12,14 @@ Object::Object() {}
 
 Object::~Object() {}
 
+void Object::setID(std::string *newID) {
+  ID_ = *newID;
+}
+
+std::string Object::ID() {
+  return ID_;
+}
+
 void Object::setTexture(const char *imagePath) {
   texture_.loadFromFile(ASSETS::ImagePath(imagePath));
   sprite_.setTexture(texture_);

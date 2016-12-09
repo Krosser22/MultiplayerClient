@@ -101,7 +101,7 @@ void GameManager::Draw() {
   }
 
   //Draw the background
-  data.window->draw(data.backgroundSprite);
+  //data.window->draw(data.backgroundSprite);
 
   //Draw
   for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window->draw(*data.listToDraw.at(i));

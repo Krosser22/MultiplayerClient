@@ -21,14 +21,6 @@ Actor::Actor() {}
 
 Actor::~Actor() {}
 
-void Actor::setID(std::string *newID) {
-  ID_ = *newID;
-}
-
-std::string Actor::ID() {
-  return ID_;
-}
-
 void Actor::moveLeft() {
   actorMovement.left = true;
 }

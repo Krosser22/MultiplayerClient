@@ -16,10 +16,6 @@ public:
   Actor();
   ~Actor();
 
-  void setID(std::string *newID);
-
-  std::string ID();
-
   //Move the actor to the left
   void moveLeft();
 
@@ -42,9 +38,6 @@ public:
   bool isGrounded();
 
 private:
-  //The ID of the actor
-  std::string ID_;
-
   //The velocity to the left and right movements
   float movementVelocity_ = 6.22f;
 

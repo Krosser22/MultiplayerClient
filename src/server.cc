@@ -137,11 +137,12 @@ void processTCPMsg(std::string *content) {
     } else if (elements.at(0) == "Forgot" && elements.size() == 2) {
       data.sceneData->completed = (elements.at(1) == "Done");
     } else if (elements.at(0) == "AddPlayer" && elements.size() == 2) {
-      Actor *actor = new Actor();
-      actor->setID(&elements.at(1));
-      actor->setTexture("enemy.png");
-      data.sceneData->enemies.push_back(*actor);
-      GameManager::AddEnemy(actor);
+      Object *enemy = new Object();
+      enemy->setID(&elements.at(1));
+      enemy->setTexture("enemy.png");
+      enemy->setPosition(100, 100);
+      data.sceneData->enemies.push_back(*enemy);
+      GameManager::AddObject(enemy);
     }
   }
 }
@@ -157,7 +158,18 @@ void processUDPMsg(std::string *content) {
             float x = std::stof(elements.at(2), &sz);
             float y = std::stof(elements.at(3), &sz);
             data.sceneData->enemies.at(i).setPosition(x, y);
-            data.sceneData->enemies.at(i).updateCollisions();
+
+            static sf::Time startTime;
+            static float timeToUpdate = 0.1f;
+            if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds()) {
+              startTime = GameManager::Time();
+              static std::vector<Object> objectList_;
+              Object *box = new Object();
+              box->setTexture("box.png");
+              box->setPosition(x, y);
+              objectList_.push_back(*box);
+              GameManager::AddObject(box);
+            }
           }
         }
       }

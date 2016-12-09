@@ -16,6 +16,10 @@ class Object {
 public:
   Object();
   ~Object();
+
+  void setID(std::string *newID);
+
+  std::string ID();
   
   void setTexture(const char *imagePath = "default.png");
 
@@ -32,6 +36,9 @@ public:
   float height();
 
 protected:
+  //The ID of the actor
+  std::string ID_;
+
   sf::Texture texture_;
 
   sf::Sprite sprite_;

@@ -14,7 +14,7 @@
 
 struct SceneData {
   Actor player;
-  std::vector<Actor> enemies;
+  std::vector<Object> enemies;
   bool completed = false;
   bool playing = false;
 };
