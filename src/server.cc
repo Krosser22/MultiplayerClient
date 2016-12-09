@@ -119,7 +119,7 @@ std::string *getTCPMsgFromServer() {
     TCPContent = content;
     if (TCPContent.size() > 0) {
       //printf("Received %d bytes\n", received);
-      printf("[ServerTCP]: %s\n", TCPContent.c_str());
+      //printf("[ServerTCP]: %s\n", TCPContent.c_str());
     }
   }
   return &TCPContent;
@@ -137,18 +137,18 @@ void processTCPMsg(std::string *content) {
     } else if (elements.at(0) == "Forgot" && elements.size() == 2) {
       data.sceneData->completed = (elements.at(1) == "Done");
     } else if (elements.at(0) == "AddPlayer" && elements.size() == 2) {
-      /*Object *enemy = new Object();
+      Object *enemy = new Object();
       enemy->setID(&elements.at(1));
       enemy->setTexture("enemy.png");
       enemy->setPosition(100, 100);
-      data.sceneData->enemies.push_back(*enemy);
-      GameManager::AddObject(enemy);*/
+      data.sceneData->enemies.push_back(enemy);
+      GameManager::AddObject(enemy);
 
-      data.sceneData->enemy1.setID(&elements.at(1));
+      /*data.sceneData->enemy1.setID(&elements.at(1));
       data.sceneData->enemy1.setTexture("enemy.png");
       data.sceneData->enemy1.setPosition(100, 100);
       data.sceneData->enemies.push_back(data.sceneData->enemy1);
-      GameManager::AddEnemy(&data.sceneData->enemy1);
+      GameManager::AddEnemy(&data.sceneData->enemy1);*/
     }
   }
 }
@@ -160,12 +160,12 @@ void processUDPMsg(std::string *content) {
     if (elements.at(0) == "Info") {
       if (elements.at(1) != data.sceneData->player.ID()) {
         for (unsigned int i = 0; i < data.sceneData->enemies.size(); ++i) {
-          if (elements.at(1) == data.sceneData->enemies.at(i).ID()) {
+          if (elements.at(1) == data.sceneData->enemies.at(i)->ID()) {
             float x = std::stof(elements.at(2), &sz);
             float y = std::stof(elements.at(3), &sz);
-            data.sceneData->enemies.at(i).setPosition(x, y);
-
-            static sf::Time startTime;
+            data.sceneData->enemies.at(i)->setPosition(x, y);
+            
+            /*static sf::Time startTime;
             static float timeToUpdate = 0.1f;
             if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds()) {
               startTime = GameManager::Time();
@@ -175,7 +175,7 @@ void processUDPMsg(std::string *content) {
               box->setPosition(x, y);
               objectList_.push_back(*box);
               GameManager::AddObject(box);
-            }
+            }*/
           }
         }
       }
@@ -196,7 +196,7 @@ std::string *getUDPMsgFromServer() {
   while (data.udpSocket.receive(content, kMaxLength, received, data.ip, port) == sf::Socket::Done) {
     UDPContent = content;
     if (UDPContent.size() > 0) {
-      printf("[ServerUDP]: %s\n", UDPContent.c_str());
+      //printf("[ServerUDP]: %s\n", UDPContent.c_str());
       processUDPMsg(&UDPContent);
     }
   }
@@ -269,9 +269,9 @@ void Server::Update() {
 
   //Update player
   static sf::Time startTime;
-  static float timeToUpdate = 1.0f;
+  static float timeToUpdate = 0.1f;
   if (data.sceneData->playing) {
-    if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds()) {
+    if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds() || true) {
       startTime = GameManager::Time();
       Actor *player = &data.sceneData->player;
       std::string msg = "Info:";
