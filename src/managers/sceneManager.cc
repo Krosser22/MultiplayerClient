@@ -181,7 +181,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     data.actualScene->update();
     
     //For testing
-    ImGui::ShowTestWindow();
+    //ImGui::ShowTestWindow();
 
     //Server
     Server::Update();

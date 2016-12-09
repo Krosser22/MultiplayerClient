@@ -137,12 +137,18 @@ void processTCPMsg(std::string *content) {
     } else if (elements.at(0) == "Forgot" && elements.size() == 2) {
       data.sceneData->completed = (elements.at(1) == "Done");
     } else if (elements.at(0) == "AddPlayer" && elements.size() == 2) {
-      Object *enemy = new Object();
+      /*Object *enemy = new Object();
       enemy->setID(&elements.at(1));
       enemy->setTexture("enemy.png");
       enemy->setPosition(100, 100);
       data.sceneData->enemies.push_back(*enemy);
-      GameManager::AddObject(enemy);
+      GameManager::AddObject(enemy);*/
+
+      data.sceneData->enemy1.setID(&elements.at(1));
+      data.sceneData->enemy1.setTexture("enemy.png");
+      data.sceneData->enemy1.setPosition(100, 100);
+      data.sceneData->enemies.push_back(data.sceneData->enemy1);
+      GameManager::AddEnemy(&data.sceneData->enemy1);
     }
   }
 }

@@ -37,9 +37,10 @@ void GameScene::start() {
   GameManager::AddActor(&sceneData_->player);
 
   //Set the enemy
-  /*sceneData_.enemies[0].setTexture("enemy.png");
-  sceneData_.enemies[0].setPosition(800.0f, 600.0f);
-  GameManager::AddActor(&sceneData_.enemies[0]);*/
+  sceneData_->enemies.push_back(sceneData_->enemy1);
+  sceneData_->enemy1.setTexture("enemy.png");
+  sceneData_->enemy1.setPosition(800.0f, 600.0f);
+  GameManager::AddActor(&sceneData_->enemy1);
 
   sceneData_->playing = true;
 }
@@ -53,15 +54,20 @@ void GameScene::input() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
 
     //Spawn test
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
       static std::vector<Object> objectList_;
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
       Object *box = new Object();
       box->setTexture("box.png");
       box->setPosition(GameManager::MouseX(), GameManager::MouseY());
       objectList_.push_back(*box);
       GameManager::AddObject(box);
     }
-
+    for (unsigned int i = 0; i < objectList_.size(); ++i) {
+      objectList_.at(i).setPosition(objectList_.at(i).positionX() + 1.0f, objectList_.at(i).positionY());
+    }
+    platformRight_.setPosition(platformRight_.positionX() + 0.1f, platformRight_.positionY());
+    sceneData_->enemy1.setPosition(sceneData_->enemy1.positionX() + 0.1f, sceneData_->enemy1.positionY());
+    
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
       SceneManager::ChangeScene("Login");
     }
