@@ -143,12 +143,6 @@ void processTCPMsg(std::string *content) {
       enemy->setPosition(100, 100);
       data.sceneData->enemies.push_back(enemy);
       GameManager::AddObject(enemy);
-
-      /*data.sceneData->enemy1.setID(&elements.at(1));
-      data.sceneData->enemy1.setTexture("enemy.png");
-      data.sceneData->enemy1.setPosition(100, 100);
-      data.sceneData->enemies.push_back(data.sceneData->enemy1);
-      GameManager::AddEnemy(&data.sceneData->enemy1);*/
     }
   }
 }
@@ -164,18 +158,6 @@ void processUDPMsg(std::string *content) {
             float x = std::stof(elements.at(2), &sz);
             float y = std::stof(elements.at(3), &sz);
             data.sceneData->enemies.at(i)->setPosition(x, y);
-            
-            /*static sf::Time startTime;
-            static float timeToUpdate = 0.1f;
-            if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds()) {
-              startTime = GameManager::Time();
-              static std::vector<Object> objectList_;
-              Object *box = new Object();
-              box->setTexture("box.png");
-              box->setPosition(x, y);
-              objectList_.push_back(*box);
-              GameManager::AddObject(box);
-            }*/
           }
         }
       }
@@ -275,10 +257,8 @@ void Server::Update() {
       startTime = GameManager::Time();
       Actor *player = &data.sceneData->player;
       std::string msg = "Info:";
-      msg.append(player->ID());
-      msg.append(":");
-      msg.append(std::to_string(player->positionX()));
-      msg.append(":");
+      msg.append(player->ID()).append(":");
+      msg.append(std::to_string(player->positionX())).append(":");
       msg.append(std::to_string(player->positionY()));
       SendUDPMsgToServer(msg.c_str());
     }
@@ -295,13 +275,17 @@ void Server::SendUDPMsgToServer(const char *msg) {
 
 void Server::Login(const char *nick, const char *password) {
   std::string msg = "Login:";
-  msg.append(nick).append(":").append(password).append("\0");
+  std::string hashedPassword = password;
+  std::hash<std::string> s;
+  s(password);
+  printf("%s\n", s);
+  msg.append(nick).append(":").append("").append("\0");
   sendTCPMsgToServer(msg.c_str());
 }
 
 void Server::ForgotPassword(const char *email) {
   std::string msg = "Forgot:";
-  msg.append(email).append("\0");
+  msg.append(email).append(":\0");
   sendTCPMsgToServer(msg.c_str());
 }
 

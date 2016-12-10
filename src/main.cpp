@@ -67,3 +67,14 @@ int main(int argc, char **argv) {
   SceneManager::StartSceneManager("Intro");
   return 0;
 }
+
+/*
+NEW MECHANICS
+
+-Shot fire
+-Get Powerup
+-Powerup: doubleDamage
+-Shot arrow (parabola)
+-Spwan bombs
+
+*/
