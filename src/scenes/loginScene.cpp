@@ -57,49 +57,43 @@ void LoginScene::start() {
 void LoginScene::input() {}
 
 void LoginScene::update() {
-  /*if (!Server::IsServerOn()) {
-    data.info = "The server is Off";
-  } else if (data.info == "The server is Off") {
-    data.info = "";
-  }*/
+  ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
+  ImGui::Begin("Login", &data.opened, ImVec2(data.width, data.height), 0.0f, data.flags);
+  {
+    //Info
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), data.info.c_str());
 
+    ImGui::NewLine();
+
+    //Nick
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Nick:");
+    ImGui::InputText("##Nick", data.nick, IM_ARRAYSIZE(data.nick));
+
+    ImGui::NewLine();
+
+    //Password
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Password:");
+    ImGui::InputText("##Password", data.password, IM_ARRAYSIZE(data.password), ImGuiInputTextFlags_Password);
+
+    ImGui::NewLine();
+
+    //Check Login
+    if (ImGui::Button("Login")) checkLogin(sceneData_);
+
+    ImGui::NewLine();
+
+    //Create Account
+    if (ImGui::Button("Create Account")) createAccount();
+
+    ImGui::NewLine();
+
+    //Forgot Password
+    if (ImGui::Button("Forgot Password")) forgotPassword();
+  }
+  ImGui::End();
+  
   if (sceneData_->completed) {
     SceneManager::ChangeScene("Game");
-  } else {
-    ImGui::SetNextWindowPos(ImVec2(data.positionX, data.positionY));
-    ImGui::Begin("Login", &data.opened, ImVec2(data.width, data.height), 0.0f, data.flags);
-    {
-      //Info
-      ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), data.info.c_str());
-
-      ImGui::NewLine();
-
-      //Nick
-      ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Nick:");
-      ImGui::InputText("##Nick", data.nick, IM_ARRAYSIZE(data.nick));
-
-      ImGui::NewLine();
-
-      //Password
-      ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Password:");
-      ImGui::InputText("##Password", data.password, IM_ARRAYSIZE(data.password), ImGuiInputTextFlags_Password);
-
-      ImGui::NewLine();
-
-      //Check Login
-      if (ImGui::Button("Login")) checkLogin(sceneData_);
-
-      ImGui::NewLine();
-
-      //Create Account
-      if (ImGui::Button("Create Account")) createAccount();
-
-      ImGui::NewLine();
-
-      //Forgot Password
-      if (ImGui::Button("Forgot Password")) forgotPassword();
-    }
-    ImGui::End();
   }
 }
 

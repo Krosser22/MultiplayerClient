@@ -119,30 +119,34 @@ std::string *getTCPMsgFromServer() {
     TCPContent = content;
     if (TCPContent.size() > 0) {
       //printf("Received %d bytes\n", received);
-      //printf("[ServerTCP]: %s\n", TCPContent.c_str());
+      printf("[ServerTCP]: %s\n", TCPContent.c_str());
     }
   }
   return &TCPContent;
 }
 
 void processTCPMsg(std::string *content) {
-  std::vector<std::string> elements = split(*content, ':');
+  std::vector<std::string> commands = split(*content, '\n');
 
-  if (elements.size() > 0) {
-    if (elements.at(0) == "Login" && elements.size() == 2) {
-      data.sceneData->completed = true;
-      data.sceneData->player.setID(&elements.at(1));
-    } else if (elements.at(0) == "Create" && elements.size() == 2) {
-      data.sceneData->completed = (elements.at(1) == "Done");
-    } else if (elements.at(0) == "Forgot" && elements.size() == 2) {
-      data.sceneData->completed = (elements.at(1) == "Done");
-    } else if (elements.at(0) == "AddPlayer" && elements.size() == 2) {
-      Object *enemy = new Object();
-      enemy->setID(&elements.at(1));
-      enemy->setTexture("enemy.png");
-      enemy->setPosition(100, 100);
-      data.sceneData->enemies.push_back(enemy);
-      GameManager::AddObject(enemy);
+  for (unsigned int i = 0; i < commands.size(); ++i) {
+    std::vector<std::string> command = split(commands.at(i), ':');
+
+    if (command.size() > 0) {
+      if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
+        data.sceneData->completed = true;
+        data.sceneData->player.setID(&command.at(1));
+      } else if (command.at(0) == "Create" && command.size() == 2) {
+        data.sceneData->completed = (command.at(1) == "Done");
+      } else if (command.at(0) == "Forgot" && command.size() == 2) {
+        data.sceneData->completed = (command.at(1) == "Done");
+      } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
+        Object *enemy = new Object();
+        enemy->setID(&command.at(1));
+        enemy->setTexture("enemy.png");
+        enemy->setPosition(100, 100);
+        data.sceneData->enemies.push_back(enemy);
+        GameManager::AddObject(enemy);
+      }
     }
   }
 }
@@ -178,7 +182,7 @@ std::string *getUDPMsgFromServer() {
   while (data.udpSocket.receive(content, kMaxLength, received, data.ip, port) == sf::Socket::Done) {
     UDPContent = content;
     if (UDPContent.size() > 0) {
-      //printf("[ServerUDP]: %s\n", UDPContent.c_str());
+      printf("[ServerUDP]: %s\n", UDPContent.c_str());
       processUDPMsg(&UDPContent);
     }
   }
@@ -283,7 +287,7 @@ void Server::Login(const char *nick, const char *password) {
 
 void Server::ForgotPassword(const char *email) {
   std::string msg = "Forgot:";
-  msg.append(email).append(":\0");
+  msg.append(email).append("\0");
   sendTCPMsgToServer(msg.c_str());
 }
 
