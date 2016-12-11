@@ -90,8 +90,8 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   data.actualScene = data.nextScene;
 
   //Server
-  Server::Start();
-  Server::SetSceneData(&data.sceneData);
+  NetworkManager::Start();
+  NetworkManager::SetSceneData(&data.sceneData);
 
   //Start the default scene
   data.actualScene->start();
@@ -171,7 +171,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
       GameManager::ClearDrawList();
       data.actualScene->finish();
       data.actualScene = data.nextScene;
-      Server::SetSceneData(&data.sceneData);
+      NetworkManager::SetSceneData(&data.sceneData);
       data.actualScene->sceneData_ = &data.sceneData;
       data.actualScene->start();
       data.sceneChanged = false;
@@ -184,7 +184,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     //ImGui::ShowTestWindow();
 
     //Server
-    Server::Update();
+    NetworkManager::Update();
 
     //FPS
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
@@ -204,7 +204,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   }
 
   //Finish the game
-  Server::Finish();
+  NetworkManager::Finish();
   ImGui::SFML::Shutdown();
   data.actualScene->finish();
   data.actualScene = nullptr;

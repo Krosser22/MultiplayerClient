@@ -36,7 +36,7 @@ static void createAccount() {
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos && !strNick.empty() && !strPass1.empty() && strPass1 == strPass2) {
-    Server::CreateAccount(data.email, data.nick, data.password1);
+    NetworkManager::CreateAccount(data.email, data.nick, data.password1);
   } else {
     data.info = "Something goes wrong";
   }

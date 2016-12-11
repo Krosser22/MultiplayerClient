@@ -27,7 +27,7 @@ static struct LoginSceneData {
 static void checkLogin(SceneData *sceneData) {
   data.info = ""; //Reset the info msg
 
-  Server::Login(data.nick, data.password);
+  NetworkManager::Login(data.nick, data.password);
 }
 
 static void forgotPassword() {

@@ -6,15 +6,14 @@
 *** ////////////////////////////////////////////
 **/
 
-#include "server.h"
-
-//#pragma comment(lib, "sfml-network.lib")
-
 #include <stdio.h>
 #include <deque>
 #include <SFML/Network.hpp>
 #include <sstream>
 #include "managers/gameManager.h"
+#include "managers/networkManager.h"
+
+//#pragma comment(lib, "sfml-network.lib")
 
 static const int kMaxLength = 1024;
 #define IP "127.0.0.1"
@@ -62,7 +61,7 @@ static struct ServerData {
   }
 }
 
-void Server::Start() {
+void NetworkManager::Start() {
   sf::TcpListener listener;
   listener.listen(SERVER_PORT);
   listener.accept(data.socket);
@@ -71,7 +70,7 @@ void Server::Start() {
   data.thread->launch();
 }
 
-void Server::Finish() {
+void NetworkManager::Finish() {
   if (data.thread) {
     data.thread->wait();
     delete data.thread;
@@ -198,13 +197,13 @@ std::string *getUDPMsgFromServer() {
   return &UDPContent;
 }
 
-void Server::SetSceneData(SceneData *sceneData) {
+void NetworkManager::SetSceneData(SceneData *sceneData) {
   data.sceneData = sceneData;
   data.sceneData->completed = false;
   data.sceneData->playing = false;
 }
 
-void Server::Start() {
+void NetworkManager::Start() {
   static bool doOnce = false;
   if (!doOnce) {
     doOnce = true;
@@ -232,7 +231,7 @@ void Server::Start() {
   }
 }
 
-void Server::Finish() {
+void NetworkManager::Finish() {
   //TCP
   data.tcpSocket.disconnect();
 
@@ -240,7 +239,7 @@ void Server::Finish() {
   data.udpSocket.unbind();
 }
 
-void Server::Update() {
+void NetworkManager::Update() {
   //Just in case something goes wrong on the server side
   if (!data.conected) {
     data.conected = connect();
@@ -269,7 +268,7 @@ void Server::Update() {
   }
 }
 
-void Server::SendUDPMsgToServer(const char *msg) {
+void NetworkManager::SendUDPMsgToServer(const char *msg) {
   sf::Packet packetSend;
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
@@ -277,7 +276,7 @@ void Server::SendUDPMsgToServer(const char *msg) {
   data.udpSocket.send(packetSend, IP, data.UDPPort);
 }
 
-void Server::Login(const char *nick, const char *password) {
+void NetworkManager::Login(const char *nick, const char *password) {
   std::string stringPassword = password;
   std::hash<std::string> hash;
   std::string msg = "Login:";
@@ -285,13 +284,13 @@ void Server::Login(const char *nick, const char *password) {
   sendTCPMsgToServer(msg.c_str());
 }
 
-void Server::ForgotPassword(const char *email) {
+void NetworkManager::ForgotPassword(const char *email) {
   std::string msg = "Forgot:";
   msg.append(email).append("\0");
   sendTCPMsgToServer(msg.c_str());
 }
 
-void Server::CreateAccount(const char *email, const char *nick, const char *password) {
+void NetworkManager::CreateAccount(const char *email, const char *nick, const char *password) {
   std::string stringPassword = password;
   std::hash<std::string> hash;
   std::string msg = "Create:";

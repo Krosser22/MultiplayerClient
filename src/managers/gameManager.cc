@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
 #include "managers/gameManager.h"
-#include "server.h"
+#include "managers/networkManager.h"
 
 #define WINDOW_WIDTH 960
 #define WINDOW_HEIGHT 704

@@ -6,8 +6,8 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __SERVER_H__
-#define __SERVER_H__
+#ifndef __NETWORK_MANAGER_H__
+#define __NETWORK_MANAGER_H__
 
 #include <deque>
 #include "actor.h"
@@ -19,7 +19,7 @@ struct SceneData {
   bool playing = false;
 };
 
-namespace Server {
+namespace NetworkManager {
   //Set the scene data
   void SetSceneData(SceneData *sceneData);
 
@@ -45,4 +45,4 @@ namespace Server {
   void CreateAccount(const char *email, const char *nick, const char *password);
 };
 
-#endif //__SERVER_H__
+#endif //__NETWORK_MANAGER_H__

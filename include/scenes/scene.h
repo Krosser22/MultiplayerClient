@@ -14,7 +14,7 @@
 #include <SFML/Window.hpp>
 #include "managers/gameManager.h"
 #include "managers/sceneManager.h"
-#include "server.h"
+#include "managers/networkManager.h"
 
 class Scene {
 public:

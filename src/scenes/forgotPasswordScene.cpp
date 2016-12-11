@@ -29,7 +29,7 @@ static void sendInfoToEmail() {
   int atPos = strEmail.find('@');
   int dotPos = strEmail.find('.');
   if (atPos > 0 && dotPos > 0 && atPos < dotPos) {
-    Server::ForgotPassword(data.email);
+    NetworkManager::ForgotPassword(data.email);
   } else {
     data.info = "Incorrect Email format";
   }

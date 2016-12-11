@@ -9,7 +9,7 @@
 #include <deque>
 #include "actor.h"
 #include "managers/gameManager.h"
-#include "server.h"
+#include "managers/networkManager.h"
 
 static int IDCount = 0;
 static struct ActorMovement {
