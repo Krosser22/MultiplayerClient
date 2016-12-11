@@ -274,12 +274,10 @@ void Server::SendUDPMsgToServer(const char *msg) {
 }
 
 void Server::Login(const char *nick, const char *password) {
+  std::string stringPassword = password;
+  std::hash<std::string> hash;
   std::string msg = "Login:";
-  std::string hashedPassword = password;
-  std::hash<std::string> s;
-  s(password);
-  printf("%s\n", s);
-  msg.append(nick).append(":").append("").append("\0");
+  msg.append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
   sendTCPMsgToServer(msg.c_str());
 }
 
@@ -290,7 +288,9 @@ void Server::ForgotPassword(const char *email) {
 }
 
 void Server::CreateAccount(const char *email, const char *nick, const char *password) {
+  std::string stringPassword = password;
+  std::hash<std::string> hash;
   std::string msg = "Create:";
-  msg.append(email).append(":").append(nick).append(":").append(password).append("\0");
+  msg.append(email).append(":").append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
   sendTCPMsgToServer(msg.c_str());
 }

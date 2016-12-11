@@ -59,7 +59,7 @@ void Actor::crouch() {
 void Actor::updateCollisions() {
   movementList.push_back(movement);
   movement = movementList.front();
-  printf("%d\n", movement.ID);
+  //printf("%d\n", movement.ID);
   movementList.pop_front();
   //Backup of the last valid position
   float lastX = sprite_.getPosition().x;
