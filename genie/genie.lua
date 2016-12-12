@@ -24,6 +24,7 @@ solution "multiplayerClient"
     links {
       "openal32",
       "opengl32",
+	  "openssl",
       "sfml-audio-d",
       "sfml-graphics-d",
       "sfml-network-d",
@@ -38,6 +39,7 @@ solution "multiplayerClient"
     links {
       "openal32",
       "opengl32",
+	  "openssl",
       "sfml-graphics",
       "sfml-network",
       "sfml-system",
@@ -62,6 +64,7 @@ solution "multiplayerClient"
   }
   
   os.copyfile("../lib/openal32.lib", "../project/build/bin/windows/openal32.lib")
+  os.copyfile("../lib/opensl.lib", "../project/build/bin/windows/opensl.lib")
   os.copyfile("../lib/openal32.dll", "../project/build/bin/windows/openal32.dll")
   os.copyfile("../lib/sfml-audio-2.dll", "../project/build/bin/windows/sfml-audio-2.dll")
   os.copyfile("../lib/sfml-audio.lib", "../project/build/bin/windows/sfml-audio.lib")

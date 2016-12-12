@@ -382,7 +382,7 @@ int public_decrypt(unsigned char * enc_data, int data_len, unsigned char * key, 
   return result;
 }
 
-int main2() {
+void main2() {
   char plainText[2048 / 8] = "Hello this is Ravi"; //key length : 2048
 
   char publicKey[] = "-----BEGIN PUBLIC KEY-----\n"\
