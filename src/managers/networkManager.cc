@@ -15,25 +15,20 @@
 
 //#pragma comment(lib, "sfml-network.lib")
 
-static const int kMaxLength = 1024;
 #define IP "127.0.0.1"
-std::string::size_type sz;   // alias of size_t
+static const unsigned short TCPPort = 8080;
+static const unsigned short UDPPort = 2055;
+static const int kMaxLength = 1024;
 
 static struct ServerData {
-  //SERVER
-  sf::IpAddress ip;
-  unsigned short TCPPort = 8080;
-  unsigned short UDPPort = 2055;
   unsigned short UDPLocalPort = 0;
-  bool conected = false;
 
-  //TCP
+  sf::IpAddress ip;
   sf::TcpSocket tcpSocket;
-  std::deque<std::string> msgTCPReceived;
-
-  //UDP
   sf::UdpSocket udpSocket;
-  std::deque<std::string> msgUDPReceived;
+
+  bool conected = false;
+  std::string SPK = "";
 
   //sf::Thread* thread;
 
@@ -92,9 +87,19 @@ std::vector<std::string> split(const std::string &s, char delim) {
   return elems;
 }
 
+void getSPK(std::string *msg) {
+  //TODO - this function must get the ServerPublicKey
+  data.SPK = "NewServerPublicKey";
+}
+
+void decryptMsg(std::string *msg, std::string *decryptedMsg) {
+  //TODO - this function must use the ServerPublicKey to decrypt the incoming msg
+  *decryptedMsg = *msg;
+}
+
 bool connect() {
   data.ip = IP;
-  return (data.tcpSocket.connect(data.ip, data.TCPPort) == sf::Socket::Done);
+  return (data.tcpSocket.connect(data.ip, TCPPort) == sf::Socket::Done);
 }
 
 void sendTCPMsgToServer(const char *msg) {
@@ -125,32 +130,47 @@ std::string *getTCPMsgFromServer() {
 }
 
 void processTCPMsg(std::string *content) {
-  std::vector<std::string> commands = split(*content, '\n');
+  if (content->size() > 0) {
+    std::string decryptedMsg = "";
 
-  for (unsigned int i = 0; i < commands.size(); ++i) {
-    std::vector<std::string> command = split(commands.at(i), ':');
+    //If the Server Public Key is empty the msg must be it
+    if (data.SPK == "") {
+      //Get the public key from the server
+      getSPK(content);
+    }
 
-    if (command.size() > 0) {
-      if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
-        data.sceneData->completed = true;
-        data.sceneData->player.setID(&command.at(1));
-      } else if (command.at(0) == "Create" && command.size() == 2) {
-        data.sceneData->completed = (command.at(1) == "Done");
-      } else if (command.at(0) == "Forgot" && command.size() == 2) {
-        data.sceneData->completed = (command.at(1) == "Done");
-      } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
-        Object *enemy = new Object();
-        enemy->setID(&command.at(1));
-        enemy->setTexture("enemy.png");
-        enemy->setPosition(100, 100);
-        data.sceneData->enemies.push_back(enemy);
-        GameManager::AddObject(enemy);
+    //Decrypt the msg from the server
+    decryptMsg(content, &decryptedMsg);
+
+    //Get the commands from the msg
+    std::vector<std::string> commands = split(decryptedMsg, '\n');
+
+    for (unsigned int i = 0; i < commands.size(); ++i) {
+      std::vector<std::string> command = split(commands.at(i), ':');
+
+      if (command.size() > 0) {
+        if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
+          data.sceneData->completed = true;
+          data.sceneData->player.setID(&command.at(1));
+        } else if (command.at(0) == "Create" && command.size() == 2) {
+          data.sceneData->completed = (command.at(1) == "Done");
+        } else if (command.at(0) == "Forgot" && command.size() == 2) {
+          data.sceneData->completed = (command.at(1) == "Done");
+        } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
+          Object *enemy = new Object();
+          enemy->setID(&command.at(1));
+          enemy->setTexture("enemy.png");
+          enemy->setPosition(100, 100);
+          data.sceneData->enemies.push_back(enemy);
+          GameManager::AddObject(enemy);
+        }
       }
     }
   }
 }
 
 void processUDPMsg(std::string *content) {
+  static std::string::size_type sz; //Alias of size_t
   std::vector<std::string> elements = split(*content, ':');
   
   if (elements.size() > 0) {
@@ -226,7 +246,7 @@ void NetworkManager::Start() {
       printf("ERROR: binding UDP port\n");
     } else {
       data.UDPLocalPort = data.udpSocket.getLocalPort();
-      printf("UPD Socket bind to the port: %d\n", data.UDPLocalPort);
+      printf("UPD Socket binded to the port: %d\n", data.UDPLocalPort);
     }
   }
 }
@@ -273,7 +293,7 @@ void NetworkManager::SendUDPMsgToServer(const char *msg) {
   packetSend.append(msg, strlen(msg));
   packetSend.append("\0", 1);
   //printf("Sending: %s\n", msg);
-  data.udpSocket.send(packetSend, IP, data.UDPPort);
+  data.udpSocket.send(packetSend, IP, UDPPort);
 }
 
 void NetworkManager::Login(const char *nick, const char *password) {
@@ -296,4 +316,139 @@ void NetworkManager::CreateAccount(const char *email, const char *nick, const ch
   std::string msg = "Create:";
   msg.append(email).append(":").append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
   sendTCPMsgToServer(msg.c_str());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/rsa.h>
+#include <openssl/evp.h>
+#include <openssl/bio.h>
+#include <openssl/err.h>
+#include <stdio.h>
+
+int padding = 2;
+
+RSA *createRSA(unsigned char * key, bool isPublic)
+{
+  RSA *rsa = nullptr;
+  BIO *keybio;
+  keybio = BIO_new_mem_buf(key, -1);
+  if (keybio == nullptr) {
+    printf("Failed to create key BIO");
+    return 0;
+  }
+  if (isPublic) rsa = PEM_read_bio_RSA_PUBKEY(keybio, &rsa, nullptr, nullptr);
+  else rsa = PEM_read_bio_RSAPrivateKey(keybio, &rsa, nullptr, nullptr);
+
+  if (rsa == nullptr) {
+    printf("Failed to create RSA");
+  }
+
+  return rsa;
+}
+
+int public_encrypt(unsigned char * data, int data_len, unsigned char * key, unsigned char *encrypted) {
+  RSA *rsa = createRSA(key, 1);
+  int result = RSA_public_encrypt(data_len, data, encrypted, rsa, padding);
+  return result;
+}
+
+int private_decrypt(unsigned char * enc_data, int data_len, unsigned char * key, unsigned char *decrypted) {
+  RSA *rsa = createRSA(key, 0);
+  int result = RSA_private_decrypt(data_len, enc_data, decrypted, rsa, padding);
+  return result;
+}
+
+int private_encrypt(unsigned char * data, int data_len, unsigned char * key, unsigned char *encrypted) {
+  RSA *rsa = createRSA(key, 0);
+  int result = RSA_private_encrypt(data_len, data, encrypted, rsa, padding);
+  return result;
+}
+
+int public_decrypt(unsigned char * enc_data, int data_len, unsigned char * key, unsigned char *decrypted) {
+  RSA *rsa = createRSA(key, 1);
+  int result = RSA_public_decrypt(data_len, enc_data, decrypted, rsa, padding);
+  return result;
+}
+
+int main2() {
+  char plainText[2048 / 8] = "Hello this is Ravi"; //key length : 2048
+
+  char publicKey[] = "-----BEGIN PUBLIC KEY-----\n"\
+    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy8Dbv8prpJ/0kKhlGeJY\n"\
+    "ozo2t60EG8L0561g13R29LvMR5hyvGZlGJpmn65+A4xHXInJYiPuKzrKUnApeLZ+\n"\
+    "vw1HocOAZtWK0z3r26uA8kQYOKX9Qt/DbCdvsF9wF8gRK0ptx9M6R13NvBxvVQAp\n"\
+    "fc9jB9nTzphOgM4JiEYvlV8FLhg9yZovMYd6Wwf3aoXK891VQxTr/kQYoq1Yp+68\n"\
+    "i6T4nNq7NWC+UNVjQHxNQMQMzU6lWCX8zyg3yH88OAQkUXIXKfQ+NkvYQ1cxaMoV\n"\
+    "PpY72+eVthKzpMeyHkBn7ciumk5qgLTEJAfWZpe4f4eFZj/Rc8Y8Jj2IS5kVPjUy\n"\
+    "wQIDAQAB\n"\
+    "-----END PUBLIC KEY-----\n";
+
+  char privateKey[] = "-----BEGIN RSA PRIVATE KEY-----\n"\
+    "MIIEowIBAAKCAQEAy8Dbv8prpJ/0kKhlGeJYozo2t60EG8L0561g13R29LvMR5hy\n"\
+    "vGZlGJpmn65+A4xHXInJYiPuKzrKUnApeLZ+vw1HocOAZtWK0z3r26uA8kQYOKX9\n"\
+    "Qt/DbCdvsF9wF8gRK0ptx9M6R13NvBxvVQApfc9jB9nTzphOgM4JiEYvlV8FLhg9\n"\
+    "yZovMYd6Wwf3aoXK891VQxTr/kQYoq1Yp+68i6T4nNq7NWC+UNVjQHxNQMQMzU6l\n"\
+    "WCX8zyg3yH88OAQkUXIXKfQ+NkvYQ1cxaMoVPpY72+eVthKzpMeyHkBn7ciumk5q\n"\
+    "gLTEJAfWZpe4f4eFZj/Rc8Y8Jj2IS5kVPjUywQIDAQABAoIBADhg1u1Mv1hAAlX8\n"\
+    "omz1Gn2f4AAW2aos2cM5UDCNw1SYmj+9SRIkaxjRsE/C4o9sw1oxrg1/z6kajV0e\n"\
+    "N/t008FdlVKHXAIYWF93JMoVvIpMmT8jft6AN/y3NMpivgt2inmmEJZYNioFJKZG\n"\
+    "X+/vKYvsVISZm2fw8NfnKvAQK55yu+GRWBZGOeS9K+LbYvOwcrjKhHz66m4bedKd\n"\
+    "gVAix6NE5iwmjNXktSQlJMCjbtdNXg/xo1/G4kG2p/MO1HLcKfe1N5FgBiXj3Qjl\n"\
+    "vgvjJZkh1as2KTgaPOBqZaP03738VnYg23ISyvfT/teArVGtxrmFP7939EvJFKpF\n"\
+    "1wTxuDkCgYEA7t0DR37zt+dEJy+5vm7zSmN97VenwQJFWMiulkHGa0yU3lLasxxu\n"\
+    "m0oUtndIjenIvSx6t3Y+agK2F3EPbb0AZ5wZ1p1IXs4vktgeQwSSBdqcM8LZFDvZ\n"\
+    "uPboQnJoRdIkd62XnP5ekIEIBAfOp8v2wFpSfE7nNH2u4CpAXNSF9HsCgYEA2l8D\n"\
+    "JrDE5m9Kkn+J4l+AdGfeBL1igPF3DnuPoV67BpgiaAgI4h25UJzXiDKKoa706S0D\n"\
+    "4XB74zOLX11MaGPMIdhlG+SgeQfNoC5lE4ZWXNyESJH1SVgRGT9nBC2vtL6bxCVV\n"\
+    "WBkTeC5D6c/QXcai6yw6OYyNNdp0uznKURe1xvMCgYBVYYcEjWqMuAvyferFGV+5\n"\
+    "nWqr5gM+yJMFM2bEqupD/HHSLoeiMm2O8KIKvwSeRYzNohKTdZ7FwgZYxr8fGMoG\n"\
+    "PxQ1VK9DxCvZL4tRpVaU5Rmknud9hg9DQG6xIbgIDR+f79sb8QjYWmcFGc1SyWOA\n"\
+    "SkjlykZ2yt4xnqi3BfiD9QKBgGqLgRYXmXp1QoVIBRaWUi55nzHg1XbkWZqPXvz1\n"\
+    "I3uMLv1jLjJlHk3euKqTPmC05HoApKwSHeA0/gOBmg404xyAYJTDcCidTg6hlF96\n"\
+    "ZBja3xApZuxqM62F6dV4FQqzFX0WWhWp5n301N33r0qR6FumMKJzmVJ1TA8tmzEF\n"\
+    "yINRAoGBAJqioYs8rK6eXzA8ywYLjqTLu/yQSLBn/4ta36K8DyCoLNlNxSuox+A5\n"\
+    "w6z2vEfRVQDq4Hm4vBzjdi3QfYLNkTiTqLcvgWZ+eX44ogXtdTDO7c+GeMKWz4XX\n"\
+    "uJSUVL5+CVjKLjZEJ6Qc2WZLl94xSwL71E41H4YciVnSCQxVc4Jw\n"\
+    "-----END RSA PRIVATE KEY-----\n";
+
+  unsigned char encrypted[4098] = {};
+  unsigned char decrypted[4098] = {};
+
+  int encrypted_length = public_encrypt((unsigned char *)plainText, strlen(plainText), (unsigned char *)publicKey, encrypted);
+  if (encrypted_length == -1) {
+    printf("Public Encrypt failed ");
+  }
+  printf("Encrypted length =%d\n", encrypted_length);
+
+  int decrypted_length = private_decrypt(encrypted, encrypted_length, (unsigned char *)privateKey, decrypted);
+  if (decrypted_length == -1) {
+    printf("Private Decrypt failed ");
+  }
+  printf("Decrypted Text =%s\n", decrypted);
+  printf("Decrypted Length =%d\n", decrypted_length);
+
+  encrypted_length = private_encrypt((unsigned char *)plainText, strlen(plainText), (unsigned char *)privateKey, encrypted);
+  if (encrypted_length == -1) {
+    printf("Private Encrypt failed");
+  }
+  printf("Encrypted length =%d\n", encrypted_length);
+
+  decrypted_length = public_decrypt(encrypted, encrypted_length, (unsigned char *)publicKey, decrypted);
+  if (decrypted_length == -1) {
+    printf("Public Decrypt failed");
+  }
+  printf("Decrypted Text =%s\n", decrypted);
+  printf("Decrypted Length =%d\n", decrypted_length);
 }

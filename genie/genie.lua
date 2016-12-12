@@ -98,6 +98,7 @@ project "multiplayerClient"
     "../include",
     "../deps/SFML/include",
     "../deps/imgui",
+    "../deps/openssl/include",
   }
   
   files {
@@ -108,6 +109,7 @@ project "multiplayerClient"
     "../deps/imgui/imgui_draw.cpp",
     "../deps/imgui/imgui-SFML.cpp",
     "../deps/imgui/imgui_demo.cpp",
+    "../deps/openssl/include/**.*",
   }
 
   defines {
