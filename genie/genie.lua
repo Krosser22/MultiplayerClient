@@ -24,7 +24,8 @@ solution "multiplayerClient"
     links {
       "openal32",
       "opengl32",
-	  "openssl",
+	  "libeay32",
+	  "ssleay32",
       "sfml-audio-d",
       "sfml-graphics-d",
       "sfml-network-d",
@@ -39,7 +40,8 @@ solution "multiplayerClient"
     links {
       "openal32",
       "opengl32",
-	  "openssl",
+	  "libeay32",
+	  "ssleay32",
       "sfml-graphics",
       "sfml-network",
       "sfml-system",
@@ -63,8 +65,9 @@ solution "multiplayerClient"
     description = "Set the output location for the generated files"
   }
   
+  os.copyfile("../lib/libeay32.lib", "../project/build/bin/windows/libeay32.lib")
+  os.copyfile("../lib/ssleay32.lib", "../project/build/bin/windows/ssleay32.lib")
   os.copyfile("../lib/openal32.lib", "../project/build/bin/windows/openal32.lib")
-  os.copyfile("../lib/opensl.lib", "../project/build/bin/windows/opensl.lib")
   os.copyfile("../lib/openal32.dll", "../project/build/bin/windows/openal32.dll")
   os.copyfile("../lib/sfml-audio-2.dll", "../project/build/bin/windows/sfml-audio-2.dll")
   os.copyfile("../lib/sfml-audio.lib", "../project/build/bin/windows/sfml-audio.lib")

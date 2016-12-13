@@ -10,6 +10,9 @@
 #include <deque>
 #include <SFML/Network.hpp>
 #include <sstream>
+#include <openssl/ssl.h>
+#include <openssl/bio.h>
+#include <openssl/err.h>
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
 
@@ -89,7 +92,8 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 void getSPK(std::string *msg) {
   //TODO - this function must get the ServerPublicKey
-  data.SPK = "NewServerPublicKey";
+  data.SPK = *msg;
+  printf("[SSL protection ON]\n");
 }
 
 void decryptMsg(std::string *msg, std::string *decryptedMsg) {
@@ -137,32 +141,32 @@ void processTCPMsg(std::string *content) {
     if (data.SPK == "") {
       //Get the public key from the server
       getSPK(content);
-    }
+    } else {
+      //Decrypt the msg from the server
+      decryptMsg(content, &decryptedMsg);
 
-    //Decrypt the msg from the server
-    decryptMsg(content, &decryptedMsg);
+      //Get the commands from the msg
+      std::vector<std::string> commands = split(decryptedMsg, '\n');
 
-    //Get the commands from the msg
-    std::vector<std::string> commands = split(decryptedMsg, '\n');
+      for (unsigned int i = 0; i < commands.size(); ++i) {
+        std::vector<std::string> command = split(commands.at(i), ':');
 
-    for (unsigned int i = 0; i < commands.size(); ++i) {
-      std::vector<std::string> command = split(commands.at(i), ':');
-
-      if (command.size() > 0) {
-        if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
-          data.sceneData->completed = true;
-          data.sceneData->player.setID(&command.at(1));
-        } else if (command.at(0) == "Create" && command.size() == 2) {
-          data.sceneData->completed = (command.at(1) == "Done");
-        } else if (command.at(0) == "Forgot" && command.size() == 2) {
-          data.sceneData->completed = (command.at(1) == "Done");
-        } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
-          Object *enemy = new Object();
-          enemy->setID(&command.at(1));
-          enemy->setTexture("enemy.png");
-          enemy->setPosition(100, 100);
-          data.sceneData->enemies.push_back(enemy);
-          GameManager::AddObject(enemy);
+        if (command.size() > 0) {
+          if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
+            data.sceneData->completed = true;
+            data.sceneData->player.setID(&command.at(1));
+          } else if (command.at(0) == "Create" && command.size() == 2) {
+            data.sceneData->completed = (command.at(1) == "Done");
+          } else if (command.at(0) == "Forgot" && command.size() == 2) {
+            data.sceneData->completed = (command.at(1) == "Done");
+          } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
+            Object *enemy = new Object();
+            enemy->setID(&command.at(1));
+            enemy->setTexture("enemy.png");
+            enemy->setPosition(100, 100);
+            data.sceneData->enemies.push_back(enemy);
+            GameManager::AddObject(enemy);
+          }
         }
       }
     }
@@ -248,6 +252,12 @@ void NetworkManager::Start() {
       data.UDPLocalPort = data.udpSocket.getLocalPort();
       printf("UPD Socket binded to the port: %d\n", data.UDPLocalPort);
     }
+
+    //OpenSSL
+    SSL_load_error_strings();
+    ERR_load_BIO_strings();
+    OpenSSL_add_all_algorithms();
+    main2();
   }
 }
 

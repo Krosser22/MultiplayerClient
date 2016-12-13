@@ -6,5 +6,5 @@
 :: ////////////////////////////////////////////
 ::
 
-genie.exe --dotnet=msnet --file=genie.lua --os=windows --platform=x64 --to=../project vs2015
+genie.exe --dotnet=msnet --file=genie.lua --os=windows --platform=x32 --to=../project vs2015
 pause
