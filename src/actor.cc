@@ -18,12 +18,20 @@ static struct ActorMovement {
     right = false;
     up = false;
     down = false;
+    interact = false;
+    action = false;
+    sound = false;
+    drop = false;
     ID = ++IDCount;
   }
   bool left;
   bool right;
   bool up;
   bool down;
+  bool interact;
+  bool action;
+  bool sound;
+  bool drop;
   int ID;
 } movement;
 
@@ -54,6 +62,14 @@ void Actor::jump() {
 
 void Actor::crouch() {
   movement.down = true;
+}
+
+void Actor::interact() {
+  movement.interact = true;
+}
+
+void Actor::action() {
+  movement.action = true;
 }
 
 void Actor::updateCollisions() {
@@ -125,6 +141,10 @@ void Actor::updateCollisions() {
   movement.right = false;
   movement.up = false;
   movement.down = false;
+  movement.interact = false;
+  movement.action = false;
+  movement.sound = false;
+  movement.drop = false;
   movement.ID = ++IDCount;
 }
 
@@ -134,4 +154,12 @@ bool Actor::isJumping() {
 
 bool Actor::isGrounded() {
   return bIsGrounded_;
+}
+
+bool Actor::isInteracting() {
+  return movement.interact;
+}
+
+void Actor::getPickup(Pickup *pickup) {
+  weapon_ = pickup;
 }

@@ -9,7 +9,7 @@
 #ifndef __ACTOR_H__
 #define __ACTOR_H__
 
-#include "object.h"
+#include "pickup.h"
 
 class Actor : public Object {
 public:
@@ -28,7 +28,13 @@ public:
   //Makes the actor crouch
   void crouch();
 
-  //Update the collisions (This function will be called at the gameManager
+  //Interacts with anything near you
+  void interact();
+
+  //Shoots at the movement direction
+  void action();
+
+  //Update the collisions (This function will be called at the gameManager)
   void updateCollisions();
 
   //Return if the actor is jumping
@@ -36,6 +42,12 @@ public:
 
   //Return if the actor is grounded
   bool isGrounded();
+
+  //Return if the actor is interacting
+  bool isInteracting();
+
+  //Gets a pickup
+  void getPickup(Pickup *pickup);
 
 private:
   //The velocity to the left and right movements
@@ -73,6 +85,9 @@ private:
 
   //The time to get the max falling speed
   float timeToMaxFallingSpeed_ = 600;
+
+  //The actual weapon
+  Pickup *weapon_;
 };
 
 #endif //__ACTOR_H__

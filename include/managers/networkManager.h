@@ -13,8 +13,52 @@
 #include "actor.h"
 
 struct SceneData {
+  //Get an actor with the ID given as a parameter
+  Actor *getActor(std::string *ID) {
+    if (player.ID() == *ID) {
+      return &player;
+    } else {
+      bool found = false;
+      Actor *actorFound = nullptr;
+      for (unsigned int i = 0; i < enemies.size() && !found; ++i) {
+        if (enemies.at(i)->ID() == *ID) {
+          found = true;
+          actorFound = enemies.at(i);
+        }
+      }
+      return actorFound;
+    }
+  }
+
+  //Get an enemy with the ID given as a parameter
+  Actor *getEnemy(std::string *ID) {
+    bool found = false;
+    Actor *actorFound = nullptr;
+    for (unsigned int i = 0; i < enemies.size() && !found; ++i) {
+      if (enemies.at(i)->ID() == *ID) {
+        found = true;
+        actorFound = enemies.at(i);
+      }
+    }
+    return actorFound;
+  }
+
+  //Gets a pickup with an ID given as a parameter
+  Pickup *getPickup(std::string *ID) {
+    bool found = false;
+    Pickup *pickupFound = nullptr;
+    for (unsigned int i = 0; i < pickups.size() && !found; ++i) {
+      if (pickups.at(i)->ID() == *ID) {
+        found = true;
+        pickupFound = pickups.at(i);
+      }
+    }
+    return pickupFound;
+  }
+
   Actor player;
-  std::vector<Object *> enemies;
+  std::vector<Actor *> enemies;
+  std::vector<Pickup *> pickups;
   bool completed = false;
   bool playing = false;
 };
