@@ -9,6 +9,8 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
+#define INPUT_KEY_ENTER 155
+
 namespace INPUT {
   //Update the input variables (this is being executed by the engine)
   void Update();

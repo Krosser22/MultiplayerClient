@@ -13,7 +13,7 @@
 #include "actor.h"
 
 struct SceneData {
-  //Get an actor with the ID given as a parameter
+  //Gets an actor with the ID given as a parameter
   Actor *getActor(std::string *ID) {
     if (player.ID() == *ID) {
       return &player;
@@ -30,7 +30,7 @@ struct SceneData {
     }
   }
 
-  //Get an enemy with the ID given as a parameter
+  //Gets an enemy with the ID given as a parameter
   Actor *getEnemy(std::string *ID) {
     bool found = false;
     Actor *actorFound = nullptr;

@@ -325,7 +325,7 @@ void processUDPMsg(std::string *content) {
     } else if (command == "Shoot") {
       std::string pickupID = elements.at(2);
       Actor *actor = data.sceneData->getActor(&ID);
-      if (actor) actor->getPickup(pickup);
+      if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));
     }
   }
 }
