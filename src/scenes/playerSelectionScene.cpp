@@ -7,6 +7,7 @@
 **/
 
 #include "scenes/playerSelectionScene.h"
+#include "UI/UIChat.h"
 
 static struct PlayerSelectionSceneData {
 } data;
@@ -19,6 +20,8 @@ void PlayerSelectionScene::input() {
   if (GameManager::WindowHasFocus()) {}
 }
 
-void PlayerSelectionScene::update() {}
+void PlayerSelectionScene::update() {
+  UIChat::Draw();
+}
 
 void PlayerSelectionScene::finish() {}

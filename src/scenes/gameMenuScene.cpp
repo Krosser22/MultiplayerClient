@@ -36,12 +36,10 @@ void GameMenuScene::start() {
   UIManager::AddUIButton(&btnJoinGame_);*/
 }
 
-void GameMenuScene::input() {
-  if (GameManager::WindowHasFocus()) {
-    UIChat::UIChat();
-  }
-}
+void GameMenuScene::input() {}
 
-void GameMenuScene::update() {}
+void GameMenuScene::update() {
+  UIChat::Draw();
+}
 
 void GameMenuScene::finish() {}

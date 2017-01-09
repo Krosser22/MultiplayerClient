@@ -30,8 +30,11 @@ namespace GameManager {
   //Add an actor to the draw list
   void AddActor(Actor *actor);
 
-  //Add an actor that will be controlled by other computer
+  //Add an enemy that will be controlled by other computer
   void AddEnemy(Actor *actor);
+
+  //Remove an enemy
+  void RemoveEnemy(Actor *actor);
 
   //Clear the list of objects to draw
   void ClearDrawList();

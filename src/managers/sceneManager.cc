@@ -13,101 +13,7 @@
 #include "managers/sceneManager.h"
 #include "managers/gameManager.h"
 #include "input.h"
-
-////////////////////////////////////////////
-////////////////////////////////////////////
-////////////////////////////////////////////
-
-struct Chat {
-  ImGuiTextBuffer Buf;
-  ImVector<int> LineOffsets; // Index to lines offset
-  bool ScrollToBottom;
-
-  void Clear() {
-    Buf.clear();
-    LineOffsets.clear();
-  }
-
-  void AddLog(const char* fmt, ...) IM_PRINTFARGS(2) {
-    int old_size = Buf.size();
-    va_list args;
-    va_start(args, fmt);
-    Buf.appendv(fmt, args);
-    va_end(args);
-    for (int new_size = Buf.size(); old_size < new_size; old_size++) {
-      if (Buf[old_size] == '\n') {
-        LineOffsets.push_back(old_size);
-      }
-    }
-    ScrollToBottom = true;
-  }
-
-  void Draw(const char* title, bool* p_open = NULL) {
-    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiSetCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(0, 504), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin(title, p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
-    ImGui::BeginChild("scrolling", ImVec2(0, 159), false, ImGuiWindowFlags_HorizontalScrollbar);
-    ImGui::TextUnformatted(Buf.begin());
-
-    if (ScrollToBottom) {
-      ImGui::SetScrollHere(1.0f);
-    }
-    ScrollToBottom = false;
-    ImGui::EndChild();
-
-    ImGui::Separator();
-    const int kNewLineMax = 31; //31 = 32 - '\n'
-    static char newLine[kNewLineMax] = "";
-    bool sendMsg = false;
-
-    //Input text with new line to chat
-    if (ImGui::InputText("", newLine, IM_ARRAYSIZE(newLine), ImGuiInputTextFlags_EnterReturnsTrue)) {
-      if (INPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
-        sendMsg = true;
-      }
-    }
-    ImGui::SameLine();
-
-    //Button send
-    if (ImGui::Button("Send")) {
-      sendMsg = true;
-    }
-
-    //If the enter key has been pressed or the send button has been pressed
-    if (sendMsg) {
-      if (newLine[0] != '\0') {
-        std::strcat(newLine, "\n");
-        NetworkManager::SendChatMsg(newLine);
-        for (unsigned int i = 0; i < kNewLineMax; ++i) {
-          newLine[i] = '\0';
-        }
-      }
-    }
-
-    ImGui::End();
-  }
-};
-
-static void ShowChat(bool* p_open)
-{
-  static Chat chat;
-
-  // Demo fill
-  static float last_time = -1.0f;
-  float time = ImGui::GetTime();
-  if (time - last_time >= 0.3f)
-  {
-    const char* random_words[] = { "system", "info", "warning", "error", "fatal", "notice", "log" };
-    chat.AddLog("[%s] Hello, time is %.1f, rand() %d\n", random_words[rand() % IM_ARRAYSIZE(random_words)], time, (int)rand());
-    last_time = time;
-  }
-
-  chat.Draw("Chat", p_open);
-}
-
-////////////////////////////////////////////
-////////////////////////////////////////////
-////////////////////////////////////////////
+#include "UI/UIChat.h"
 
 static struct SceneManagerData {
   sf::RenderWindow window;
@@ -250,6 +156,9 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     //style.Colors[ImGuiCol_TooltipBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
     style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+
+    //Chat
+    UIChat::Init();
   }
   
   //Main loop
@@ -281,10 +190,6 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     
     //For testing
     //ImGui::ShowTestWindow();
-
-    //Chat test
-    static bool opened = true;
-    ShowChat(&opened);
 
     //Server
     NetworkManager::Update();

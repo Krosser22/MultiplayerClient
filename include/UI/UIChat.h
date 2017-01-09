@@ -10,7 +10,17 @@
 #define __UI_CHAT_H__
 
 namespace UIChat {
-  void UIChat();
+  //Init the Chat
+  void Init();
+
+  //Draw the char
+  void Draw();
+
+  //Add a new line to the chat
+  void AddLine(const char *user, const char *newLine);
+
+  //Clear the chat
+  void Clear();
 }
 
 #endif //__UI_CHAT_H__

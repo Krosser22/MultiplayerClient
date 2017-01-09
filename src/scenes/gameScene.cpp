@@ -7,6 +7,7 @@
 **/
 
 #include "scenes/gameScene.h"
+#include "UI/UIChat.h"
 
 void GameScene::start() {
   GameManager::SetBackground("background.png"); //Set the background
@@ -64,6 +65,8 @@ void GameScene::input() {
   }
 }
 
-void GameScene::update() {}
+void GameScene::update() {
+  UIChat::Draw();
+}
 
 void GameScene::finish() {}

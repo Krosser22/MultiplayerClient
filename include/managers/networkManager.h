@@ -89,7 +89,7 @@ namespace NetworkManager {
   void CreateAccount(const char *email, const char *nick, const char *password);
 
   //Send a msg on the chat
-  void SendChatMsg(const char *msg);
+  void SendChatMsg(const char *newMsg);
 };
 
 #endif //__NETWORK_MANAGER_H__

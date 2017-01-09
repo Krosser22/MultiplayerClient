@@ -7,6 +7,7 @@
 **/
 
 #include "scenes/mapSelectionScene.h"
+#include "UI/UIChat.h"
 
 struct MapSelectionSceneData {
 } data;
@@ -19,6 +20,8 @@ void MapSelectionScene::input() {
   if (GameManager::WindowHasFocus()) {}
 }
 
-void MapSelectionScene::update() {}
+void MapSelectionScene::update() {
+  UIChat::Draw();
+}
 
 void MapSelectionScene::finish() {}

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
+#include "UI/UIChat.h"
 
 //#pragma comment(lib, "sfml-network.lib")
 
@@ -302,6 +303,19 @@ void processTCPMsg(std::string *content) {
             enemy->setPosition(100, 100);
             data.sceneData->enemies.push_back(enemy);
             GameManager::AddObject(enemy);
+          } else if (command.at(0) == "Chat" && command.size() == 3) {
+            UIChat::AddLine(command.at(1).data(), command.at(2).data());
+          } else if (command.at(0) == "RemovePlayer" && command.size() == 2) {
+            int pos = -1;
+            for (unsigned int j = 0; j < data.sceneData->enemies.size(); ++j) {
+              if (data.sceneData->enemies.at(j)->ID() == command.at(1)) {
+                pos = j;
+              }
+            }
+            GameManager::RemoveEnemy(data.sceneData->enemies.at(pos));
+            data.sceneData->enemies.erase(data.sceneData->enemies.begin() + pos);
+          } else {
+            printf("ERROR: Command not known\n");
           }
         }
       }
@@ -448,10 +462,18 @@ void NetworkManager::CreateAccount(const char *email, const char *nick, const ch
   sendTCPMsgToServer(msg.c_str());
 }
 
-void NetworkManager::SendChatMsg(const char *msg) {
+void NetworkManager::SendChatMsg(const char *newMsg) {
+  Actor *player = &data.sceneData->player;
   std::string msg = "Chat:";
   msg.append(player->ID()).append(":");
-  msg.append(std::to_string(player->positionX())).append(":");
-  msg.append(std::to_string(player->positionY()));
-  SendUDPMsgToServer(msg.c_str());
+
+  //Remove the unwanted characters from the string
+  std::string newMsgWithoutCharacters = newMsg;
+  char charsToRemove[] = ":";
+  for (unsigned int i = 0; i < strlen(charsToRemove); ++i) {
+    newMsgWithoutCharacters.erase(std::remove(newMsgWithoutCharacters.begin(), newMsgWithoutCharacters.end(), charsToRemove[i]), newMsgWithoutCharacters.end());
+  }
+
+  msg.append(newMsgWithoutCharacters).append("\0");
+  sendTCPMsgToServer(msg.c_str());
 }

@@ -18,7 +18,7 @@ static struct GameManagerData {
   sf::RenderWindow *window;
   sf::Texture backgroundTexture;
   sf::Sprite backgroundSprite;
-  std::vector<sf::Drawable *> listToDraw;
+  std::vector<Object *> listToDraw;
   std::vector<Object *> collisionList;
   std::vector<Actor *> dynamicCollisionList;
   sf::Clock clock;
@@ -56,18 +56,29 @@ void GameManager::RemoveBackground() {
 }
 
 void GameManager::AddObject(Object *object) {
-  data.listToDraw.push_back(object->sprite());
+  data.listToDraw.push_back(object);
   data.collisionList.push_back(object);
 }
 
 void GameManager::AddActor(Actor *actor) {
-  data.listToDraw.push_back(actor->sprite());
+  data.listToDraw.push_back(actor);
   data.collisionList.push_back(actor);
   data.dynamicCollisionList.push_back(actor);
 }
 
 void GameManager::AddEnemy(Actor *actor) {
-  data.listToDraw.push_back(actor->sprite());
+  data.listToDraw.push_back(actor);
+}
+
+void GameManager::RemoveEnemy(Actor *actor) {
+  int pos = -1;
+  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) {
+    if (data.listToDraw.at(i)->ID() == actor->ID()) {
+      pos = i;
+    }
+  }
+  data.listToDraw.erase(data.listToDraw.begin() + pos);
+  data.listToDraw.push_back(actor);
 }
 
 void GameManager::ClearDrawList() {
@@ -104,7 +115,7 @@ void GameManager::Draw() {
   data.window->draw(data.backgroundSprite);
 
   //Draw
-  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window->draw(*data.listToDraw.at(i));
+  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window->draw(*data.listToDraw.at(i)->sprite());
 }
 
 float GameManager::MouseX() {

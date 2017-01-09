@@ -7,6 +7,7 @@
 **/
 
 #include "scenes/waitingGameScene.h"
+#include "UI/UIChat.h"
 
 static struct WaitingGameSceneData {
 } data;
@@ -19,6 +20,8 @@ void WaitingGameScene::input() {
   if (GameManager::WindowHasFocus()) {}
 }
 
-void WaitingGameScene::update() {}
+void WaitingGameScene::update() {
+  UIChat::Draw();
+}
 
 void WaitingGameScene::finish() {}
