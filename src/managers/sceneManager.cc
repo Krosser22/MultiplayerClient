@@ -76,7 +76,8 @@ struct Chat {
     //If the enter key has been pressed or the send button has been pressed
     if (sendMsg) {
       if (newLine[0] != '\0') {
-        NetworkManager::SendTCPMsgToServer(newLine);
+        std::strcat(newLine, "\n");
+        NetworkManager::SendChatMsg(newLine);
         for (unsigned int i = 0; i < kNewLineMax; ++i) {
           newLine[i] = '\0';
         }

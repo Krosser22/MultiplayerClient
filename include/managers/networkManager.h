@@ -87,6 +87,9 @@ namespace NetworkManager {
 
   //Create an account into the BD of the server
   void CreateAccount(const char *email, const char *nick, const char *password);
+
+  //Send a msg on the chat
+  void SendChatMsg(const char *msg);
 };
 
 #endif //__NETWORK_MANAGER_H__

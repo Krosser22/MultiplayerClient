@@ -447,3 +447,11 @@ void NetworkManager::CreateAccount(const char *email, const char *nick, const ch
   msg.append(email).append(":").append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
   sendTCPMsgToServer(msg.c_str());
 }
+
+void NetworkManager::SendChatMsg(const char *msg) {
+  std::string msg = "Chat:";
+  msg.append(player->ID()).append(":");
+  msg.append(std::to_string(player->positionX())).append(":");
+  msg.append(std::to_string(player->positionY()));
+  SendUDPMsgToServer(msg.c_str());
+}
