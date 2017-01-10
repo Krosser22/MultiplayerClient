@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
+#include "managers/sceneManager.h"
 #include "UI/UIChat.h"
 
 //#pragma comment(lib, "sfml-network.lib")
@@ -292,6 +293,8 @@ void processTCPMsg(std::string *content) {
           if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
             data.sceneData->completed = true;
             data.sceneData->player.setID(&command.at(1));
+          } else if (command.at(0) == "Logout" && command.size() == 1) {
+            SceneManager::ChangeScene("Login");
           } else if (command.at(0) == "Create" && command.size() == 2) {
             data.sceneData->completed = (command.at(1) == "Done");
           } else if (command.at(0) == "Forgot" && command.size() == 2) {
@@ -312,8 +315,11 @@ void processTCPMsg(std::string *content) {
                 pos = j;
               }
             }
-            GameManager::RemoveEnemy(data.sceneData->enemies.at(pos));
-            data.sceneData->enemies.erase(data.sceneData->enemies.begin() + pos);
+            if (pos > -1) {
+              GameManager::RemoveEnemy(data.sceneData->enemies.at(pos));
+              data.sceneData->enemies.erase(data.sceneData->enemies.begin() + pos);
+            }
+          } else if (command.at(0) == "Shoot") {
           } else {
             printf("ERROR: Command not known\n");
           }
@@ -446,6 +452,10 @@ void NetworkManager::Login(const char *nick, const char *password) {
   std::string msg = "Login:";
   msg.append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
   sendTCPMsgToServer(msg.c_str());
+}
+
+void NetworkManager::Logout() {
+  //sendTCPMsgToServer("Logout\0");
 }
 
 void NetworkManager::ForgotPassword(const char *email) {

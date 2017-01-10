@@ -78,7 +78,6 @@ void GameManager::RemoveEnemy(Actor *actor) {
     }
   }
   data.listToDraw.erase(data.listToDraw.begin() + pos);
-  data.listToDraw.push_back(actor);
 }
 
 void GameManager::ClearDrawList() {

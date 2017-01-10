@@ -79,8 +79,11 @@ namespace NetworkManager {
   //Send a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
 
-  //Login with the server
+  //Login on the server
   void Login(const char *nick, const char *password);
+
+  //Logout
+  void Logout();
 
   //Send an email with the user and the password
   void ForgotPassword(const char *email);

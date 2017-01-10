@@ -35,11 +35,10 @@ struct UIChatData {
     ScrollToBottom = true;
   }
 
-  void Draw(const char *title) {
-    bool p_open = true;
+  void Draw(const char *title, bool open) {
     ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiSetCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(0, 504), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin(title, &p_open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin(title, &open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
     ImGui::BeginChild("scrolling", ImVec2(0, 159), false, ImGuiWindowFlags_HorizontalScrollbar);
     ImGui::TextUnformatted(Buf.begin());
 
@@ -52,28 +51,23 @@ struct UIChatData {
     ImGui::Separator();
     const int kNewLineMax = 31; //31 = 32 - '\n'
     static char newLine[kNewLineMax] = "";
-    bool sendMsg = false;
 
     //Input text with new line to chat
+    ImGui::SetKeyboardFocusHere();
+
+    if (!open) {
+      ImGui::NewLine();
+      ImGui::NewLine();
+    }
+
     if (ImGui::InputText("", newLine, IM_ARRAYSIZE(newLine), ImGuiInputTextFlags_EnterReturnsTrue)) {
       if (INPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
-        sendMsg = true;
-      }
-    }
-    ImGui::SameLine();
-
-    //Button send
-    if (ImGui::Button("Send")) {
-      sendMsg = true;
-    }
-
-    //If the enter key has been pressed or the send button has been pressed
-    if (sendMsg) {
-      if (newLine[0] != '\0') {
-        std::strcat(newLine, "\n");
-        NetworkManager::SendChatMsg(newLine);
-        for (unsigned int i = 0; i < kNewLineMax; ++i) {
-          newLine[i] = '\0';
+        if (newLine[0] != '\0') {
+          std::strcat(newLine, "\n");
+          NetworkManager::SendChatMsg(newLine);
+          for (unsigned int i = 0; i < kNewLineMax; ++i) {
+            newLine[i] = '\0';
+          }
         }
       }
     }
@@ -90,7 +84,7 @@ void UIChat::Init() {
   data->Clear();
 }
 
-void UIChat::Draw() {
+void UIChat::Draw(bool open) {
   /*// Demo fill
   static float last_time = -1.0f;
   float time = ImGui::GetTime();
@@ -99,7 +93,7 @@ void UIChat::Draw() {
     data->AddLine("[%s] Hello, time is %.1f, rand() %d\n", random_words[rand() % IM_ARRAYSIZE(random_words)], time, (int)rand());
     last_time = time;
   }*/
-  data->Draw("Chat");
+  data->Draw("Chat", open);
 }
 
 void UIChat::AddLine(const char *user, const char *newLine) {

@@ -14,7 +14,7 @@ namespace UIChat {
   void Init();
 
   //Draw the char
-  void Draw();
+  void Draw(bool open = true);
 
   //Add a new line to the chat
   void AddLine(const char *user, const char *newLine);

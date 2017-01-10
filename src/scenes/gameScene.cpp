@@ -8,6 +8,7 @@
 
 #include "scenes/gameScene.h"
 #include "UI/UIChat.h"
+#include "input.h"
 
 void GameScene::start() {
   GameManager::SetBackground("background.png"); //Set the background
@@ -34,39 +35,47 @@ void GameScene::start() {
 
   //Set the player
   sceneData_->player.setTexture("player.png");
-  sceneData_->player.setPosition(0.0f, 600.0f);
+  sceneData_->player.setPosition(460.0f, 280.0f);
   GameManager::AddActor(&sceneData_->player);
 
   sceneData_->playing = true;
+  UIChat::Clear();
 }
 
 void GameScene::input() {
   if (GameManager::WindowHasFocus()) {
-    //Player movement
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) sceneData_->player.crouch();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
-
-    //Spawn test
-    static std::vector<Object *> objectList_;
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-      Object *box = new Object();
-      box->setTexture("box.png");
-      box->setPosition(GameManager::MouseX(), GameManager::MouseY());
-      objectList_.push_back(box);
-      GameManager::AddObject(box);
+    if (INPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
+      chatEnable_ = !chatEnable_;
     }
-    
-    //Escape to logout the game
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-      SceneManager::ChangeScene("Login");
+
+    if (!chatEnable_) {
+      //Player movement
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) sceneData_->player.crouch();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) sceneData_->player.action();
+
+      //Spawn test
+      static std::vector<Object *> objectList_;
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+        Object *box = new Object();
+        box->setTexture("box.png");
+        box->setPosition(GameManager::MouseX(), GameManager::MouseY());
+        objectList_.push_back(box);
+        GameManager::AddObject(box);
+      }
+
+      //Escape to logout the game
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+        SceneManager::ChangeScene("Login");
+      }
     }
   }
 }
 
 void GameScene::update() {
-  UIChat::Draw();
+  UIChat::Draw(chatEnable_);
 }
 
 void GameScene::finish() {}

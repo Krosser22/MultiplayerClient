@@ -29,6 +29,8 @@ private:
   Object platformLeft_;
   Object platformRight_;
   Object platformCenter_;
+
+  bool chatEnable_ = false;
 };
 
 #endif //__GAME_SCENE_H__
