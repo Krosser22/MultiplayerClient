@@ -25,6 +25,10 @@ namespace SceneManager {
   void StartSceneManager(std::string sceneName);
 
   void ChangeScene(std::string sceneName);
+
+  std::vector<Bullet *> *getBullets();
+  
+  Actor *getPlayer();
 };
 
 #endif //__SCENE_MANAGER_H__

@@ -10,6 +10,7 @@
 #include <SFML/System/Time.hpp>
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
+#include "managers/sceneManager.h"
 
 #define WINDOW_WIDTH 960
 #define WINDOW_HEIGHT 704
@@ -19,6 +20,7 @@ static struct GameManagerData {
   sf::Texture backgroundTexture;
   sf::Sprite backgroundSprite;
   std::vector<Object *> listToDraw;
+  std::vector<Bullet *> bulletsListToDraw;
   std::vector<Object *> collisionList;
   std::vector<Actor *> dynamicCollisionList;
   sf::Clock clock;
@@ -70,6 +72,13 @@ void GameManager::AddEnemy(Actor *actor) {
   data.listToDraw.push_back(actor);
 }
 
+void GameManager::AddBullet(Bullet *bullet) {
+  if (data.bulletsListToDraw.size() > 30) {
+    data.bulletsListToDraw.erase(data.bulletsListToDraw.begin());
+  }
+  data.bulletsListToDraw.push_back(bullet);
+}
+
 void GameManager::RemoveEnemy(Actor *actor) {
   int pos = -1;
   for (unsigned int i = 0; i < data.listToDraw.size(); ++i) {
@@ -78,6 +87,16 @@ void GameManager::RemoveEnemy(Actor *actor) {
     }
   }
   data.listToDraw.erase(data.listToDraw.begin() + pos);
+}
+
+void GameManager::RemoveBullet(std::string ownerID, std::string ID) {
+  int pos = -1;
+  for (unsigned int i = 0; i < data.bulletsListToDraw.size(); ++i) {
+    if (data.bulletsListToDraw.at(i)->ID() == ID && data.bulletsListToDraw.at(i)->ownerID == ownerID) {
+      pos = i;
+    }
+  }
+  data.bulletsListToDraw.erase(data.bulletsListToDraw.begin() + pos);
 }
 
 void GameManager::ClearDrawList() {
@@ -104,17 +123,55 @@ bool GameManager::WindowHasFocus() {
   return data.window->hasFocus();
 }
 
+void checkBulletCollision(Actor *actor) {
+  static sf::FloatRect intersection;
+  bool collision = false;
+  std::vector<Bullet *> *bullets = SceneManager::getBullets();
+  
+  int posCollision = -1;
+  for (unsigned int i = 0; i < bullets->size() && !collision; ++i) {
+    if (bullets->at(i)->ownerID != actor->ID()) {
+      if (actor->sprite()->getGlobalBounds().intersects(bullets->at(i)->sprite()->getGlobalBounds(), intersection)) {
+        collision = true;
+        posCollision = i;
+      }
+    }
+  }
+
+  if (collision) {
+    std::string msg = "Hit:";
+    msg.append(actor->ID()).append(":");
+    msg.append(bullets->at(posCollision)->ownerID).append(":");
+    msg.append(bullets->at(posCollision)->ID()).append(":");
+    msg.append(std::to_string(bullets->at(posCollision)->damage));
+    NetworkManager::SendTCPMsgToServer(msg.c_str());
+    bullets->erase(bullets->begin() + posCollision);
+  }
+}
+
 void GameManager::Draw() {
+  //Update bullet movement
+  std::vector<Bullet *> *bullets = SceneManager::getBullets();
+  for (unsigned int i = 0; i < bullets->size(); ++i) {
+    Bullet *bullet = bullets->at(i);
+    float X = bullet->positionX() + bullet->speedX;
+    float Y = bullet->positionY() + bullet->speedY;
+    bullet->setPosition(X * velocity, Y * velocity);
+  }
+
   //Update the collisions
   for (unsigned int i = 0; i < data.dynamicCollisionList.size(); ++i) {
     data.dynamicCollisionList.at(i)->updateCollisions();
   }
+
+  checkBulletCollision(SceneManager::getPlayer());
 
   //Draw the background
   data.window->draw(data.backgroundSprite);
 
   //Draw
   for (unsigned int i = 0; i < data.listToDraw.size(); ++i) data.window->draw(*data.listToDraw.at(i)->sprite());
+  for (unsigned int i = 0; i < data.bulletsListToDraw.size(); ++i) data.window->draw(*data.bulletsListToDraw.at(i)->sprite());
 }
 
 float GameManager::MouseX() {

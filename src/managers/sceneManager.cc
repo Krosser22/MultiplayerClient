@@ -165,7 +165,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   sf::Event newEvent;
   while (GameManager::IsOpen()) {
     //Input
-    INPUT::Update();
+    MYINPUT::Update();
     while (data.window.pollEvent(newEvent)) {
       ImGui::SFML::ProcessEvent(newEvent);
 
@@ -199,7 +199,7 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     if (ImGui::BeginMainMenuBar())
     {
       char fps[256];
-      sprintf(fps, "Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+      sprintf(fps, "%.3f ms/frame (%.1f FPS), Latency: %dms", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate, NetworkManager::getLatency());
       ImGui::MenuItem(fps);
       ImGui::EndMainMenuBar();
     }
@@ -229,4 +229,12 @@ void SceneManager::ChangeScene(std::string sceneName) {
   } else {
     printf("ERROR LOADING SCENE: NOT FOUND\n");
   }
+}
+
+std::vector<Bullet *> *SceneManager::getBullets() {
+  return &data.sceneData.bullets;
+}
+
+Actor *SceneManager::getPlayer() {
+  return &data.sceneData.player;
 }

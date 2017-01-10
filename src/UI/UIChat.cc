@@ -61,7 +61,7 @@ struct UIChatData {
     }
 
     if (ImGui::InputText("", newLine, IM_ARRAYSIZE(newLine), ImGuiInputTextFlags_EnterReturnsTrue)) {
-      if (INPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
+      if (MYINPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
         if (newLine[0] != '\0') {
           std::strcat(newLine, "\n");
           NetworkManager::SendChatMsg(newLine);

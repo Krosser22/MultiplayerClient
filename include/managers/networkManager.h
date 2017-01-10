@@ -44,7 +44,7 @@ struct SceneData {
   }
 
   //Gets a pickup with an ID given as a parameter
-  Pickup *getPickup(std::string *ID) {
+  /*Pickup *getPickup(std::string *ID) {
     bool found = false;
     Pickup *pickupFound = nullptr;
     for (unsigned int i = 0; i < pickups.size() && !found; ++i) {
@@ -54,11 +54,16 @@ struct SceneData {
       }
     }
     return pickupFound;
-  }
+  }*/
 
   Actor player;
+
   std::vector<Actor *> enemies;
-  std::vector<Pickup *> pickups;
+
+  std::vector<Bullet *> bullets;
+
+  //std::vector<Pickup *> pickups;
+
   bool completed = false;
   bool playing = false;
 };
@@ -76,7 +81,10 @@ namespace NetworkManager {
   //Update the server
   void Update();
 
-  //Send a UPD msg to the server
+  //Sends a TCP msg to the server
+  void SendTCPMsgToServer(const char *msg);
+
+  //Sends a UPD msg to the server
   void SendUDPMsgToServer(const char *msg);
 
   //Login on the server
@@ -93,6 +101,9 @@ namespace NetworkManager {
 
   //Send a msg on the chat
   void SendChatMsg(const char *newMsg);
+
+  //Gets the latency in ms
+  int getLatency();
 };
 
 #endif //__NETWORK_MANAGER_H__

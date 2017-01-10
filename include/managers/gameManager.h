@@ -33,8 +33,14 @@ namespace GameManager {
   //Add an enemy that will be controlled by other computer
   void AddEnemy(Actor *actor);
 
+  //Add a bullet to the draw list
+  void AddBullet(Bullet *bullet);
+
   //Remove an enemy
   void RemoveEnemy(Actor *actor);
+
+  //Remove a bullet
+  void RemoveBullet(std::string ownerID, std::string ID);
 
   //Clear the list of objects to draw
   void ClearDrawList();

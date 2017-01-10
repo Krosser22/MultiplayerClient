@@ -11,7 +11,7 @@
 
 #define INPUT_KEY_ENTER 155
 
-namespace INPUT {
+namespace MYINPUT {
   //Update the input variables (this is being executed by the engine)
   void Update();
 

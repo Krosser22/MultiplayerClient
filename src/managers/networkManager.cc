@@ -17,17 +17,24 @@
 #include <openssl/rsa.h>
 #include <openssl/ssl.h>
 #include <stdio.h>
+#include "UI/UIChat.h"
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
 #include "managers/sceneManager.h"
-#include "UI/UIChat.h"
+#include "input.h"
 
 //#pragma comment(lib, "sfml-network.lib")
+static std::string::size_type sz; //Alias of size_t
 
 #define IP "127.0.0.1"
 static const unsigned short TCPPort = 8080;
 static const unsigned short UDPPort = 2055;
 static const int kMaxLength = 1024;
+
+//PingPong
+static bool receivedPong = true;
+static sf::Time startPingTime;
+static int msLatency;
 
 static struct ServerData {
   unsigned short UDPLocalPort = 0;
@@ -244,16 +251,6 @@ bool connect() {
   return (data.tcpSocket.connect(data.ip, TCPPort) == sf::Socket::Done);
 }
 
-void sendTCPMsgToServer(const char *msg) {
-  sf::Packet packetSend;
-  packetSend.append(msg, strlen(msg));
-  packetSend.append("\0", 1);
-  //printf("%s\n", msg);
-  if (data.tcpSocket.send(packetSend) != sf::Socket::Done) {
-    printf("Error sending data\n");
-  }
-}
-
 std::string TCPContent;
 std::string *getTCPMsgFromServer() {
   char content[kMaxLength];
@@ -287,31 +284,31 @@ void processTCPMsg(std::string *content) {
       std::vector<std::string> commands = split(decryptedMsg, '\n');
 
       for (unsigned int i = 0; i < commands.size(); ++i) {
-        std::vector<std::string> command = split(commands.at(i), ':');
-
-        if (command.size() > 0) {
-          if (command.at(0) == "Login" && command.at(1) != "ERROR" && command.size() == 2) {
+        std::vector<std::string> elements = split(commands.at(i), ':');
+        if (elements.size() > 0) {
+          std::string command = elements.at(0);
+          if (command == "Login" && elements.at(1) != "ERROR") {
             data.sceneData->completed = true;
-            data.sceneData->player.setID(&command.at(1));
-          } else if (command.at(0) == "Logout" && command.size() == 1) {
+            data.sceneData->player.setID(&elements.at(1));
+          } else if (command == "Logout") {
             SceneManager::ChangeScene("Login");
-          } else if (command.at(0) == "Create" && command.size() == 2) {
-            data.sceneData->completed = (command.at(1) == "Done");
-          } else if (command.at(0) == "Forgot" && command.size() == 2) {
-            data.sceneData->completed = (command.at(1) == "Done");
-          } else if (command.at(0) == "AddPlayer" && command.size() == 2) {
+          } else if (command == "Create") {
+            data.sceneData->completed = (elements.at(1) == "Done");
+          } else if (command == "Forgot") {
+            data.sceneData->completed = (elements.at(1) == "Done");
+          } else if (command == "AddPlayer") {
             Actor *enemy = new Actor();
-            enemy->setID(&command.at(1));
+            enemy->setID(&elements.at(1));
             enemy->setTexture("enemy.png");
             enemy->setPosition(100, 100);
             data.sceneData->enemies.push_back(enemy);
             GameManager::AddObject(enemy);
-          } else if (command.at(0) == "Chat" && command.size() == 3) {
-            UIChat::AddLine(command.at(1).data(), command.at(2).data());
-          } else if (command.at(0) == "RemovePlayer" && command.size() == 2) {
+          } else if (command == "Chat") {
+            UIChat::AddLine(elements.at(1).data(), elements.at(2).data());
+          } else if (command == "RemovePlayer") {
             int pos = -1;
             for (unsigned int j = 0; j < data.sceneData->enemies.size(); ++j) {
-              if (data.sceneData->enemies.at(j)->ID() == command.at(1)) {
+              if (data.sceneData->enemies.at(j)->ID() == elements.at(1)) {
                 pos = j;
               }
             }
@@ -319,7 +316,13 @@ void processTCPMsg(std::string *content) {
               GameManager::RemoveEnemy(data.sceneData->enemies.at(pos));
               data.sceneData->enemies.erase(data.sceneData->enemies.begin() + pos);
             }
-          } else if (command.at(0) == "Shoot") {
+          } else if (command == "Hit") {
+            Actor *actor = data.sceneData->getActor(&elements.at(1));
+            GameManager::RemoveBullet(elements.at(2), elements.at(3));
+            actor->damage(std::stof(elements.at(4), &sz));
+          } else if (command == "Pick") {
+            Actor *actor = data.sceneData->getActor(&elements.at(1));
+            //if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));
           } else {
             printf("ERROR: Command not known\n");
           }
@@ -330,22 +333,29 @@ void processTCPMsg(std::string *content) {
 }
 
 void processUDPMsg(std::string *content) {
-  static std::string::size_type sz; //Alias of size_t
   std::vector<std::string> elements = split(*content, ':');
 
   std::string command = elements.at(0);
-  std::string ID = elements.at(1);
 
   if (elements.size() > 0) {
     if (command == "Info") {
-      Actor *actor = data.sceneData->getEnemy(&ID);
+      Actor *actor = data.sceneData->getEnemy(&elements.at(1));
       float x = std::stof(elements.at(2), &sz);
       float y = std::stof(elements.at(3), &sz);
       if (actor) actor->setPosition(x, y);
+    } else if (command == "Ping" && elements.at(1) == data.sceneData->player.ID()) {
+      msLatency = GameManager::Time().asMilliseconds() - startPingTime.asMilliseconds();
+      receivedPong = true;
     } else if (command == "Shoot") {
-      std::string pickupID = elements.at(2);
-      Actor *actor = data.sceneData->getActor(&ID);
-      if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));
+      Bullet *bullet = new Bullet();
+      bullet->setTexture("bullet.png");
+      bullet->ownerID = elements.at(1);
+      bullet->setID(&elements.at(2));
+      bullet->setPosition(std::stof(elements.at(3), &sz), std::stof(elements.at(4), &sz));
+      bullet->speedX = std::stof(elements.at(5), &sz);
+      bullet->speedY = std::stof(elements.at(6), &sz);
+      data.sceneData->bullets.push_back(bullet);
+      GameManager::AddBullet(bullet);
     }
   }
 }
@@ -426,15 +436,64 @@ void NetworkManager::Update() {
   static sf::Time startTime;
   static float timeToUpdate = 0.1f;
   if (data.sceneData->playing) {
-    if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds() || true) {
+    if (startTime.asSeconds() + timeToUpdate < GameManager::Time().asSeconds() || true) { //update every frame for testing
       startTime = GameManager::Time();
       Actor *player = &data.sceneData->player;
       std::string msg = "Info:";
       msg.append(player->ID()).append(":");
       msg.append(std::to_string(player->positionX())).append(":");
       msg.append(std::to_string(player->positionY()));
+      ActorMovement *movement = &player->getMovement();
+      /*msg.append(std::to_string(movement->action)).append(":");
+      msg.append(std::to_string(movement->down)).append(":");
+      msg.append(std::to_string(movement->drop)).append(":");
+      msg.append(std::to_string(movement->interact)).append(":");
+      msg.append(std::to_string(movement->left)).append(":");
+      msg.append(std::to_string(movement->right)).append(":");
+      msg.append(std::to_string(movement->sound)).append(":");
+      msg.append(std::to_string(movement->up));*/
       SendUDPMsgToServer(msg.c_str());
+
+      static bool lastFrameAction = false;
+      if (movement->action && !lastFrameAction) {
+        float X = MYINPUT::MousePositionX() - player->positionX();
+        float Y = MYINPUT::MousePositionY() - player->positionY();
+        float length = sqrt(X * X + Y * Y);
+        if (length != 0) {
+          X /= length;
+          Y /= length;
+        }
+        msg = "Shoot:";
+        msg.append(player->ID()).append(":");
+        static int bulletID = 0;
+        msg.append(std::to_string(bulletID++)).append(":");
+        msg.append(std::to_string(player->positionX())).append(":");
+        msg.append(std::to_string(player->positionY())).append(":");
+        msg.append(std::to_string(X)).append(":");
+        msg.append(std::to_string(Y));
+        SendUDPMsgToServer(msg.c_str());
+      }
+      lastFrameAction = movement->action;
     }
+  }
+
+  //Update ms of latency
+  if (receivedPong && data.sceneData->player.ID() != "") {
+    receivedPong = false;
+    startPingTime = GameManager::Time();
+    std::string msg = "Ping:";
+    msg.append(data.sceneData->player.ID());
+    SendUDPMsgToServer(msg.c_str());
+  }
+}
+
+void NetworkManager::SendTCPMsgToServer(const char *msg) {
+  sf::Packet packetSend;
+  packetSend.append(msg, strlen(msg));
+  packetSend.append("\0", 1);
+  //printf("%s\n", msg);
+  if (data.tcpSocket.send(packetSend) != sf::Socket::Done) {
+    printf("Error sending data\n");
   }
 }
 
@@ -451,17 +510,17 @@ void NetworkManager::Login(const char *nick, const char *password) {
   std::hash<std::string> hash;
   std::string msg = "Login:";
   msg.append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
-  sendTCPMsgToServer(msg.c_str());
+  SendTCPMsgToServer(msg.c_str());
 }
 
 void NetworkManager::Logout() {
-  //sendTCPMsgToServer("Logout\0");
+  SendTCPMsgToServer("Logout\0");
 }
 
 void NetworkManager::ForgotPassword(const char *email) {
   std::string msg = "Forgot:";
   msg.append(email).append("\0");
-  sendTCPMsgToServer(msg.c_str());
+  SendTCPMsgToServer(msg.c_str());
 }
 
 void NetworkManager::CreateAccount(const char *email, const char *nick, const char *password) {
@@ -469,7 +528,7 @@ void NetworkManager::CreateAccount(const char *email, const char *nick, const ch
   std::hash<std::string> hash;
   std::string msg = "Create:";
   msg.append(email).append(":").append(nick).append(":").append(std::to_string(hash(stringPassword))).append("\0");
-  sendTCPMsgToServer(msg.c_str());
+  SendTCPMsgToServer(msg.c_str());
 }
 
 void NetworkManager::SendChatMsg(const char *newMsg) {
@@ -485,5 +544,9 @@ void NetworkManager::SendChatMsg(const char *newMsg) {
   }
 
   msg.append(newMsgWithoutCharacters).append("\0");
-  sendTCPMsgToServer(msg.c_str());
+  SendTCPMsgToServer(msg.c_str());
+}
+
+int NetworkManager::getLatency() {
+  return msLatency;
 }

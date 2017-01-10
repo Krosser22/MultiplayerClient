@@ -6,8 +6,8 @@
 *** ////////////////////////////////////////////
 **/
 
-#include "pickup.h"
+#include "bullet.h"
 
-Pickup::Pickup() {}
+Bullet::Bullet() {}
 
-Pickup::~Pickup() {}
+Bullet::~Bullet() {}

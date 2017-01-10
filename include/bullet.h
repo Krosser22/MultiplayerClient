@@ -6,18 +6,22 @@
 *** ////////////////////////////////////////////
 **/
 
-#ifndef __PICKUP_H__
-#define __PICKUP_H__
+#ifndef __BULLET_H__
+#define __BULLET_H__
 
 #include "object.h"
 
-class Pickup : public Object {
+const float velocity = 1.0f;
+
+class Bullet : public Object {
 public:
-  Pickup();
-  ~Pickup();
+  Bullet();
+  ~Bullet();
 
-private:
-
+  float speedX = 0.0f;
+  float speedY = 0.0f;
+  float damage = 22.0f;
+  std::string ownerID;
 };
 
-#endif //__PICKUP_H__
+#endif //__BULLET_H__

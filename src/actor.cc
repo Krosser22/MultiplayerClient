@@ -11,29 +11,6 @@
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
 
-static int IDCount = 0;
-static struct ActorMovement {
-  ActorMovement() {
-    left = false;
-    right = false;
-    up = false;
-    down = false;
-    interact = false;
-    action = false;
-    sound = false;
-    drop = false;
-    ID = ++IDCount;
-  }
-  bool left;
-  bool right;
-  bool up;
-  bool down;
-  bool interact;
-  bool action;
-  bool sound;
-  bool drop;
-  int ID;
-} movement;
 
 #define kMovementDelay 5
 
@@ -49,32 +26,32 @@ Actor::Actor() {
 Actor::~Actor() {}
 
 void Actor::moveLeft() {
-  movement.left = true;
+  movement_.left = true;
 }
 
 void Actor::moveRight() {
-  movement.right = true;
+  movement_.right = true;
 }
 
 void Actor::jump() {
-  movement.up = true;
+  movement_.up = true;
 }
 
 void Actor::crouch() {
-  movement.down = true;
+  movement_.down = true;
 }
 
 void Actor::interact() {
-  movement.interact = true;
+  movement_.interact = true;
 }
 
 void Actor::action() {
-  movement.action = true;
+  movement_.action = true;
 }
 
 void Actor::updateCollisions() {
-  movementList.push_back(movement);
-  movement = movementList.front();
+  movementList.push_back(movement_);
+  movement_ = movementList.front();
   //printf("%d\n", movement.ID);
   movementList.pop_front();
   //Backup of the last valid position
@@ -83,10 +60,10 @@ void Actor::updateCollisions() {
 
   //Variable to store the new X position
   float newX = sprite_.getPosition().x; //Actual X position
-  newX += movement.left * ((-movementVelocityOnAir_ * !bIsGrounded_) + (-movementVelocity_ * bIsGrounded_)); //If going left
-  newX += movement.right * ((movementVelocityOnAir_ * !bIsGrounded_) + (movementVelocity_ * bIsGrounded_)); //If going right
+  newX += movement_.left * ((-movementVelocityOnAir_ * !bIsGrounded_) + (-movementVelocity_ * bIsGrounded_)); //If going left
+  newX += movement_.right * ((movementVelocityOnAir_ * !bIsGrounded_) + (movementVelocity_ * bIsGrounded_)); //If going right
 
-  if (movement.up) {
+  if (movement_.up) {
     if (bIsGrounded_) {
       jumpImpulse_ = -jumpVelocity_;
       actorStartJumpTime_ = GameManager::Time();
@@ -137,19 +114,18 @@ void Actor::updateCollisions() {
   sprite_.setPosition(finalX, finalY);
 
   //Restart the movements
-  movement.left = false;
-  movement.right = false;
-  movement.up = false;
-  movement.down = false;
-  movement.interact = false;
-  movement.action = false;
-  movement.sound = false;
-  movement.drop = false;
-  movement.ID = ++IDCount;
+  movement_.left = false;
+  movement_.right = false;
+  movement_.up = false;
+  movement_.down = false;
+  movement_.interact = false;
+  movement_.action = false;
+  movement_.sound = false;
+  movement_.drop = false;
 }
 
 bool Actor::isJumping() {
-  return movement.up;
+  return movement_.up;
 }
 
 bool Actor::isGrounded() {
@@ -157,9 +133,31 @@ bool Actor::isGrounded() {
 }
 
 bool Actor::isInteracting() {
-  return movement.interact;
+  return movement_.interact;
 }
 
-void Actor::getPickup(Pickup *pickup) {
+/*void Actor::getPickup(Pickup *pickup) {
   weapon_ = pickup;
+}*/
+
+void Actor::setLife(float life) {
+  life_ = life;
+}
+
+float Actor::life() {
+  return life_;
+}
+
+void Actor::damage(float damage) {
+  life_ -= damage;
+
+  if (life_ <= 0) {
+    life_ = 0;
+  } else if (life_ > maxLife_) {
+    life_ = maxLife_;
+  }
+}
+
+ActorMovement Actor::getMovement() {
+  return movement_;
 }

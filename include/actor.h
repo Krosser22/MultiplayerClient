@@ -9,7 +9,28 @@
 #ifndef __ACTOR_H__
 #define __ACTOR_H__
 
-#include "pickup.h"
+#include "bullet.h"
+
+struct ActorMovement {
+  ActorMovement() {
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+    interact = false;
+    action = false;
+    sound = false;
+    drop = false;
+  }
+  bool left;
+  bool right;
+  bool up;
+  bool down;
+  bool interact;
+  bool action;
+  bool sound;
+  bool drop;
+};
 
 class Actor : public Object {
 public:
@@ -47,7 +68,18 @@ public:
   bool isInteracting();
 
   //Gets a pickup
-  void getPickup(Pickup *pickup);
+  //void getPickup(Pickup *pickup);
+
+  //Sets the life of the actor
+  void setLife(float life);
+
+  //Return the life of the actor
+  float life();
+
+  //Damage the actor
+  void damage(float damage);
+
+  ActorMovement getMovement();
 
 private:
   //The velocity to the left and right movements
@@ -86,8 +118,14 @@ private:
   //The time to get the max falling speed
   float timeToMaxFallingSpeed_ = 600;
 
+  ActorMovement movement_;
+
   //The actual weapon
-  Pickup *weapon_;
+  //Weapon *weapon_;
+
+  float maxLife_ = 100.0f;
+
+  float life_ = 100.0f;
 };
 
 #endif //__ACTOR_H__

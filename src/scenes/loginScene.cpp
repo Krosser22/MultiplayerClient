@@ -49,8 +49,6 @@ void LoginScene::start() {
 
   data.positionX = GameManager::WindowWidth() * 0.5f - data.width * 0.5f;
   data.positionY = GameManager::WindowHeight() * 0.5f - data.height * 0.5f;
-
-  NetworkManager::Logout();
 }
 
 void LoginScene::input() {}

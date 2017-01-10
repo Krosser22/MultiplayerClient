@@ -44,7 +44,7 @@ void GameScene::start() {
 
 void GameScene::input() {
   if (GameManager::WindowHasFocus()) {
-    if (INPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
+    if (MYINPUT::IsKeyPressed(INPUT_KEY_ENTER)) {
       chatEnable_ = !chatEnable_;
     }
 
@@ -54,7 +54,8 @@ void GameScene::input() {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) sceneData_->player.action();
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) sceneData_->player.interact();
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) sceneData_->player.action();
 
       //Spawn test
       static std::vector<Object *> objectList_;
@@ -78,4 +79,6 @@ void GameScene::update() {
   UIChat::Draw(chatEnable_);
 }
 
-void GameScene::finish() {}
+void GameScene::finish() {
+  NetworkManager::Logout();
+}
