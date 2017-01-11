@@ -7,6 +7,7 @@
 **/
 
 #include <deque>
+#include <imgui-SFML.h>
 #include "actor.h"
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
@@ -122,6 +123,14 @@ void Actor::updateCollisions() {
   movement_.action = false;
   movement_.sound = false;
   movement_.drop = false;
+
+
+  //Testing
+  float progress = (float)life_ / (float)maxLife_;
+  float progress_saturated = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
+  char buf[32];
+  sprintf(buf, "%d/%d", (int)(progress_saturated * maxLife_), maxLife_);
+  ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
 }
 
 bool Actor::isJumping() {
@@ -140,15 +149,15 @@ bool Actor::isInteracting() {
   weapon_ = pickup;
 }*/
 
-void Actor::setLife(float life) {
+void Actor::setLife(int life) {
   life_ = life;
 }
 
-float Actor::life() {
+int Actor::life() {
   return life_;
 }
 
-void Actor::damage(float damage) {
+void Actor::damage(int damage) {
   life_ -= damage;
 
   if (life_ <= 0) {

@@ -71,13 +71,13 @@ public:
   //void getPickup(Pickup *pickup);
 
   //Sets the life of the actor
-  void setLife(float life);
+  void setLife(int life);
 
   //Return the life of the actor
-  float life();
+  int life();
 
   //Damage the actor
-  void damage(float damage);
+  void damage(int damage);
 
   ActorMovement getMovement();
 
@@ -123,9 +123,9 @@ private:
   //The actual weapon
   //Weapon *weapon_;
 
-  float maxLife_ = 100.0f;
+  int maxLife_ = 100;
 
-  float life_ = 100.0f;
+  int life_ = 100;
 };
 
 #endif //__ACTOR_H__
