@@ -13,7 +13,7 @@
 #include "managers/networkManager.h"
 
 
-#define kMovementDelay 5
+#define kMovementDelay 3
 
 std::deque<ActorMovement> movementList;
 
