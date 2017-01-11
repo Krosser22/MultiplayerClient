@@ -64,13 +64,20 @@ void LoginScene::update() {
 
     //Nick
     ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Nick:");
+    static bool focusHere = true;
+    if (focusHere) {
+      ImGui::SetKeyboardFocusHere();
+      focusHere = false;
+    }
     ImGui::InputText("##Nick", data.nick, IM_ARRAYSIZE(data.nick));
 
     ImGui::NewLine();
 
     //Password
     ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "Password:");
-    ImGui::InputText("##Password", data.password, IM_ARRAYSIZE(data.password), ImGuiInputTextFlags_Password);
+    if (ImGui::InputText("##Password", data.password, IM_ARRAYSIZE(data.password), ImGuiInputTextFlags_Password | ImGuiInputTextFlags_EnterReturnsTrue)) {
+      checkLogin(sceneData_);
+    }
 
     ImGui::NewLine();
 

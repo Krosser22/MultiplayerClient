@@ -85,7 +85,7 @@ void Actor::updateCollisions() {
   //float fallingTimePercent = ((float)(GameManager::getTime().asMilliseconds() - actorStartFallingTime_.asMilliseconds())) / timeToMaxFallingSpeed_;
   //if (fallingTimePercent > 1.0f) fallingTimePercent = 1.0f;
   //newY += gravityVelocity_ * fallingTimePercent * (actorMovement.down | !bIsGrounded_) * !actorMovement.up; //If falling and not jumping
-  
+
   //Collisions
   float finalX = newX, finalY = newY;
 
@@ -124,13 +124,24 @@ void Actor::updateCollisions() {
   movement_.sound = false;
   movement_.drop = false;
 
-
   //Testing
   float progress = (float)life_ / (float)maxLife_;
   float progress_saturated = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
   char buf[32];
   sprintf(buf, "%d/%d", (int)(progress_saturated * maxLife_), maxLife_);
-  ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
+  //sprintf(buf, "");
+  ImGui::SetNextWindowPos(ImVec2(sprite_.getPosition().x - 100, sprite_.getPosition().y - 30));
+
+  bool open = true;
+  float prevAlpha = ImGui::GetStyle().Alpha;
+  ImGui::GetStyle().Alpha = 0.1f;
+  ImGui::Begin("", &open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
+  {
+    ImGui::GetStyle().Alpha = 0.8f;
+    ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), buf);
+  }
+  ImGui::End();
+  ImGui::GetStyle().Alpha = prevAlpha;
 }
 
 bool Actor::isJumping() {

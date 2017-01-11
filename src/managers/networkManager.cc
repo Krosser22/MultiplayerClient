@@ -319,7 +319,7 @@ void processTCPMsg(std::string *content) {
           } else if (command == "Hit") {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             GameManager::RemoveBullet(elements.at(2), elements.at(3));
-            actor->damage(std::stof(elements.at(4), &sz));
+            actor->damage((int)std::stof(elements.at(4), &sz));
           } else if (command == "Pick") {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             //if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));

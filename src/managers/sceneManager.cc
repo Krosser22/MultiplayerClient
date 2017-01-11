@@ -108,9 +108,6 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowRounding = 0.0f;
     style.ChildWindowRounding = 0.0f;
-    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.00f, 0.09f, 0.20f, 1.00f);
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.20f, 0.32f, 0.80f, 1.00f);
-    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.09f, 0.09f, 0.09f, 1.00f);
     style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
     style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     //style.Colors[ImGuiCol_TextHovered] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
@@ -194,10 +191,9 @@ void SceneManager::StartSceneManager(std::string sceneName) {
     //Server
     NetworkManager::Update();
 
-    //FPS
+    //FPS and Latency
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    if (ImGui::BeginMainMenuBar())
-    {
+    if (ImGui::BeginMainMenuBar()) {
       char fps[256];
       sprintf(fps, "%.3f ms/frame (%.1f FPS), Latency: %dms", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate, NetworkManager::getLatency());
       ImGui::MenuItem(fps);

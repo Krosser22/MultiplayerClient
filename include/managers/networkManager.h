@@ -64,6 +64,9 @@ struct SceneData {
 
   //std::vector<Pickup *> pickups;
 
+  //The client that is going to calculate most of the things
+  bool host = false;
+
   bool completed = false;
   bool playing = false;
 };
