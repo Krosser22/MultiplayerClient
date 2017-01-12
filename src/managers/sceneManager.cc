@@ -14,6 +14,7 @@
 #include "managers/gameManager.h"
 #include "input.h"
 #include "UI/UIChat.h"
+#include "UI/UIRank.h"
 
 static struct SceneManagerData {
   sf::RenderWindow window;

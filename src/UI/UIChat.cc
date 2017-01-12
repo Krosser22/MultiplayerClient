@@ -36,10 +36,10 @@ struct UIChatData {
   }
 
   void Draw(const char *title, bool open) {
-    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiSetCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(0, 504), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin(title, &open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-    ImGui::BeginChild("scrolling", ImVec2(0, 159), false, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(0, 584), ImGuiSetCond_FirstUseEver);
+    ImGui::Begin(title, &open, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders);
+    ImGui::BeginChild("scrolling", ImVec2(0, 69), false, ImGuiWindowFlags_HorizontalScrollbar);
     ImGui::TextUnformatted(Buf.begin());
 
     if (ScrollToBottom) {

@@ -76,6 +76,9 @@ public:
   //Return the life of the actor
   int life();
 
+  //Return the max life of the actor
+  int maxLife();
+
   //Damage the actor
   void damage(int damage);
 

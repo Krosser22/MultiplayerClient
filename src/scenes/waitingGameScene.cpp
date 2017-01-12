@@ -8,12 +8,11 @@
 
 #include "scenes/waitingGameScene.h"
 #include "UI/UIChat.h"
-
-static struct WaitingGameSceneData {
-} data;
+#include "UI/UIRank.h"
+#include "UI/UIGroup.h"
 
 void WaitingGameScene::start() {
-  GameManager::SetBackground("background.png"); //Set the background
+  GameManager::SetBackground("waitingForPlayersBackground.png"); //Set the background
 }
 
 void WaitingGameScene::input() {
@@ -22,6 +21,8 @@ void WaitingGameScene::input() {
 
 void WaitingGameScene::update() {
   UIChat::Draw();
+  UIRank::Draw();
+  UIGroup::Draw();
 }
 
 void WaitingGameScene::finish() {}

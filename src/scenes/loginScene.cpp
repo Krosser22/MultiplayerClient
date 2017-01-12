@@ -97,7 +97,7 @@ void LoginScene::update() {
   ImGui::End();
   
   if (sceneData_->completed) {
-    SceneManager::ChangeScene("Game");
+    SceneManager::ChangeScene("WaitingGame");
   }
 }
 

@@ -25,10 +25,12 @@ public:
   void finish();
 
 private:
-  Object ground_;
-  Object platformLeft_;
-  Object platformRight_;
-  Object platformCenter_;
+  Object ground1_;
+  Object ground2_;
+  Object leftWall_;
+  Object rightWall_;
+  Object roof_;
+  std::vector<Object *> platforms_;
 
   bool chatEnable_ = false;
 };

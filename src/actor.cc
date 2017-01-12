@@ -170,6 +170,10 @@ int Actor::life() {
   return life_;
 }
 
+int Actor::maxLife() {
+  return maxLife_;
+}
+
 void Actor::damage(int damage) {
   life_ -= damage;
 

@@ -6,7 +6,6 @@
 *** ////////////////////////////////////////////
 **/
 
-#include <stdio.h>
 #include <deque>
 #include <SFML/Network.hpp>
 #include <sstream>
@@ -18,6 +17,7 @@
 #include <openssl/ssl.h>
 #include <stdio.h>
 #include "UI/UIChat.h"
+#include "UI/UIRank.h"
 #include "managers/gameManager.h"
 #include "managers/networkManager.h"
 #include "managers/sceneManager.h"
@@ -307,7 +307,6 @@ void processTCPMsg(std::string *content) {
               enemy->setTexture("enemy.png");
               enemy->setPosition(100, 100);
               data.sceneData->enemies.push_back(enemy);
-              GameManager::AddObject(enemy);
             }
           } else if (command == "Chat") {
             UIChat::AddLine(elements.at(1).data(), elements.at(2).data());
@@ -326,10 +325,35 @@ void processTCPMsg(std::string *content) {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             GameManager::RemoveBullet(elements.at(2), elements.at(3));
             actor->damage((int)std::stof(elements.at(4), &sz));
-          } else if (command == "Host") {
-            if (elements.at(1) == data.sceneData->player.ID()) {
-              data.sceneData->host = true;
+
+            if (actor->isDead()) {
+              std::string msg = "Point:";
+              msg += elements.at(2) + "\0";
+              NetworkManager::SendTCPMsgToServer(msg.c_str());
             }
+
+            if (data.sceneData->host) {
+              int actorsNotDead = (!data.sceneData->player.isDead() * 1);
+              for (unsigned int i = 0; i < data.sceneData->enemies.size(); ++i) {
+                actorsNotDead += (!data.sceneData->enemies.at(i)->isDead() * 1);
+              }
+              if (actorsNotDead <= 1) {
+                NetworkManager::SendTCPMsgToServer("NewGame");
+              }
+            }
+          } else if (command == "Host") {
+            data.sceneData->host = (elements.at(1) == data.sceneData->player.ID());
+          } else if (command == "Ranking") {
+            std::vector<std::string> points = split(elements.at(1), '-');
+            std::vector<std::string> nicks = split(elements.at(2), '-');
+            UIRank::Clear();
+
+            for (unsigned int i = 0; i < points.size(); ++i) {
+              UIRank::AddData(std::stoi(points.at(i), &sz), nicks.at(i));
+            }
+          } else if (command == "StartGame") {
+            data.sceneData->game = std::stoi(elements.at(1), &sz);
+            SceneManager::ChangeScene("Game");
           } else if (command == "Pick") {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             //if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));

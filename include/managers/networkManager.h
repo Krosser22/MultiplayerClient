@@ -69,6 +69,7 @@ struct SceneData {
 
   bool completed = false;
   bool playing = false;
+  int game = 0;
 };
 
 namespace NetworkManager {
