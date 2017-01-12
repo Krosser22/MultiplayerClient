@@ -79,6 +79,12 @@ public:
   //Damage the actor
   void damage(int damage);
 
+  //Return if the player is dead
+  bool isDead();
+
+  //Kill the player
+  void die();
+
   ActorMovement getMovement();
 
 private:

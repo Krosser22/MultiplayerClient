@@ -289,6 +289,9 @@ void processTCPMsg(std::string *content) {
           std::string command = elements.at(0);
           if (command == "Login" && elements.at(1) != "ERROR") {
             data.sceneData->completed = true;
+            data.sceneData->bullets.clear();
+            data.sceneData->enemies.clear();
+            data.sceneData->host = false;
             data.sceneData->player.setID(&elements.at(1));
           } else if (command == "Logout") {
             SceneManager::ChangeScene("Login");
@@ -297,12 +300,15 @@ void processTCPMsg(std::string *content) {
           } else if (command == "Forgot") {
             data.sceneData->completed = (elements.at(1) == "Done");
           } else if (command == "AddPlayer") {
-            Actor *enemy = new Actor();
-            enemy->setID(&elements.at(1));
-            enemy->setTexture("enemy.png");
-            enemy->setPosition(100, 100);
-            data.sceneData->enemies.push_back(enemy);
-            GameManager::AddObject(enemy);
+            Actor *enemy = data.sceneData->getEnemy(&elements.at(1));
+            if (enemy == nullptr) {
+              enemy = new Actor();
+              enemy->setID(&elements.at(1));
+              enemy->setTexture("enemy.png");
+              enemy->setPosition(100, 100);
+              data.sceneData->enemies.push_back(enemy);
+              GameManager::AddObject(enemy);
+            }
           } else if (command == "Chat") {
             UIChat::AddLine(elements.at(1).data(), elements.at(2).data());
           } else if (command == "RemovePlayer") {
@@ -320,6 +326,10 @@ void processTCPMsg(std::string *content) {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             GameManager::RemoveBullet(elements.at(2), elements.at(3));
             actor->damage((int)std::stof(elements.at(4), &sz));
+          } else if (command == "Host") {
+            if (elements.at(1) == data.sceneData->player.ID()) {
+              data.sceneData->host = true;
+            }
           } else if (command == "Pick") {
             Actor *actor = data.sceneData->getActor(&elements.at(1));
             //if (actor) actor->getPickup(data.sceneData->getPickup(&pickupID));
@@ -347,15 +357,17 @@ void processUDPMsg(std::string *content) {
       msLatency = GameManager::Time().asMilliseconds() - startPingTime.asMilliseconds();
       receivedPong = true;
     } else if (command == "Shoot") {
-      Bullet *bullet = new Bullet();
-      bullet->setTexture("bullet.png");
-      bullet->ownerID = elements.at(1);
-      bullet->setID(&elements.at(2));
-      bullet->setPosition(std::stof(elements.at(3), &sz), std::stof(elements.at(4), &sz));
-      bullet->speedX = std::stof(elements.at(5), &sz);
-      bullet->speedY = std::stof(elements.at(6), &sz);
-      data.sceneData->bullets.push_back(bullet);
-      GameManager::AddBullet(bullet);
+      if (data.sceneData->getActor(&elements.at(1)) != nullptr) {
+        Bullet *bullet = new Bullet();
+        bullet->setTexture("bullet.png");
+        bullet->ownerID = elements.at(1);
+        bullet->setID(&elements.at(2));
+        bullet->setPosition(std::stof(elements.at(3), &sz), std::stof(elements.at(4), &sz));
+        bullet->speedX = std::stof(elements.at(5), &sz);
+        bullet->speedY = std::stof(elements.at(6), &sz);
+        data.sceneData->bullets.push_back(bullet);
+        GameManager::AddBullet(bullet);
+      }
     }
   }
 }
@@ -380,6 +392,10 @@ void NetworkManager::SetSceneData(SceneData *sceneData) {
   data.sceneData = sceneData;
   data.sceneData->completed = false;
   data.sceneData->playing = false;
+}
+
+SceneData *NetworkManager::GetSceneData() {
+  return data.sceneData;
 }
 
 void NetworkManager::Start() {

@@ -8,7 +8,8 @@
 
 #include "object.h"
 
-Object::Object() {}
+Object::Object() {
+  sprite_.setPosition(0.0f, 0.0f);}
 
 Object::~Object() {}
 
@@ -26,7 +27,6 @@ void Object::setTexture(const char *imagePath) {
   sprite_.setOrigin(0.0f, 0.0f);
   sprite_.setRotation(0.0f);
   sprite_.setScale(1.0f, 1.0f);
-  sprite_.setPosition(0.0f, 0.0f);
 }
 
 void Object::setPosition(float x, float y) {

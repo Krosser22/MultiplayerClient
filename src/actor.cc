@@ -124,24 +124,26 @@ void Actor::updateCollisions() {
   movement_.sound = false;
   movement_.drop = false;
 
-  //Testing
-  float progress = (float)life_ / (float)maxLife_;
-  float progress_saturated = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
-  char buf[32];
-  sprintf(buf, "%d/%d", (int)(progress_saturated * maxLife_), maxLife_);
-  //sprintf(buf, "");
-  ImGui::SetNextWindowPos(ImVec2(sprite_.getPosition().x - 100, sprite_.getPosition().y - 30));
-
-  bool open = true;
-  float prevAlpha = ImGui::GetStyle().Alpha;
-  ImGui::GetStyle().Alpha = 0.1f;
-  ImGui::Begin("", &open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
+  //Life UI
   {
-    ImGui::GetStyle().Alpha = 0.8f;
-    ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), buf);
+    float progress = (float)life_ / (float)maxLife_;
+    float progress_saturated = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
+    char buf[32];
+    sprintf(buf, "%d/%d", (int)(progress_saturated * maxLife_), maxLife_);
+    //sprintf(buf, "");
+    ImGui::SetNextWindowPos(ImVec2(sprite_.getPosition().x - 100, sprite_.getPosition().y - 30));
+
+    bool open = true;
+    float prevAlpha = ImGui::GetStyle().Alpha;
+    ImGui::GetStyle().Alpha = 0.1f;
+    ImGui::Begin("", &open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
+    {
+      ImGui::GetStyle().Alpha = 0.8f;
+      ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), buf);
+    }
+    ImGui::End();
+    ImGui::GetStyle().Alpha = prevAlpha;
   }
-  ImGui::End();
-  ImGui::GetStyle().Alpha = prevAlpha;
 }
 
 bool Actor::isJumping() {
@@ -173,9 +175,19 @@ void Actor::damage(int damage) {
 
   if (life_ <= 0) {
     life_ = 0;
+    
+    die();
   } else if (life_ > maxLife_) {
     life_ = maxLife_;
   }
+}
+
+bool Actor::isDead() {
+  return (life_ <= 0);
+}
+
+void Actor::die() {
+  setTexture("dead.png");
 }
 
 ActorMovement Actor::getMovement() {

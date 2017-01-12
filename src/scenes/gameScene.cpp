@@ -35,7 +35,7 @@ void GameScene::start() {
 
   //Set the player
   sceneData_->player.setTexture("player.png");
-  sceneData_->player.setPosition(460.0f, 280.0f);
+  sceneData_->player.setPosition(460.0f, 100.0f);
   GameManager::AddActor(&sceneData_->player);
 
   sceneData_->playing = true;
@@ -50,22 +50,24 @@ void GameScene::input() {
 
     if (!chatEnable_) {
       //Player movement
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) sceneData_->player.crouch();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) sceneData_->player.interact();
-      if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) sceneData_->player.action();
+      if (!sceneData_->player.isDead()) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) sceneData_->player.crouch();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) sceneData_->player.moveLeft();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) sceneData_->player.moveRight();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) sceneData_->player.jump();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) sceneData_->player.interact();
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) sceneData_->player.action();
+      }
 
       //Spawn test
-      static std::vector<Object *> objectList_;
+      /*static std::vector<Object *> objectList_;
       if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         Object *box = new Object();
         box->setTexture("box.png");
         box->setPosition(GameManager::MouseX(), GameManager::MouseY());
         objectList_.push_back(box);
         GameManager::AddObject(box);
-      }
+      }*/
 
       //Escape to logout the game
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
@@ -80,5 +82,9 @@ void GameScene::update() {
 }
 
 void GameScene::finish() {
+  sceneData_->bullets.clear();
+  sceneData_->enemies.clear();
+  GameManager::ClearDrawList();
+  sceneData_->host = false;
   NetworkManager::Logout();
 }

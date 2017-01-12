@@ -75,6 +75,9 @@ namespace NetworkManager {
   //Set the scene data
   void SetSceneData(SceneData *sceneData);
 
+  //Returns the sceneData
+  SceneData *GetSceneData();
+
   //Starts the server
   void Start();
 

@@ -80,10 +80,10 @@ void SceneManager::StartSceneManager(std::string sceneName) {
   //Init
   {
     //Create the window with a default values
-    data.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "MultiplayerClient");
+    data.window.create(sf::VideoMode(GameManager::WindowWidth(), GameManager::WindowHeight()), "MultiplayerClient", !sf::Style::Resize | sf::Style::Titlebar | sf::Style::Close);
     data.window.setFramerateLimit(60);
     //data.window.setVerticalSyncEnabled(true);
-
+    
     //Starts the GameManager
     GameManager::Start(&data.window);
 

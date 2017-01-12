@@ -70,6 +70,7 @@ void GameManager::AddActor(Actor *actor) {
 
 void GameManager::AddEnemy(Actor *actor) {
   data.listToDraw.push_back(actor);
+  data.collisionList.push_back(actor);
 }
 
 void GameManager::AddBullet(Bullet *bullet) {
@@ -80,13 +81,21 @@ void GameManager::AddBullet(Bullet *bullet) {
 }
 
 void GameManager::RemoveEnemy(Actor *actor) {
-  int pos = -1;
-  for (unsigned int i = 0; i < data.listToDraw.size(); ++i) {
+  bool found = false;
+  for (unsigned int i = 0; i < data.listToDraw.size() && !found; ++i) {
     if (data.listToDraw.at(i)->ID() == actor->ID()) {
-      pos = i;
+      found = true;
+      data.listToDraw.erase(data.listToDraw.begin() + i);
     }
   }
-  data.listToDraw.erase(data.listToDraw.begin() + pos);
+
+  found = false;
+  for (unsigned int i = 0; i < data.collisionList.size() && !found; ++i) {
+    if (data.collisionList.at(i)->ID() == actor->ID()) {
+      found = true;
+      data.collisionList.erase(data.collisionList.begin() + i);
+    }
+  }
 }
 
 void GameManager::RemoveBullet(std::string ownerID, std::string ID) {
@@ -101,6 +110,7 @@ void GameManager::RemoveBullet(std::string ownerID, std::string ID) {
 
 void GameManager::ClearDrawList() {
   data.listToDraw.clear();
+  data.bulletsListToDraw.clear();
   data.collisionList.clear();
   data.dynamicCollisionList.clear();
   RemoveBackground();
@@ -154,9 +164,9 @@ void GameManager::Draw() {
   std::vector<Bullet *> *bullets = SceneManager::getBullets();
   for (unsigned int i = 0; i < bullets->size(); ++i) {
     Bullet *bullet = bullets->at(i);
-    float X = bullet->positionX() + bullet->speedX;
-    float Y = bullet->positionY() + bullet->speedY;
-    bullet->setPosition(X * velocity, Y * velocity);
+    float X = bullet->positionX() + (bullet->speedX * kVelocity);
+    float Y = bullet->positionY() + (bullet->speedY * kVelocity);
+    bullet->setPosition(X, Y);
   }
 
   //Update the collisions
@@ -164,7 +174,13 @@ void GameManager::Draw() {
     data.dynamicCollisionList.at(i)->updateCollisions();
   }
 
-  checkBulletCollision(SceneManager::getPlayer());
+  SceneData *sceneData = NetworkManager::GetSceneData();
+  if (sceneData->host) {
+    checkBulletCollision(SceneManager::getPlayer());
+    for (unsigned int i = 0; i < sceneData->enemies.size(); ++i) {
+      checkBulletCollision(sceneData->enemies.at(i));
+    }
+  }
 
   //Draw the background
   data.window->draw(data.backgroundSprite);

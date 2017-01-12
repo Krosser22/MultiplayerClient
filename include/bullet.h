@@ -11,7 +11,7 @@
 
 #include "object.h"
 
-const float velocity = 1.0f;
+const float kVelocity = 3.0f;
 
 class Bullet : public Object {
 public:
