@@ -8,38 +8,156 @@
 
 #include "scenes/gameScene.h"
 #include "UI/UIChat.h"
+#include "UI/UIRank.h"
+#include "UI/UIGroup.h"
 #include "input.h"
 
 void GameScene::start() {
   GameManager::SetBackground("background.png"); //Set the background
 
-  //Set the ground
-  ground_.setTexture("ground.png");
-  ground_.setPosition(0.0f, 640.0f);
-  GameManager::AddObject(&ground_);
+  //Set the limits
+  {
+    //Set the ground1
+    ground1_.setTexture("ground.png");
+    ground1_.setPosition(0.0f, 640.0f);
+    GameManager::AddObject(&ground1_);
 
-  //Set the ground
-  platformLeft_.setTexture("platform.png");
-  platformLeft_.setPosition(0.0f, 480.0f);
-  GameManager::AddObject(&platformLeft_);
+    //Set the ground2
+    ground2_.setTexture("ground.png");
+    ground2_.setPosition(0.0f, 576.0f);
+    GameManager::AddObject(&ground2_);
 
-  //Set the ground
-  platformCenter_.setTexture("platform.png");
-  platformCenter_.setPosition(384.0f, 300.0f);
-  GameManager::AddObject(&platformCenter_);
+    //Set the left wall
+    leftWall_.setTexture("wall.png");
+    leftWall_.setPosition(-64.0f, 0.0f);
+    GameManager::AddObject(&leftWall_);
 
-  //Set the ground
-  platformRight_.setTexture("platform.png");
-  platformRight_.setPosition(768.0f, 480.0f);
-  GameManager::AddObject(&platformRight_);
+    //Set the right wall
+    rightWall_.setTexture("wall.png");
+    rightWall_.setPosition(960.0f, 0.0f);
+    GameManager::AddObject(&rightWall_);
+
+    //Set the roof
+    roof_.setTexture("ground.png");
+    roof_.setPosition(0.0f, -64.0f);
+    GameManager::AddObject(&roof_);
+  }
+
+  //Set the platforms
+  {
+    switch (sceneData_->game) {
+    case 1:
+      //Left top
+      platforms_.push_back(new Object());
+      platforms_.at(0)->setTexture("platform.png");
+      platforms_.at(0)->setPosition(0.0f, 300.0f);
+      GameManager::AddObject(platforms_.at(0));
+
+      //Middle bottom
+      platforms_.push_back(new Object());
+      platforms_.at(1)->setTexture("platform.png");
+      platforms_.at(1)->setPosition(384.0f, 480.0f);
+      GameManager::AddObject(platforms_.at(1));
+
+      //Right top
+      platforms_.push_back(new Object());
+      platforms_.at(2)->setTexture("platform.png");
+      platforms_.at(2)->setPosition(768.0f, 300.0f);
+      GameManager::AddObject(platforms_.at(2));
+      break;
+    case 2:
+      //Left bottom
+      platforms_.push_back(new Object());
+      platforms_.at(0)->setTexture("platform.png");
+      platforms_.at(0)->setPosition(0.0f, 480.0f);
+      GameManager::AddObject(platforms_.at(0));
+
+      //Middle-left
+      platforms_.push_back(new Object());
+      platforms_.at(1)->setTexture("platform.png");
+      platforms_.at(1)->setPosition(288.0f, 300.0f);
+      GameManager::AddObject(platforms_.at(1));
+
+      //Middle-right
+      platforms_.push_back(new Object());
+      platforms_.at(2)->setTexture("platform.png");
+      platforms_.at(2)->setPosition(480.0f, 300.0f);
+      GameManager::AddObject(platforms_.at(2));
+
+      //Right bottom
+      platforms_.push_back(new Object());
+      platforms_.at(3)->setTexture("platform.png");
+      platforms_.at(3)->setPosition(768.0f, 480.0f);
+      GameManager::AddObject(platforms_.at(3));
+      break;
+    case 3:
+      //Left top
+      platforms_.push_back(new Object());
+      platforms_.at(0)->setTexture("platform.png");
+      platforms_.at(0)->setPosition(0.0f, 200.0f);
+      GameManager::AddObject(platforms_.at(0));
+
+      //Left top-mid
+      platforms_.push_back(new Object());
+      platforms_.at(1)->setTexture("platform.png");
+      platforms_.at(1)->setPosition(192.0f, 264.0f);
+      GameManager::AddObject(platforms_.at(1));
+
+      //Middle bottom
+      platforms_.push_back(new Object());
+      platforms_.at(2)->setTexture("platform.png");
+      platforms_.at(2)->setPosition(384.0f, 450.0f);
+      GameManager::AddObject(platforms_.at(2));
+
+      //Right top-mid
+      platforms_.push_back(new Object());
+      platforms_.at(3)->setTexture("platform.png");
+      platforms_.at(3)->setPosition(576.0f, 264.0f);
+      GameManager::AddObject(platforms_.at(3));
+
+      //Right top
+      platforms_.push_back(new Object());
+      platforms_.at(4)->setTexture("platform.png");
+      platforms_.at(4)->setPosition(768.0f, 200.0f);
+      GameManager::AddObject(platforms_.at(4));
+      break;
+    default:
+      //Left top
+      platforms_.push_back(new Object());
+      platforms_.at(0)->setTexture("platform.png");
+      platforms_.at(0)->setPosition(0.0f, 480.0f);
+      GameManager::AddObject(platforms_.at(0));
+
+      //Midle bottom
+      platforms_.push_back(new Object());
+      platforms_.at(1)->setTexture("platform.png");
+      platforms_.at(1)->setPosition(384.0f, 300.0f);
+      GameManager::AddObject(platforms_.at(1));
+
+      //Right top
+      platforms_.push_back(new Object());
+      platforms_.at(2)->setTexture("platform.png");
+      platforms_.at(2)->setPosition(768.0f, 480.0f);
+      GameManager::AddObject(platforms_.at(2));
+      break;
+    }
+  }
 
   //Set the player
   sceneData_->player.setTexture("player.png");
+  sceneData_->player.setLife(sceneData_->player.maxLife());
   sceneData_->player.setPosition(460.0f, 100.0f);
   GameManager::AddActor(&sceneData_->player);
 
   sceneData_->playing = true;
   UIChat::Clear();
+
+  //Add the enemies
+  for (unsigned int i = 0; i < sceneData_->enemies.size(); ++i) {
+    GameManager::AddObject(sceneData_->enemies.at(i));
+    sceneData_->enemies.at(i)->setLife(sceneData_->enemies.at(i)->maxLife());
+    sceneData_->enemies.at(i)->setTexture("enemy.png");
+  }
 }
 
 void GameScene::input() {
@@ -72,6 +190,7 @@ void GameScene::input() {
       //Escape to logout the game
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
         SceneManager::ChangeScene("Login");
+        NetworkManager::Logout();
       }
     }
   }
@@ -79,12 +198,12 @@ void GameScene::input() {
 
 void GameScene::update() {
   UIChat::Draw(chatEnable_);
+  UIRank::Draw(/*sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab)*/);
+  UIGroup::Draw();
 }
 
 void GameScene::finish() {
   sceneData_->bullets.clear();
-  sceneData_->enemies.clear();
+  //sceneData_->enemies.clear();
   GameManager::ClearDrawList();
-  sceneData_->host = false;
-  NetworkManager::Logout();
 }
